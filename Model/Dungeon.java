@@ -15,4 +15,10 @@ public class Dungeon {
     }
     public void moveHero(final int theXChange, final int theYChange){
     }
+    public int getMyX(){
+        return myHeroX;
+    }
+    public int getMyY(){
+        return myHeroY;
+    }
 }
