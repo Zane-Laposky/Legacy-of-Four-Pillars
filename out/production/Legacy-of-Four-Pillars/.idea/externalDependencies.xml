@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalDependencies">
+    <plugin id="com.github.jk1.ytplugin" />
+    <plugin id="com.squareup.sqldelight" />
+  </component>
+</project>
