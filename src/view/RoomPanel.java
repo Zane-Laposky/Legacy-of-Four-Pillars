@@ -17,11 +17,18 @@ public class RoomPanel {
     }
 
     private void initPanel() {
+        myOneRoomPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
+        myOneRoomPanel.setBackground(Color.DARK_GRAY);
+
+        //each room has 3x3 grid . one character for each
         for (int row =  0; row < DIMENSION; row++) {
             for (int col =  0; col < DIMENSION; col++) {
                 myRoomStructure[row][col] = new JLabel();
+                myRoomStructure[row][col].setBackground(Color.DARK_GRAY);
+                myRoomStructure[row][col].setHorizontalAlignment(JLabel.CENTER);
+                myRoomStructure[row][col].setVerticalAlignment(JLabel.CENTER);
+                myRoomStructure[row][col].setFont(myRoomStructure[row][col].getFont().deriveFont(Font.BOLD, 24));
                 myRoomStructure[row][col].setOpaque(true);
-                myRoomStructure[row][col].setForeground(Color.WHITE);
                 myOneRoomPanel.add(myRoomStructure[row][col]);
             }
         }
@@ -32,11 +39,13 @@ public class RoomPanel {
 
     //NEED INFORMATION FROM CONTROLLER ON THE CURRENT ROOM PLAYER IS IN
     public void drawCurrentRoom(final Room theCurrentRoom) {
+        myOneRoomPanel.setBackground(Color.BLACK);
         String[] tempRoom = theCurrentRoom.toString().split("%%");
         for (int row = 0; row < DIMENSION; row++) {
             for(int col = 0; col < DIMENSION; col++) {
-                myRoomStructure[row][col].setText(String.valueOf(tempRoom[row].charAt(col)));
-
+                myRoomStructure[row][col].setBackground(Color.BLACK);
+                myRoomStructure[row][col].setForeground(Color.WHITE);
+                myRoomStructure[row][col].setText( String.valueOf(tempRoom[row].charAt(col)));
             }
         }
         myOneRoomPanel.revalidate();
