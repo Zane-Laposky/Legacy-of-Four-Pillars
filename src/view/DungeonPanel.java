@@ -8,11 +8,11 @@ import java.awt.*;
 public class DungeonPanel {
     private static final int DIMENSION = 3;
     private final JPanel myPanel;
-    private final JLabel[][] myRooms;
+    private final RoomPanel[][] myRooms;
 
     public DungeonPanel() {
         myPanel = new JPanel();
-        myRooms = new JLabel[DIMENSION][DIMENSION];
+        myRooms = new RoomPanel [DIMENSION][DIMENSION];
         initPanel();
     }
 
@@ -25,17 +25,14 @@ public class DungeonPanel {
         myPanel.setBackground(Color.DARK_GRAY);
         for (int row = 0; row < DIMENSION; row++) {
             for (int col = 0; col < DIMENSION; col++) {
-                myRooms[row][col] = new JLabel();
-                myRooms[row][col].setVisible(true);
-                myRooms[row][col].setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                myRooms[row][col] = new RoomPanel();
 
                 //Player's current room
                 if (row == 1 && col == 1) {
-                    myRooms[row][col].setVisible(true);
-                    myRooms[row][col].setOpaque(true);
+                    myRooms[row][col].drawCurrentRoom(tempRoom);
                 }
 
-                myPanel.add(myRooms[row][col]);
+                myPanel.add(myRooms[row][col].getPanel());
             }
         }
     }
