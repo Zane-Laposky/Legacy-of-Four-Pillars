@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class GameView {
     JFrame myFrame;
+    private final String characterName;
 
     public GameView() {
 
@@ -16,7 +17,7 @@ public class GameView {
         myFrame.setResizable(true);
 
         //prompt for character name in popup window
-        String characterName = namePrompt();
+        characterName = namePrompt();
 
         //initial GUI
         initGuiComponent();
@@ -27,12 +28,32 @@ public class GameView {
 
     //GUI initial component
     private void initGuiComponent() {
-        JPanel myPanel = new JPanel();
-        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
+        JPanel myGamePanel = new JPanel();
+        JPanel statsPanel = new StatsPanel(characterName).getPanel();
+        JPanel inventoryPanel = new InventoryPanel().getPanel();
 
-        myFrame.add(myPanel);
+        JSplitPane myMainPanel = getJSplitPane(statsPanel, inventoryPanel, myGamePanel);
+
+        myFrame.add(myMainPanel,  BorderLayout.CENTER);
         myFrame.setJMenuBar(new MenuBar().getMenuBar());
 
+    }
+
+    //split the window so 3/4 is gamePanel and bottom split between stats and inventory
+    private JSplitPane getJSplitPane(JPanel statsPanel, JPanel inventoryPanel, JPanel myGamePanel) {
+        JSplitPane myBottomPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT, statsPanel, inventoryPanel);
+        myBottomPanel.setDividerSize(1);
+        myBottomPanel.setResizeWeight(0.5);
+        myBottomPanel.setEnabled(false);
+
+        JSplitPane myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        myMainPanel.setTopComponent(myGamePanel);
+        myMainPanel.setBottomComponent(myBottomPanel);
+        myMainPanel.setDividerSize(1);
+        myMainPanel.setResizeWeight(0.9);
+        myMainPanel.setEnabled(false);
+        return myMainPanel;
     }
 
 
@@ -50,8 +71,4 @@ public class GameView {
         return myCharacterName;
     }
 
-    // testing purpose ONLY2
-//    public static void main(String[] args) {
-//        new GameView();
-//    }
 }
