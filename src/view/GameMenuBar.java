@@ -1,12 +1,31 @@
+/*
+ * GameMenuBar
+ * Spring 2026
+ */
 package view;
 
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
+/**
+ * This class creates the  menu bar for the game. The menu bar is
+ * organized by menu items such as File, View, and Help for the game window.
+ *
+ * @author Emily Hernandez
+ * @version 1.0 Spring 2026
+ */
 public class GameMenuBar {
+
+    /**
+     * Menu Bar used in the game window.
+     */
     private final JMenuBar myMenuBar;
 
+    /**
+     * Constructs a GameMenuBar object and adds all menus
+     * items to the menu bar.
+     */
     public GameMenuBar() {
         myMenuBar = new JMenuBar();
         myMenuBar.add(fileMenuBar());
@@ -14,10 +33,20 @@ public class GameMenuBar {
         myMenuBar.add(helpMenuBar());
     }
 
+    /**
+     * Return the menu bar.
+     *
+     * @return the menu bar
+     */
     public JMenuBar getMenuBar() {
         return myMenuBar;
     }
 
+    /**
+     * Create file menu with new, open, save and quit options.
+     *
+     * @return the file menu
+     */
     private JMenu fileMenuBar() {
         JMenu fileMenu = new JMenu("File");
 
@@ -35,19 +64,29 @@ public class GameMenuBar {
 
         //STILL NEED ACTION
         //need to controller to tell what it does
-        newGame.addActionListener(_->{});
-        loadGame.addActionListener(_->{});
-        saveGame.addActionListener(_->{});
-        exitGame.addActionListener(_->{System.exit(0);});
+        newGame.addActionListener(_ -> {
+        });
+        loadGame.addActionListener(_ -> {
+        });
+        saveGame.addActionListener(_ -> {
+        });
+        exitGame.addActionListener(_ -> {
+            System.exit(0);
+        });
 
         fileMenu.add(newGame);
         fileMenu.add(loadGame);
         fileMenu.add(saveGame);
         fileMenu.add(exitGame);
 
-        return  fileMenu;
+        return fileMenu;
     }
 
+    /**
+     * Create view menu with inventory, status and keyboard shortcut option.
+     *
+     * @return the view menu
+     */
     private JMenu viewMenuBar() {
         JMenu viewMenu = new JMenu("View");
 
@@ -60,9 +99,14 @@ public class GameMenuBar {
         viewMenu.add(statusView);
         viewMenu.add(keyboardShortcuts);
 
-        return  viewMenu;
+        return viewMenu;
     }
 
+    /**
+     * Create help menu with game guidelines and about.
+     *
+     * @return the help menu
+     */
     private JMenu helpMenuBar() {
         JMenu helpMenu = new JMenu("Help");
 
@@ -77,12 +121,12 @@ public class GameMenuBar {
             JOptionPane.showMessageDialog(
                     null,
                     """
-                    Legacy of Four Pillars
-                    
-                    Explore a dungeon, collect all four Pillars of OO and reach the exit to win.
-                    The hero may take damage from falling into pits or fighting monsters.
-                    Use potions to heal and special abilities to defeat monsters.
-                    """
+                            Legacy of Four Pillars
+                            
+                            Explore a dungeon, collect all four Pillars of OO and reach the exit to win.
+                            The hero may take damage from falling into pits or fighting monsters.
+                            Use potions to heal and special abilities to defeat monsters.
+                            """
             );
         });
 
@@ -98,7 +142,7 @@ public class GameMenuBar {
                             """
             );
         });
-        return  helpMenu;
+        return helpMenu;
     }
 
 }

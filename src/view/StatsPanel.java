@@ -1,13 +1,42 @@
+/**
+ * The Stats Panel
+ * Spring 2026
+ */
 package view;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This class represents the stats panel in the game. This class displays
+ * the character name and hit points.
+ *
+ * @author Emily Hernandez
+ * @version 1.0, Spring 2026
+ */
 public class StatsPanel {
+
+    /**
+     * Maximum hit point character can take.
+     */
     private static final int MAX_HITPOINT = 100; // NEED UPDATE
+
+    /**
+     * The stats panel for the game
+     */
     private final JPanel myPanel;
+
+    /**
+     * The count of available hit points
+     */
     private final JLabel myHitPt;
 
+
+    /**
+     * Constructs a StatsPanel object and initializes all components.
+     *
+     * @param theCharacterName the character's name
+     */
     //NEED UPDATE FROM CONTROLLER ON THE INITIAL VALUE
     public StatsPanel(final String theCharacterName/*, final int theHitPoint*/) {
         myPanel = new JPanel();
@@ -15,6 +44,13 @@ public class StatsPanel {
         initialPanel(theCharacterName);
     }
 
+
+    /**
+     * Initializes the StatsPanel and other components such as myNamePanel
+     * and myHitPt panel.
+     *
+     * @param theCharacterName the character's name
+     */
     private void initialPanel(final String theCharacterName) {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
@@ -36,10 +72,22 @@ public class StatsPanel {
         myPanel.add(myHitPtPanel);
     }
 
+
+    /**
+     * Return the Stats Panel
+     *
+     * @return the Stats Panel
+     */
     public JPanel getPanel() {
         return myPanel;
     }
 
+
+    /**
+     * Update the available hit point during the game.
+     *
+     * @param theHitPoint available hit point
+     */
     //NEED CONTROLLER TO PASS THE UPDATE
     private void updateHitPoint(final int theHitPoint) {
         myHitPt.setText(String.valueOf(theHitPoint));
