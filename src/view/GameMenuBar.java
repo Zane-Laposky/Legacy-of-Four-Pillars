@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class MenuBar {
+public class GameMenuBar {
     private final JMenuBar myMenuBar;
 
-    public MenuBar() {
+    public GameMenuBar() {
         myMenuBar = new JMenuBar();
         myMenuBar.add(fileMenuBar());
         myMenuBar.add(viewMenuBar());

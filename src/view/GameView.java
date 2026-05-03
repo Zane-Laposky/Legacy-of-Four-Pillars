@@ -5,19 +5,18 @@ import java.awt.*;
 
 public class GameView {
     JFrame myFrame;
-    private final String characterName;
+    private String characterName;
 
     public GameView() {
 
         //set up general window dimension
         myFrame = new JFrame("Legacy of Four Pillars");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(500, 500);
-        myFrame.setMinimumSize(new Dimension(300, 300));
+        myFrame.setSize(500, 600);
+        myFrame.setMinimumSize(new Dimension(300, 400));
         myFrame.setResizable(true);
 
-        //prompt for character name in popup window
-        characterName = namePrompt();
+        gameTypePrompt();
 
         //initial GUI
         initGuiComponent();
@@ -28,14 +27,14 @@ public class GameView {
 
     //GUI initial component
     private void initGuiComponent() {
-        JPanel myGamePanel = new JPanel();
+        JPanel myGamePanel = new DungeonPanel().getPanel();
         JPanel statsPanel = new StatsPanel(characterName).getPanel();
         JPanel inventoryPanel = new InventoryPanel().getPanel();
 
         JSplitPane myMainPanel = getJSplitPane(statsPanel, inventoryPanel, myGamePanel);
 
         myFrame.add(myMainPanel,  BorderLayout.CENTER);
-        myFrame.setJMenuBar(new MenuBar().getMenuBar());
+        myFrame.setJMenuBar(new GameMenuBar().getMenuBar());
 
     }
 
@@ -56,6 +55,19 @@ public class GameView {
         return myMainPanel;
     }
 
+    //start of the game ask if it is new or load game
+    private void gameTypePrompt() {
+        Object[] options = {"New Game", "Load Game"};
+        int choice = JOptionPane.showOptionDialog(myFrame,
+                "Would you like to start a new game or load a game?",
+                "Welcome to Legacy of Four Pillars!", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, options, options[0]);
+        if (choice == JOptionPane.YES_OPTION) {
+            //prompt for character name in popup window
+            characterName = namePrompt();
+        }
+    }
 
     //prompt window for the user to name the character
     public String namePrompt() {
