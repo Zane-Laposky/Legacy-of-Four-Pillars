@@ -102,7 +102,7 @@ public class InventoryPanel {
      * @param thePillar the count of collected pillar
      */
     //NEED CONTROLLER TO PASS THE UPDATE
-    private void updateInventory(int theHP, int theVP, int thePillar) {
+    public void updateInventory(int theHP, int theVP, int thePillar) {
         myHP.setText(String.valueOf(theHP));
         myVP.setText(String.valueOf(theVP));
         myPillar.setText(String.valueOf(thePillar));
