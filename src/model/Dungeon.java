@@ -12,7 +12,7 @@ import java.util.Random;
  * may have references to adjacent rooms (north, south, east, west).
  *
  * @author Zane Laposky
- * @version 1.0
+ * @version 1.1
  */
 public class Dungeon {
 
@@ -51,17 +51,15 @@ public class Dungeon {
                 PILLAR_OF_INHERITENCE,
                 PILLAR_OF_POLYMORPHISM
         };
-
-        generateDungeon();
-
-        System.out.println(toString());
     }
 
     /**
      * Entry point for basic dungeon testing.
      */
     public static void main() {
-        new Dungeon(4);
+        new Dungeon(1);
+        new Dungeon(3);
+        new Dungeon(5);
     }
 
     /**
@@ -104,21 +102,28 @@ public class Dungeon {
             }
         }
 
-        while (myPillarsToPlace.length > 0) {
+        int attempts = 0;
+        int maxAttempts = 10000;
+
+        while (myPillarsToPlace.length > 0 && attempts < maxAttempts) {
+            attempts++;
 
             final int theSizeLimit = myDifficulty * myDifficulty;
             final int theMin = (int)(theSizeLimit * 0.25);
             final int theMax = (int)(theSizeLimit * 0.75);
 
-            final int theAttemptedX = theRandom.nextInt(theMax - theMin) + theMin;
-            final int theAttemptedY = theRandom.nextInt(theMax - theMin) + theMin;
+            final int theRange = Math.max(1, theMax - theMin);
+
+            int range = Math.max(1, theMax - theMin);
+            final int theAttemptedX = theRandom.nextInt(range) + theMin;
+            final int theAttemptedY = theRandom.nextInt(range) + theMin;
 
             final Room theRoom = myRooms[theAttemptedX][theAttemptedY];
 
             if (theRoom != null
                     && !theRoom.getIsEntrance()
                     && !theRoom.getIsExit()
-                    && theRoom.getItems().length == 0) {
+                    && theRoom.getItems().length <= 0) {
 
                 final Pillar thePillar =
                         myPillarsToPlace[myPillarsToPlace.length - 1];
@@ -204,5 +209,12 @@ public class Dungeon {
      */
     public int getY() {
         return myHeroY;
+    }
+
+    /**
+     * Returns the dungeon's rooms
+     */
+    public Room[][] getRooms() {
+        return myRooms;
     }
 }

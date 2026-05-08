@@ -8,7 +8,7 @@ import java.util.Arrays;
  * It also manages entrance/exit restrictions and player movement.
  *
  * @author Zane Laposky
- * @version 1.0
+ * @version 1.1
  */
 public class Room {
 
@@ -348,5 +348,27 @@ public class Room {
      */
     public void setY(final int theY) {
         myY = theY;
+    }
+    /**
+     * Returns all monsters currently contained in this room.
+     *
+     * The returned array may be empty if the room contains no monsters.
+     *
+     * @return an array of monsters in the room
+     */
+    public Monster[] getMonsters() {
+        return myMonsters;
+    }
+
+    /**
+     * Adds a monster to this room.
+     *
+     * The monster is appended to the end of the room's monster array.
+     *
+     * @param theMonster the monster to add to the room
+     */
+    public void addMonster(final Monster theMonster) {
+        myMonsters = Arrays.copyOf(myMonsters, myMonsters.length + 1);
+        myMonsters[myMonsters.length - 1] = theMonster;
     }
 }
