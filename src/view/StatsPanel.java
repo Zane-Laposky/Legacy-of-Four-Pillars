@@ -89,7 +89,7 @@ public class StatsPanel {
      * @param theHitPoint available hit point
      */
     //NEED CONTROLLER TO PASS THE UPDATE
-    private void updateHitPoint(final int theHitPoint) {
+    public void updateHitPoint(final int theHitPoint) {
         myHitPt.setText(String.valueOf(theHitPoint));
     }
 }
