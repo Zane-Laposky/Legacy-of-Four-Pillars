@@ -40,7 +40,7 @@ public class GameView {
     }
 
     //split the window so 3/4 is gamePanel and bottom split between stats and inventory
-    private JSplitPane getJSplitPane(JPanel statsPanel, JPanel inventoryPanel, JPanel myGamePanel) {
+    private JSplitPane getJSplitPane(final JPanel statsPanel, final JPanel inventoryPanel, final JPanel myGamePanel) {
         JSplitPane myBottomPanel = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, statsPanel, inventoryPanel);
         myBottomPanel.setDividerSize(1);
