@@ -22,14 +22,14 @@ public class DungeonPanel {
         tempRoom.setEastRoom(new Room(null));
 
         myPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
-        myPanel.setBackground(Color.DARK_GRAY);
+        myPanel.setBackground(Color.BLACK);
         for (int row = 0; row < DIMENSION; row++) {
             for (int col = 0; col < DIMENSION; col++) {
                 myRooms[row][col] = new RoomPanel();
 
                 //Player's current room
                 if (row == 1 && col == 1) {
-                    myRooms[row][col].drawRoom(tempRoom);
+                    myRooms[row][col].displayRoom(tempRoom);
                 }
 
                 myPanel.add(myRooms[row][col].getPanel());
@@ -37,7 +37,9 @@ public class DungeonPanel {
         }
     }
 
+    public void displayVisionRooms(final Room theRoom) {
 
+    }
 
 
     public JPanel getPanel() {
