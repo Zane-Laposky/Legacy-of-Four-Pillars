@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 /**
  * Hero is an abstract subclass of DungeonCharacter that represents
  * the player-controlled character in the dungeon adventure game.
@@ -100,5 +102,18 @@ public abstract class Hero extends DungeonCharacter {
      */
     private class SpecialAbility {
 
+    }
+
+    public void addItem(final Item[] theItem) {
+        if(theItem == null || theItem.length == 0) {
+            return;
+        }
+
+        Item[] newInventory = Arrays.copyOf(myInventory, myInventory.length + theItem.length);
+
+        for(int i = 0; i < myInventory.length; i++) {
+            newInventory[myInventory.length + i] = theItem[i];
+        }
+        myInventory = newInventory;
     }
 }
