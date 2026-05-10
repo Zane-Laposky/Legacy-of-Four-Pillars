@@ -54,21 +54,17 @@ public class StatsPanel {
     private void initialPanel(final String theCharacterName) {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        JLabel myTitle = new JLabel("STATS");
+        JLabel myTitle = new JLabel(theCharacterName);
         myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
         myPanel.add(myTitle);
 
 
-        JPanel myNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myNamePanel.add(new JLabel("Name: " + theCharacterName));
-
         JPanel myHitPtPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myHitPtPanel.add(new JLabel("Hit Points: "));
+        myHitPtPanel.add(new JLabel("HP: "));
         myHitPtPanel.add(myHitPt);
         myHitPtPanel.add(new JLabel("/" + MAX_HITPOINT));
 
 
-        myPanel.add(myNamePanel);
         myPanel.add(myHitPtPanel);
     }
 

@@ -7,6 +7,8 @@ public class GameView {
     JFrame myFrame;
     private String myHeroName;
     private String myHeroType;
+    private JSplitPane myMainPanel;
+    private JSplitPane myBottomPanel;
 
     public GameView() {
 
@@ -14,7 +16,7 @@ public class GameView {
         myFrame = new JFrame("Legacy of Four Pillars");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.setSize(500, 600);
-        myFrame.setMinimumSize(new Dimension(300, 400));
+        myFrame.setMinimumSize(new Dimension(400, 600));
         myFrame.setResizable(true);
 
         gameTypePrompt();
@@ -24,6 +26,8 @@ public class GameView {
 
         // must be last to make everything visible
         myFrame.setVisible(true);
+        myMainPanel.setDividerLocation(0.75);
+        myBottomPanel.setDividerLocation(0.4);
     }
 
     //GUI initial component
@@ -31,8 +35,9 @@ public class GameView {
         JPanel myGamePanel = new DungeonPanel().getPanel();
         JPanel statsPanel = new StatsPanel(myHeroName).getPanel();
         JPanel inventoryPanel = new InventoryPanel().getPanel();
+        JPanel controlPanel = new ControlPanel().getPanel();
 
-        JSplitPane myMainPanel = getJSplitPane(statsPanel, inventoryPanel, myGamePanel);
+        splitLayout(statsPanel, inventoryPanel, myGamePanel, controlPanel);
 
         myFrame.add(myMainPanel,  BorderLayout.CENTER);
         myFrame.setJMenuBar(new GameMenuBar().getMenuBar());
@@ -40,20 +45,26 @@ public class GameView {
     }
 
     //split the window so 3/4 is gamePanel and bottom split between stats and inventory
-    private JSplitPane getJSplitPane(final JPanel statsPanel, final JPanel inventoryPanel, final JPanel myGamePanel) {
-        JSplitPane myBottomPanel = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT, statsPanel, inventoryPanel);
+    private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
+                             final JPanel myGamePanel, final JPanel controlPanel) {
+        JSplitPane myLeftBottomPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT, statsPanel, inventoryPanel);
+        myLeftBottomPanel.setDividerSize(1);
+        myLeftBottomPanel.setResizeWeight(0.3);
+        myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
+        myLeftBottomPanel.setEnabled(false);
+
+        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, controlPanel);
         myBottomPanel.setDividerSize(1);
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
 
-        JSplitPane myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         myMainPanel.setTopComponent(myGamePanel);
         myMainPanel.setBottomComponent(myBottomPanel);
         myMainPanel.setDividerSize(1);
-        myMainPanel.setResizeWeight(0.9);
+        myMainPanel.setResizeWeight(0.95);
         myMainPanel.setEnabled(false);
-        return myMainPanel;
     }
 
 
