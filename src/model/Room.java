@@ -3,41 +3,106 @@ package model;
 import java.util.Arrays;
 
 /**
- * Represents a single room in the dungeon grid.
- * A room may contain items, monsters, and connections to adjacent rooms.
- * It also manages entrance/exit restrictions and player movement.
+ * Represents a single room within the dungeon.
+ *
+ * A room may contain items, monsters, and references to
+ * adjacent rooms in the four cardinal directions. Rooms
+ * may also be designated as entrance or exit rooms and
+ * track whether they have been previously visited.
  *
  * @author Zane Laposky
- * @version 1.1
+ * @version 1.2
  */
 public class Room {
 
+    /**
+     * Items currently contained in this room.
+     */
     private Item[] myItems;
+
+    /**
+     * True if this room is the dungeon entrance.
+     */
     private boolean myIsEntrance;
+
+    /**
+     * True if this room is the dungeon exit.
+     */
     private boolean myIsExit;
+
+    /**
+     * Pillar contained in this room, if present.
+     */
     private Pillar myPillar;
 
+    /**
+     * Adjacent room located north of this room.
+     */
     private Room myNorthRoom;
+
+    /**
+     * Adjacent room located south of this room.
+     */
     private Room mySouthRoom;
+
+    /**
+     * Adjacent room located west of this room.
+     */
     private Room myWestRoom;
+
+    /**
+     * Adjacent room located east of this room.
+     */
     private Room myEastRoom;
 
+    /**
+     * Monsters currently contained in this room.
+     */
     private Monster[] myMonsters;
 
+    /**
+     * Items required to enter this room.
+     */
     private Item[] myEntranceRequirements;
+
+    /**
+     * True if this room has previously been visited.
+     */
     private boolean myHasVisitedBefore;
 
+    /**
+     * X-coordinate of this room within the dungeon.
+     */
     private int myX;
+
+    /**
+     * Y-coordinate of this room within the dungeon.
+     */
     private int myY;
 
     /**
-     * Constructs a Room with optional entrance requirements.
+     * Coordinate pair representing this room location.
+     */
+    private int[] myCords;
+
+    /**
+     * Distance from the dungeon entrance.
+     */
+    private int myDepth;
+
+    /**
+     * Constructs a room with optional entrance requirements.
      *
-     * @param theEntranceRequirements items required to enter this room
+     * The room is initialized with no items, no monsters,
+     * no adjacent rooms, and default coordinate values.
+     *
+     * @param theEntranceRequirements items required to enter the room
      */
     public Room(final Item[] theEntranceRequirements) {
+
         myItems = new Item[0];
         myMonsters = new Monster[0];
+        myDepth = 0;
 
         myIsEntrance = false;
         myIsExit = false;
@@ -56,10 +121,12 @@ public class Room {
     }
 
     /**
-     * Attempts to enter this room with the given hero.
-     * Checks entrance requirements before allowing entry.
+     * Attempts to enter this room with the specified hero.
      *
-     * @param theHero hero attempting to enter
+     * The hero must possess all required entrance items
+     * before entering the room successfully.
+     *
+     * @param theHero the hero attempting to enter the room
      */
     public void enter(final Hero theHero) {
 
@@ -70,6 +137,7 @@ public class Room {
                 boolean found = false;
 
                 for (Item heroItem : theHero.getMyInventory()) {
+
                     if (heroItem == requiredItem) {
                         found = true;
                         break;
@@ -77,7 +145,12 @@ public class Room {
                 }
 
                 if (!found) {
-                    System.out.println("Missing required item: " + requiredItem);
+
+                    System.out.println(
+                            "Missing required item: "
+                                    + requiredItem
+                    );
+
                     return;
                 }
             }
@@ -90,43 +163,69 @@ public class Room {
     }
 
     /**
-     * Attempts to move the hero through a directional door.
+     * Attempts to move the hero through a doorway
+     * in the specified direction.
      *
-     * @param theHero hero moving
-     * @param theDirection direction (North, South, East, West)
+     * @param theHero the hero attempting movement
+     * @param theDirection the movement direction
      */
-    public void tryDoor(final Hero theHero, final String theDirection) {
+    public void tryDoor(final Hero theHero,
+                        final String theDirection) {
 
-        if (theDirection.equals("North") && myNorthRoom != null) {
+        if (theDirection.equals("North")
+                && myNorthRoom != null) {
+
             myNorthRoom.enter(theHero);
-        } else if (theDirection.equals("South") && mySouthRoom != null) {
+
+        } else if (theDirection.equals("South")
+                && mySouthRoom != null) {
+
             mySouthRoom.enter(theHero);
-        } else if (theDirection.equals("West") && myWestRoom != null) {
+
+        } else if (theDirection.equals("West")
+                && myWestRoom != null) {
+
             myWestRoom.enter(theHero);
-        } else if (theDirection.equals("East") && myEastRoom != null) {
+
+        } else if (theDirection.equals("East")
+                && myEastRoom != null) {
+
             myEastRoom.enter(theHero);
+
         } else {
-            System.out.println("There is no room in that direction");
+
+            System.out.println(
+                    "There is no room in that direction"
+            );
         }
     }
 
     /**
-     * Removes items whose name matches the given string.
+     * Removes all items whose names contain the specified text.
      *
-     * @param theItemName name fragment to remove
+     * @param theItemName the item name fragment to remove
      */
     public void removeItems(final String theItemName) {
 
         myItems = Arrays.stream(myItems)
-                .filter(theItem -> !theItem.toString().toLowerCase().contains(theItemName.toLowerCase()))
+                .filter(theItem ->
+                        !theItem.toString()
+                                .toLowerCase()
+                                .contains(
+                                        theItemName.toLowerCase()
+                                )
+                )
                 .toArray(Item[]::new);
     }
 
     /**
-     * Returns a formatted string representation of the room,
-     * including walls, doors, and item indicators.
+     * Returns a formatted string representation of this room.
      *
-     * @return formatted room string
+     * The returned string contains wall, doorway,
+     * entrance, exit, and item indicators used when
+     * rendering the dungeon map.
+     *
+     * @return the formatted room display string
      */
     @Override
     public String toString() {
@@ -134,55 +233,86 @@ public class Room {
         final StringBuilder sb = new StringBuilder();
 
         if (myNorthRoom != null) {
+
             sb.append("*-*");
+
         } else {
+
             sb.append("***");
         }
 
         sb.append("%%");
 
         if (myWestRoom != null) {
+
             sb.append("|");
+
         } else {
+
             sb.append("*");
         }
 
-        if (myItems.length > 0) {
+        if (myIsEntrance) {
+
+            sb.append("i");
+
+        } else if (myIsExit) {
+
+            sb.append("O");
+
+        } else if (myItems != null
+                && myItems.length > 0) {
 
             Item theItem = myItems[0];
 
             if (myItems.length > 1) {
+
                 sb.append("M");
+
             } else if (theItem instanceof VisionPotion) {
+
                 sb.append("V");
+
             } else if (theItem instanceof HealingPotion) {
+
                 sb.append("H");
+
             } else if (theItem instanceof Pillar) {
-                String[] parts = theItem.getMyName().split(" ");
-                sb.append(parts[parts.length - 1].charAt(0));
+
+                String[] parts =
+                        theItem.getMyName().split(" ");
+
+                sb.append(
+                        parts[parts.length - 1].charAt(0)
+                );
+
             } else {
+
                 sb.append(" ");
             }
 
-        } else if (myIsExit) {
-            sb.append("O");
-        } else if (myIsEntrance) {
-            sb.append("i");
         } else {
+
             sb.append(" ");
         }
 
         if (myEastRoom != null) {
+
             sb.append("|");
+
         } else {
+
             sb.append("*");
         }
 
         sb.append("%%");
 
         if (mySouthRoom != null) {
+
             sb.append("*-*");
+
         } else {
+
             sb.append("***");
         }
 
@@ -190,185 +320,266 @@ public class Room {
     }
 
     /**
-     * Adds an item to the room.
+     * Adds an item to this room.
      *
-     * @param theItem item to add
+     * @param theItem the item to add
      */
     public void addItem(final Item theItem) {
-        myItems = Arrays.copyOf(myItems, myItems.length + 1);
+
+        myItems = Arrays.copyOf(
+                myItems,
+                myItems.length + 1
+        );
+
         myItems[myItems.length - 1] = theItem;
     }
 
     /**
-     * @return items in the room
+     * Returns all items currently contained in this room.
+     *
+     * @return the room item array
      */
     public Item[] getItems() {
         return myItems;
     }
 
     /**
-     * @return true if this is the entrance room
+     * Returns whether this room is the dungeon entrance.
+     *
+     * @return true if this room is the entrance
      */
     public boolean getIsEntrance() {
         return myIsEntrance;
     }
 
     /**
-     * @return true if this is the exit room
+     * Returns whether this room is the dungeon exit.
+     *
+     * @return true if this room is the exit
      */
     public boolean getIsExit() {
         return myIsExit;
     }
 
     /**
-     * @return true if the room has been visited
+     * Returns whether this room has previously been visited.
+     *
+     * @return true if the room has been visited before
      */
     public boolean getHasVisitedBefore() {
         return myHasVisitedBefore;
     }
 
     /**
-     * @return north adjacent room
+     * Returns the room north of this room.
+     *
+     * @return the north adjacent room
      */
     public Room getNorthRoom() {
         return myNorthRoom;
     }
 
     /**
-     * @return south adjacent room
+     * Returns the room south of this room.
+     *
+     * @return the south adjacent room
      */
     public Room getSouthRoom() {
         return mySouthRoom;
     }
 
     /**
-     * @return west adjacent room
+     * Returns the room west of this room.
+     *
+     * @return the west adjacent room
      */
     public Room getWestRoom() {
         return myWestRoom;
     }
 
     /**
-     * @return east adjacent room
+     * Returns the room east of this room.
+     *
+     * @return the east adjacent room
      */
     public Room getEastRoom() {
         return myEastRoom;
     }
 
     /**
-     * Sets whether this is the entrance room.
+     * Sets whether this room is the dungeon entrance.
      *
-     * @param theIsEntrance entrance flag
+     * @param theIsEntrance true if this room is the entrance
      */
     public void setIsEntrance(final boolean theIsEntrance) {
         myIsEntrance = theIsEntrance;
     }
 
     /**
-     * Sets whether this is the exit room.
+     * Sets whether this room is the dungeon exit.
      *
-     * @param theIsExit exit flag
+     * @param theIsExit true if this room is the exit
      */
     public void setIsExit(final boolean theIsExit) {
         myIsExit = theIsExit;
     }
 
     /**
-     * Sets the north room reference.
+     * Sets the north adjacent room reference.
      *
-     * @param theRoom north room
+     * @param theRoom the north room
      */
     public void setNorthRoom(final Room theRoom) {
         myNorthRoom = theRoom;
     }
 
     /**
-     * Sets the south room reference.
+     * Sets the south adjacent room reference.
      *
-     * @param theRoom south room
+     * @param theRoom the south room
      */
     public void setSouthRoom(final Room theRoom) {
         mySouthRoom = theRoom;
     }
 
     /**
-     * Sets the west room reference.
+     * Sets the west adjacent room reference.
      *
-     * @param theRoom west room
+     * @param theRoom the west room
      */
     public void setWestRoom(final Room theRoom) {
         myWestRoom = theRoom;
     }
 
     /**
-     * Sets the east room reference.
+     * Sets the east adjacent room reference.
      *
-     * @param theRoom east room
+     * @param theRoom the east room
      */
     public void setEastRoom(final Room theRoom) {
         myEastRoom = theRoom;
     }
 
     /**
-     * Sets whether the room has been visited.
+     * Sets whether this room has been visited previously.
      *
-     * @param theHasVisitedBefore visited flag
+     * @param theHasVisitedBefore the visited state
      */
-    public void setHasVisitedBefore(final boolean theHasVisitedBefore) {
+    public void setHasVisitedBefore(
+            final boolean theHasVisitedBefore) {
+
         myHasVisitedBefore = theHasVisitedBefore;
     }
 
     /**
-     * @return x-coordinate in dungeon grid
+     * Returns the x-coordinate of this room.
+     *
+     * @return the room x-coordinate
      */
     public int getX() {
         return myX;
     }
 
     /**
-     * @return y-coordinate in dungeon grid
+     * Returns the y-coordinate of this room.
+     *
+     * @return the room y-coordinate
      */
     public int getY() {
         return myY;
     }
 
     /**
-     * Sets x-coordinate.
+     * Sets the x-coordinate of this room.
      *
-     * @param theX x position
+     * @param theX the x-coordinate
      */
     public void setX(final int theX) {
         myX = theX;
     }
 
     /**
-     * Sets y-coordinate.
+     * Sets the y-coordinate of this room.
      *
-     * @param theY y position
+     * @param theY the y-coordinate
      */
     public void setY(final int theY) {
         myY = theY;
     }
+
     /**
      * Returns all monsters currently contained in this room.
      *
-     * The returned array may be empty if the room contains no monsters.
-     *
-     * @return an array of monsters in the room
+     * @return the monster array
      */
     public Monster[] getMonsters() {
         return myMonsters;
     }
 
     /**
+     * Sets the coordinate position of this room.
+     *
+     * @param theX the x-coordinate
+     * @param theY the y-coordinate
+     */
+    public void setCords(final int theX,
+                         final int theY) {
+
+        myX = theX;
+        myY = theY;
+
+        myCords = new int[]{myX, myY};
+    }
+
+    /**
+     * Returns the coordinate pair of this room.
+     *
+     * @return the room coordinate array
+     */
+    public int[] getCords() {
+        return myCords;
+    }
+
+    /**
      * Adds a monster to this room.
      *
-     * The monster is appended to the end of the room's monster array.
-     *
-     * @param theMonster the monster to add to the room
+     * @param theMonster the monster to add
      */
     public void addMonster(final Monster theMonster) {
-        myMonsters = Arrays.copyOf(myMonsters, myMonsters.length + 1);
-        myMonsters[myMonsters.length - 1] = theMonster;
+
+        myMonsters = Arrays.copyOf(
+                myMonsters,
+                myMonsters.length + 1
+        );
+
+        myMonsters[myMonsters.length - 1] =
+                theMonster;
+    }
+
+    /**
+     * Removes all items and monsters from this room.
+     */
+    public void clearRoom() {
+
+        myMonsters = new Monster[0];
+        myItems = new Item[0];
+    }
+
+    /**
+     * Sets the depth of this room from the dungeon entrance.
+     *
+     * @param theDepth the room depth
+     */
+    public void setDepth(final int theDepth) {
+        myDepth = theDepth;
+    }
+
+    /**
+     * Returns the depth of this room from the entrance.
+     *
+     * @return the room depth
+     */
+    public int getDepth() {
+        return myDepth;
     }
 }
