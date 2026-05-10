@@ -21,7 +21,7 @@ public class Warrior extends Hero {
      */
     public Warrior(final String theName) {
         super(theName, 125, 35, 60, 4, 0.8);
-        setMyChanceToBlock(0.2D);
+        setMyChanceToBlock(0.2);
     }
 
     /**

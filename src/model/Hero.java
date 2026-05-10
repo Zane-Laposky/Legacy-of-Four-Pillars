@@ -10,7 +10,7 @@ import java.util.Arrays;
  * maintaining an inventory, tracking their current room,
  * and potentially using special abilities.
  *
- * @author YOUR_NAME_HERE
+ * @author Zane Laposky
  * @version 1.0
  */
 public abstract class Hero extends DungeonCharacter {
@@ -103,7 +103,6 @@ public abstract class Hero extends DungeonCharacter {
     private class SpecialAbility {
 
     }
-
 
     public void addItem(final Item[] theItem) {
         if(theItem == null || theItem.length == 0) {

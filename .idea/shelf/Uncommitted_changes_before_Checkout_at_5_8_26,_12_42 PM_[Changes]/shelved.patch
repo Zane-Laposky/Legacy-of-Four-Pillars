@@ -1,0 +1,38 @@
+Index: src/view/StatsPanel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\n * The Stats Panel\n * Spring 2026\n */\npackage view;\n\nimport javax.swing.*;\nimport java.awt.*;\n\n/**\n * This class represents the stats panel in the game. This class displays\n * the character name and hit points.\n *\n * @author Emily Hernandez\n * @version 1.0, Spring 2026\n */\npublic class StatsPanel {\n\n    /**\n     * Maximum hit point character can take.\n     */\n    private static final int MAX_HITPOINT = 100; // NEED UPDATE\n\n    /**\n     * The stats panel for the game\n     */\n    private final JPanel myPanel;\n\n    /**\n     * The count of available hit points\n     */\n    private final JLabel myHitPt;\n\n\n    /**\n     * Constructs a StatsPanel object and initializes all components.\n     *\n     * @param theCharacterName the character's name\n     */\n    //NEED UPDATE FROM CONTROLLER ON THE INITIAL VALUE\n    public StatsPanel(final String theCharacterName/*, final int theHitPoint*/) {\n        myPanel = new JPanel();\n        myHitPt = new JLabel(String.valueOf(MAX_HITPOINT)); // NEED UPDATE FROM CONTROLLER\n        initialPanel(theCharacterName);\n    }\n\n\n    /**\n     * Initializes the StatsPanel and other components such as myNamePanel\n     * and myHitPt panel.\n     *\n     * @param theCharacterName the character's name\n     */\n    private void initialPanel(final String theCharacterName) {\n        myPanel.setBackground(Color.WHITE);\n        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));\n        JLabel myTitle = new JLabel(\"STATS\");\n        myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));\n        myPanel.add(myTitle);\n\n\n        JPanel myNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        myNamePanel.add(new JLabel(\"Name: \" + theCharacterName));\n\n        JPanel myHitPtPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        myHitPtPanel.add(new JLabel(\"Hit Points: \"));\n        myHitPtPanel.add(myHitPt);\n        myHitPtPanel.add(new JLabel(\"/\" + MAX_HITPOINT));\n\n\n        myPanel.add(myNamePanel);\n        myPanel.add(myHitPtPanel);\n    }\n\n\n    /**\n     * Return the Stats Panel\n     *\n     * @return the Stats Panel\n     */\n    public JPanel getPanel() {\n        return myPanel;\n    }\n\n\n    /**\n     * Update the available hit point during the game.\n     *\n     * @param theHitPoint available hit point\n     */\n    //NEED CONTROLLER TO PASS THE UPDATE\n    private void updateHitPoint(final int theHitPoint) {\n        myHitPt.setText(String.valueOf(theHitPoint));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/view/StatsPanel.java b/src/view/StatsPanel.java
+--- a/src/view/StatsPanel.java	(revision fbb09de72ef288c81229f88e840b29d10733fd74)
++++ b/src/view/StatsPanel.java	(date 1778185464330)
+@@ -89,7 +89,7 @@
+      * @param theHitPoint available hit point
+      */
+     //NEED CONTROLLER TO PASS THE UPDATE
+-    private void updateHitPoint(final int theHitPoint) {
++    public void updateHitPoint(final int theHitPoint) {
+         myHitPt.setText(String.valueOf(theHitPoint));
+     }
+ }
+Index: src/view/InventoryPanel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\n * Inventory Panel\n * Spring 2026\n */\npackage view;\n\nimport javax.swing.*;\nimport java.awt.*;\n\n/**\n * This class represents the inventory panel in the game. It displays\n * the player's collection of healing points, vision points, and pillars.\n *\n * @author Emily Hernandez\n * version 1.0, Spring 2026\n */\npublic class InventoryPanel {\n\n    /**\n     * Initial value for all inventory counts.\n     */\n    private static final int INITIAL_POINT = 0;\n\n    /**\n     * Inventory panel for the game\n     */\n    private final JPanel myPanel;\n\n    /**\n     * Available Healing points label\n     */\n    private final JLabel myHP;\n\n    /**\n     * Available Vision points label\n     */\n    private final JLabel myVP;\n\n    /**\n     * Amount of collected pillars\n     */\n    private final JLabel myPillar;\n\n\n    /**\n     * Constructs an InventoryPanel object and initialize items count.\n     */\n    public InventoryPanel() {\n        myPanel = new JPanel();\n\n        myHP = new JLabel(String.valueOf(INITIAL_POINT));\n        myVP = new JLabel(String.valueOf(INITIAL_POINT));\n        myPillar = new JLabel(String.valueOf(INITIAL_POINT));\n\n        initialPanel();\n    }\n\n\n    /**\n     * Initializes the Inventory panel and other components such as panels for\n     * healing points, vision points and pillars.\n     */\n    private void initialPanel() {\n        myPanel.setBackground(Color.WHITE);\n        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));\n        JLabel myTitle = new JLabel(\"INVENTORY\");\n        myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));\n        myPanel.add(myTitle);\n\n        JPanel myHPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        myHPPanel.add(new JLabel(\"Healing Point: \"));\n        myHPPanel.add(myHP);\n\n        JPanel myVPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        myVPPanel.add(new JLabel(\"Vision Potion: \"));\n        myVPPanel.add(myVP);\n\n        JPanel myPillarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        myPillarPanel.add(new JLabel(\"Pillar: \"));\n        myPillarPanel.add(myPillar);\n\n        myPanel.add(myHPPanel);\n        myPanel.add(myVPPanel);\n        myPanel.add(myPillarPanel);\n    }\n\n    /**\n     * Return the inventory panel\n     *\n     * @return the inventory panel\n     */\n    public JPanel getPanel() {\n        return myPanel;\n    }\n\n\n    /**\n     * Update any chances in inventory count as the game play\n     *\n     * @param theHP the healing point\n     * @param theVP the vision point\n     * @param thePillar the count of collected pillar\n     */\n    //NEED CONTROLLER TO PASS THE UPDATE\n    private void updateInventory(int theHP, int theVP, int thePillar) {\n        myHP.setText(String.valueOf(theHP));\n        myVP.setText(String.valueOf(theVP));\n        myPillar.setText(String.valueOf(thePillar));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/view/InventoryPanel.java b/src/view/InventoryPanel.java
+--- a/src/view/InventoryPanel.java	(revision fbb09de72ef288c81229f88e840b29d10733fd74)
++++ b/src/view/InventoryPanel.java	(date 1778183443709)
+@@ -102,7 +102,7 @@
+      * @param thePillar the count of collected pillar
+      */
+     //NEED CONTROLLER TO PASS THE UPDATE
+-    private void updateInventory(int theHP, int theVP, int thePillar) {
++    public void updateInventory(int theHP, int theVP, int thePillar) {
+         myHP.setText(String.valueOf(theHP));
+         myVP.setText(String.valueOf(theVP));
+         myPillar.setText(String.valueOf(thePillar));

@@ -65,6 +65,7 @@ public class GameMenuBar {
         //STILL NEED ACTION
         //need to controller to tell what it does
         newGame.addActionListener(_ -> {
+
         });
         loadGame.addActionListener(_ -> {
         });
@@ -88,7 +89,7 @@ public class GameMenuBar {
      * @return the view menu
      */
     private JMenu viewMenuBar() {
-        JMenu viewMenu = new JMenu("view");
+        JMenu viewMenu = new JMenu("View");
 
         //menu item in view
         JMenuItem inventoryView = new JMenuItem("Inventory");
