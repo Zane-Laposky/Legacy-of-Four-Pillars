@@ -15,7 +15,7 @@ import model.Room;
  * @author Devin Riel
  * @version 1.0
  */
-public class PlayerWrapper {
+public class PlayerControllerWrapper {
     /**
      * The hero controlled by the player.
      */
