@@ -63,12 +63,12 @@ public class InventoryPanel {
     private void initialPanel() {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        JLabel myTitle = new JLabel("INVENTORY");
-        myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
-        myPanel.add(myTitle);
+        //JLabel myTitle = new JLabel("INVENTORY");
+        //myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
+        //myPanel.add(myTitle);
 
         JPanel myHPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myHPPanel.add(new JLabel("Healing Point: "));
+        myHPPanel.add(new JLabel("Healing Potion: "));
         myHPPanel.add(myHP);
 
         JPanel myVPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -78,10 +78,13 @@ public class InventoryPanel {
         JPanel myPillarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         myPillarPanel.add(new JLabel("Pillar: "));
         myPillarPanel.add(myPillar);
+        myPillarPanel.add(new JLabel("/ 4"));
 
         myPanel.add(myHPPanel);
         myPanel.add(myVPPanel);
         myPanel.add(myPillarPanel);
+
+        myPanel.setMinimumSize(myPanel.getPreferredSize());
     }
 
     /**
@@ -97,8 +100,8 @@ public class InventoryPanel {
     /**
      * Update any chances in inventory count as the game play
      *
-     * @param theHP the healing point
-     * @param theVP the vision point
+     * @param theHP     the healing point
+     * @param theVP     the vision point
      * @param thePillar the count of collected pillar
      */
     //NEED CONTROLLER TO PASS THE UPDATE

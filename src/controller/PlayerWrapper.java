@@ -1,158 +1,97 @@
-package controller;
-
+package Controller;
 import model.Hero;
-import model.Priestess;
-import model.Thief;
-import model.Warrior;
+import model.Item;
+import model.Room;
+
 
 /**
- * Simple data object used for saving and loading a player's hero.
+ * PlayerWrapper is a helper class for the first version of the game.
  *
- * I used this instead of saving the whole Hero object directly because
- * the database only needs simple values like name, class, HP, and room position.
+ * This class wraps around the Hero object so the controller can access
+ * important hero information without directly handling every model detail.
+ * It helps the controller get the hero, check hit points, add items to the
+ * inventory, and check the hero's current room.
+ *
+ * @author Devin Riel
+ * @version 1.0
  */
 public class PlayerWrapper {
+    /**
+     * The hero controlled by the player.
+     */
+    private Hero myHero;
 
-    private final String myPlayerName;
-    private final String myHeroType;
-    private final int myHitPoints;
-    private final int myMinDamage;
-    private final int myMaxDamage;
-    private final int myAttackSpeed;
-    private final double myChanceToHit;
-    private final double myChanceToBlock;
-    private final int myRoomX;
-    private final int myRoomY;
-
-    public PlayerWrapper(final String thePlayerName,
-                         final String theHeroType,
-                         final int theHitPoints,
-                         final int theMinDamage,
-                         final int theMaxDamage,
-                         final int theAttackSpeed,
-                         final double theChanceToHit,
-                         final double theChanceToBlock,
-                         final int theRoomX,
-                         final int theRoomY) {
-
-        myPlayerName = thePlayerName;
-        myHeroType = theHeroType;
-        myHitPoints = theHitPoints;
-        myMinDamage = theMinDamage;
-        myMaxDamage = theMaxDamage;
-        myAttackSpeed = theAttackSpeed;
-        myChanceToHit = theChanceToHit;
-        myChanceToBlock = theChanceToBlock;
-        myRoomX = theRoomX;
-        myRoomY = theRoomY;
+    /**
+     * Creates a PlayerWrapper for the given hero.
+     *
+     * @param theHero the hero controlled by the player
+     */
+    public PlayerWrapper(Hero theHero) {
+        this.myHero = theHero;
     }
 
     /**
-     * Converts a Hero object into a simple save object.
+     * Gets the hero stored inside this wrapper.
      *
-     * @param theHero hero to save
-     * @return wrapped hero data
+     * @return the hero controlled by the player
      */
-    public static PlayerWrapper fromHero(final Hero theHero) {
-        int roomX = -1;
-        int roomY = -1;
-
-        if (theHero.getCurrentRoom() != null) {
-            roomX = theHero.getCurrentRoom().getX();
-            roomY = theHero.getCurrentRoom().getY();
-        }
-
-        return new PlayerWrapper(
-                theHero.getMyName(),
-                theHero.getClass().getSimpleName(),
-                theHero.getMyHitPoints(),
-                theHero.getMyMinDamage(),
-                theHero.getMyMaxDamage(),
-                theHero.getMyAttackSpeed(),
-                theHero.getMyChanceToHit(),
-                theHero.getMyChanceToBlock(),
-                roomX,
-                roomY
-        );
+    public Hero getMyHero() {
+        return myHero;
     }
 
     /**
-     * Rebuilds a Hero object from the saved data.
+     * Sets the hero stored inside this wrapper.
      *
-     * Room objects are not rebuilt here yet. For now, only the saved
-     * room coordinates are stored so the controller can use them later.
-     *
-     * @return restored Hero
+     * @param theHero the new hero to store
      */
-    public Hero toHero() {
-        Hero hero;
+    public void setMyHero(Hero theHero) {
+        this.myHero = theHero;
+    }
 
-        if ("Priestess".equalsIgnoreCase(myHeroType)) {
-            hero = new Priestess(myPlayerName);
-        } else if ("Thief".equalsIgnoreCase(myHeroType)) {
-            hero = new Thief(myPlayerName);
-        } else {
-            hero = new Warrior(myPlayerName);
+    /**
+     * Gets the hero's current hit points.
+     *
+     * @return the hero's current hit points
+     */
+    public int getHeroHitPoints() {
+        return myHero.getMyHitPoints();
+    }
+
+    /**
+     * Adds an item array to the hero's inventory.
+     *
+     * The Hero class currently expects an Item array, so this method passes
+     * the array directly into the hero's addItem method.
+     *
+     * @param theItem the item array being added to the hero's inventory
+     */
+    public void addItemtoInventory(Item theItem []) {
+        myHero.addItem(theItem);
+    }
+
+    /**
+     * Gets the room the hero is currently inside.
+     *
+     * @return the hero's current room
+     */
+    public Room getCurrentRoom() {
+        return myHero.getCurrentRoom();
+    }
+
+
+    /**
+     * Checks whether the hero's current room has monsters.
+     *
+     * This only checks whether the monster array exists.
+     * It does not check whether the monsters are alive.
+     *
+     * @return true if the current room has a monster array, false otherwise
+     */
+    public boolean currentRoomHasMonster() {
+        if (myHero.getCurrentRoom().getMonsters() != null) {
+            return true;
+        } else  {
+            return false;
         }
-
-        hero.setMyHitPoints(myHitPoints);
-        hero.setMyMinDamage(myMinDamage);
-        hero.setMyMaxDamage(myMaxDamage);
-        hero.setMyAttackSpeed(myAttackSpeed);
-        hero.setMyChanceToHit(myChanceToHit);
-        hero.setMyChanceToBlock(myChanceToBlock);
-
-        return hero;
-    }
-
-    public String getPlayerName() {
-        return myPlayerName;
-    }
-
-    public String getHeroType() {
-        return myHeroType;
-    }
-
-    public int getHitPoints() {
-        return myHitPoints;
-    }
-
-    public int getMinDamage() {
-        return myMinDamage;
-    }
-
-    public int getMaxDamage() {
-        return myMaxDamage;
-    }
-
-    public int getAttackSpeed() {
-        return myAttackSpeed;
-    }
-
-    public double getChanceToHit() {
-        return myChanceToHit;
-    }
-
-    public double getChanceToBlock() {
-        return myChanceToBlock;
-    }
-
-    public int getRoomX() {
-        return myRoomX;
-    }
-
-    public int getRoomY() {
-        return myRoomY;
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerWrapper{" +
-                "name='" + myPlayerName + '\'' +
-                ", heroType='" + myHeroType + '\'' +
-                ", hp=" + myHitPoints +
-                ", roomX=" + myRoomX +
-                ", roomY=" + myRoomY +
-                '}';
     }
 }
