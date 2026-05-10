@@ -65,6 +65,7 @@ public class GameMenuBar {
         //STILL NEED ACTION
         //need to controller to tell what it does
         newGame.addActionListener(_ -> {
+
         });
         loadGame.addActionListener(_ -> {
         });

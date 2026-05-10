@@ -29,7 +29,7 @@ public class DungeonPanel {
 
                 //Player's current room
                 if (row == 1 && col == 1) {
-                    myRooms[row][col].drawCurrentRoom(tempRoom);
+                    myRooms[row][col].drawRoom(tempRoom);
                 }
 
                 myPanel.add(myRooms[row][col].getPanel());
