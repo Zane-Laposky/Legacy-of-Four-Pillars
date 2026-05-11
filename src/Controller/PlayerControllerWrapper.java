@@ -1,4 +1,4 @@
-package Controller;
+package mainController;
 import model.Hero;
 import model.Item;
 import model.Room;
