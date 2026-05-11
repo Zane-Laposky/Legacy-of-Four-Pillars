@@ -3,6 +3,9 @@ package mainController;
 import model.*;
 import view.GameView;
 import view.StatsPanel;
+import view.DungeonPanel;
+import view.InventoryPanel;
+
 
 /**
  * GameController is responsible for starting the first version of the game.
@@ -38,6 +41,8 @@ public class GameController {
      * The main game view that displays the game window.
      */
     private GameView myGameView;
+
+    private PlayerControllerWrapper myPlayerWrapper;
 
     /**
      * Constructs a GameController and immediately starts the game.
