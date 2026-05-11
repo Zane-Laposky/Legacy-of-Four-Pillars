@@ -69,6 +69,20 @@ public class PlayerControllerWrapper {
         myHero.addItem(theItem);
     }
 
+    public void removeItemFromInventory(Item theItem[]) {
+        Item [] Inventory = myHero.getMyInventory();
+
+        if(inventory == null || inventory.length == 0) {
+            return;
+        }
+
+        for(int i = 0; i < inventory.length; i++) {
+            if(Item[i].equals(theItem) {
+                Item[i] == null;
+            }
+        
+        }
+    }
     /**
      * Gets the room the hero is currently inside.
      *
@@ -78,6 +92,13 @@ public class PlayerControllerWrapper {
         return myHero.getCurrentRoom();
     }
 
+    public int countHealthPotions(){
+   // Use a getter to look at the view to detemine total amount of health potions.
+    }
+
+    public int countVisionPotions(){
+    //Use a getter to look at the view to determine total amount of vision potiosn
+    }
 
     /**
      * Checks whether the hero's current room has monsters.
