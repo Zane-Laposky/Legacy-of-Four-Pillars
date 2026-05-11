@@ -16,3 +16,5 @@ Features:
 Issues from Iteration 2:
 
 1. Developing complete testing suites took substantial time and figuring out the best way to run a dungeon generation so I can efficiently test different dungeons was difficult as I kept running into an issue where the dungeon would never fully complete generating during a test despite when I independently test the generation it was perfectly fine. So I had to spend a decent amount of time redesigning the Dungeon Test Suit such that it consistently worked -Zane Laposky
+
+2. My biggest issue with this iteration was trying to merge my branch to the main branch. There was a large amount of files that I had to check and choose wether to keep the code or switch it with what was already there. I spent a large amount of time going through the code and trying to figure out which was the better choice. - Devin Riel 
