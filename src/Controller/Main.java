@@ -1,4 +1,4 @@
-package Controller;
+package mainController;
 
 /**
  * Main is the starting point for the first version of the game.
