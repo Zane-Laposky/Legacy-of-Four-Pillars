@@ -1,4 +1,4 @@
-package Controller;
+package mainController;
 
 import model.*;
 import view.GameView;
