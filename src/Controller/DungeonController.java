@@ -4,6 +4,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
 
+import model.VisionPotion;
+import model.HealingPotion;
+
+
 import view.StatsPanel;
 import model.*;
 
@@ -171,7 +175,7 @@ public class DungeonController implements KeyListener {
          * This can be implemented in a later version.
          */
         if(e.getKeyCode() == KeyEvent.VK_H){
-            //HEAL
+            useHealingPotion();
         }
 
         /*
@@ -179,7 +183,7 @@ public class DungeonController implements KeyListener {
          * This can be implemented in a later version.
          */
         if(e.getKeyCode() == KeyEvent.VK_V){
-            //INCREASED VISION
+            useVisionPotion();
         }
 
     }
@@ -295,6 +299,29 @@ public class DungeonController implements KeyListener {
         }
     }
 
+    private void useHealingPotion(){
+        //check inventory
+        if(healingPotions == null || healingPotions <= 0) {
+            System.out.println("No healing potions available");
+            return;
+        }
+
+        //myHero.setMyHitPoints(myHero.getMyHitPoints() + heal();
+        //Determine where health is coming from.
+        //Remove bottle
+    }
+
+    private void useVisionPotion(){
+        if(visionPotions == null || visionPoions <= 0 {
+            System.out.println("No vision potions available");
+            return;
+        }
+        
+        //Increase vision radius
+        //remove bottle.
+    }
+
+    
     /**
      * Finds the first living monster in the current room.
      *
