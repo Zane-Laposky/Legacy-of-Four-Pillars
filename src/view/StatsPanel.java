@@ -82,10 +82,10 @@ public class StatsPanel {
     /**
      * Update the available hit point during the game.
      *
-     * @param theHitPoint available hit point
+     * @param theHP available hit point
      */
     //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateHitPoint(final int theHitPoint) {
-        myHitPt.setText(String.valueOf(theHitPoint));
+    public void updateHP(final int theHP) {
+        myHitPt.setText(String.valueOf(theHP));
     }
 }

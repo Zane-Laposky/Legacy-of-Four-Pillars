@@ -66,14 +66,18 @@ public class DungeonPanel {
     }
 
     /**
+     * Display the surrounding rooms when the vision potion is used.
      *
+     * @param theRoom the current room which player is in
      */
     public void displayVisionRooms(final Room theRoom) {
-//        for  (int row = 0; row < DIMENSION; row++) {
-//            for  (int col = 0; col < DIMENSION; col++) {
-//                if (row !=1 )
-//            }
-//        }
+        for  (int row = 0; row < DIMENSION; row++) {
+            for  (int col = 0; col < DIMENSION; col++) {
+                if (row !=1 || col !=1 ) {
+                    myRooms[row][col].displayRoom(new Room(null));
+                }
+            }
+        }
     }
 
     /**
@@ -83,5 +87,13 @@ public class DungeonPanel {
      */
     public JPanel getPanel() {
         return myPanel;
+    }
+
+    public void updateRoom(final Room theRoom) {
+        //
+    }
+
+    public void enableVisionRooms(final Room theCurrentRoom) {
+        //
     }
 }

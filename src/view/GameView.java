@@ -21,6 +21,10 @@ public class GameView {
      */
     private JFrame myFrame;
 
+    private StatsPanel myStatsPanel;
+    private InventoryPanel myInventoryPanel;
+    private DungeonPanel myDungeonPanel;
+    private ControlPanel myControlPanel;
     /**
      * Hero's name
      */
@@ -63,7 +67,6 @@ public class GameView {
         return myFrame;
     }
 
-
     /**
      * Return the player's input hero's name
      *
@@ -99,12 +102,13 @@ public class GameView {
      * Create all the game panels and adds them to the window.
      */
     private void initGuiComponent() {
-        JPanel myGamePanel = new DungeonPanel().getPanel();
-        JPanel statsPanel = new StatsPanel(myHeroName).getPanel();
-        JPanel inventoryPanel = new InventoryPanel().getPanel();
-        JPanel controlPanel = new ControlPanel().getPanel();
+        myDungeonPanel = new DungeonPanel();
+        myStatsPanel = new StatsPanel(myHeroName);
+        myInventoryPanel = new InventoryPanel();
+        myControlPanel = new ControlPanel();
 
-        splitLayout(statsPanel, inventoryPanel, myGamePanel, controlPanel);
+        splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
+                myControlPanel.getPanel());
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
         myFrame.setJMenuBar(new GameMenuBar().getMenuBar());
@@ -213,5 +217,22 @@ public class GameView {
         } else {
             System.exit(0);
         }
+    }
+
+    public void updateHP(final int theHP) {
+        myStatsPanel.updateHP(theHP);
+    }
+
+    public void updateInventory(final int theHealingPotion, final int theVisionPotion,
+                                final int thePillars) {
+        myInventoryPanel.updateInventory(theHealingPotion, theVisionPotion, thePillars);
+    }
+
+    public void updateRoom(final Room theRoom) {
+        myDungeonPanel.displayCurrentRoom(theRoom);
+    }
+
+    public void enableVisionRooms(final Room theCurrentRoom) {
+        myDungeonPanel.enableVisionRooms(theCurrentRoom);
     }
 }
