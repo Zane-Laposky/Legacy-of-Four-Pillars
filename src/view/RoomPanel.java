@@ -45,7 +45,7 @@ public class RoomPanel {
 
 
     /**
-     * Initializes the room panel by setting background, layout, and alignment
+     * Sets up a 3x3 grid of labels to display a room's characters. 
      */
     private void initPanel() {
         myOneRoomPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
@@ -76,7 +76,8 @@ public class RoomPanel {
 
 
     /**
-     * Draw the requested room layout on the panel.
+     * Draw a single room by converting the room's string representation into a 3x3
+     * grid of characters displayed on the panel.
      *
      * @param theRoom the requested room.
      */
