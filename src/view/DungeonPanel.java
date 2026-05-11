@@ -1,3 +1,7 @@
+/*
+ * Dungeon Panel
+ * Spring 2026
+ */
 package view;
 
 import model.Room;
@@ -5,17 +9,41 @@ import model.Room;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * DungeonPanel displays the dungeon grid and visible rooms for the player.
+ *
+ * @author Emily Hernandez
+ * @version Spring 2026
+ */
 public class DungeonPanel {
+
+    /**
+     * Dimension of the player's view for the game
+     */
     private static final int DIMENSION = 3;
+
+    /**
+     * Dungeon Panel
+     */
     private final JPanel myPanel;
+
+    /**
+     * 2D array grid of room panel for dungeon display
+     */
     private final RoomPanel[][] myRooms;
 
+    /**
+     * Constructs and initializes panels
+     */
     public DungeonPanel() {
         myPanel = new JPanel();
-        myRooms = new RoomPanel [DIMENSION][DIMENSION];
+        myRooms = new RoomPanel[DIMENSION][DIMENSION];
         initPanel();
     }
 
+    /**
+     * Builds the dungeon grid by creating a 2D array of room panels.
+     */
     private void initPanel() {
         //TESTING ONLY
         Room tempRoom = new Room(null);
@@ -37,11 +65,22 @@ public class DungeonPanel {
         }
     }
 
+    /**
+     *
+     */
     public void displayVisionRooms(final Room theRoom) {
-
+//        for  (int row = 0; row < DIMENSION; row++) {
+//            for  (int col = 0; col < DIMENSION; col++) {
+//                if (row !=1 )
+//            }
+//        }
     }
 
-
+    /**
+     * Return the Dungeon panel
+     *
+     * @return the dungeon panel
+     */
     public JPanel getPanel() {
         return myPanel;
     }

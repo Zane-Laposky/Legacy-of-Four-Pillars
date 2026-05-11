@@ -1,36 +1,103 @@
+/*
+ * Main GUI of the Game.
+ * Spring 2026
+ */
 package view;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * GameView is the class which represents main GUI of the game.
+ * It creates and organizes panels, menus, dialogs and  window layout for the game.
+ *
+ * @author Emily Hernandez
+ * @version 1.0 Spring 2026
+ */
 public class GameView {
-    JFrame myFrame;
+
+    /**
+     * Main window
+     */
+    private JFrame myFrame;
+
+    /**
+     * Hero's name
+     */
     private String myHeroName;
+
+    /**
+     * Selected Hero's type
+     */
     private String myHeroType;
+
+    /**
+     * Main view of the Game window
+     */
     private JSplitPane myMainPanel;
+
+    /**
+     * Bottom view of the Game window
+     */
     private JSplitPane myBottomPanel;
 
+    /**
+     * Constructs the game window and initialize GUI components
+     */
     public GameView() {
-
-        //set up general window dimension
-        myFrame = new JFrame("Legacy of Four Pillars");
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(500, 600);
-        myFrame.setMinimumSize(new Dimension(400, 600));
-        myFrame.setResizable(true);
-
+        initFrameLayout();
         gameTypePrompt();
-
-        //initial GUI
         initGuiComponent();
 
-        // must be last to make everything visible
         myFrame.setVisible(true);
         myMainPanel.setDividerLocation(0.75);
         myBottomPanel.setDividerLocation(0.4);
     }
 
-    //GUI initial component
+    /**
+     * Return the main game frame
+     *
+     * @return the game frame
+     */
+    public JFrame getFrame() {
+        return myFrame;
+    }
+
+
+    /**
+     * Return the player's input hero's name
+     *
+     * @return the hero name
+     */
+    public String getHeroName() {
+        return myHeroName;
+    }
+
+
+    /**
+     * Return the selected hero type
+     *
+     * @return the hero type
+     */
+    public String getHeroType() {
+        return myHeroType;
+    }
+
+
+    /**
+     * Set up the game window's properties such as title, size and close behavior.
+     */
+    private void initFrameLayout() {
+        myFrame = new JFrame("Legacy of Four Pillars");
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setSize(500, 600);
+        myFrame.setMinimumSize(new Dimension(400, 600));
+        myFrame.setResizable(true);
+    }
+
+    /**
+     * Create all the game panels and adds them to the window.
+     */
     private void initGuiComponent() {
         JPanel myGamePanel = new DungeonPanel().getPanel();
         JPanel statsPanel = new StatsPanel(myHeroName).getPanel();
@@ -39,12 +106,19 @@ public class GameView {
 
         splitLayout(statsPanel, inventoryPanel, myGamePanel, controlPanel);
 
-        myFrame.add(myMainPanel,  BorderLayout.CENTER);
+        myFrame.add(myMainPanel, BorderLayout.CENTER);
         myFrame.setJMenuBar(new GameMenuBar().getMenuBar());
-
     }
 
-    //split the window so 3/4 is gamePanel and bottom split between stats and inventory
+    /**
+     * Arrange the game window into section by putting game map on top, with stats,
+     * inventory, and controls split across the bottom.
+     *
+     * @param statsPanel player status
+     * @param inventoryPanel player's inventory
+     * @param myGamePanel the game main area
+     * @param controlPanel game controls
+     */
     private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
                              final JPanel myGamePanel, final JPanel controlPanel) {
         JSplitPane myLeftBottomPanel = new JSplitPane(
@@ -67,8 +141,10 @@ public class GameView {
         myMainPanel.setEnabled(false);
     }
 
-
-    //start of the game ask if it is new or load game
+    /**
+     * Create the prompt that lets the player choose between starting a new game or
+     * loading a saved one.
+     */
     private void gameTypePrompt() {
         Object[] options = {"New Game", "Load Game"};
         int choice = JOptionPane.showOptionDialog(myFrame,
@@ -77,72 +153,65 @@ public class GameView {
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
-            //prompt for character name in popup window
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
             // NEED INFO FROM CONTROLLER to call persistence
         }
     }
 
-
-    //prompt window for the user to name the character
-   private void characterTypePrompt() {
+    /**
+     * Creates popup where the player can enter their hero's name and select
+     * the hero type such as warrior, priestess or thief.
+     */
+    private void characterTypePrompt() {
         JPanel chTypePanel = new JPanel();
         chTypePanel.setLayout(new BoxLayout(chTypePanel, BoxLayout.Y_AXIS));
 
         //User type in name
-       JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-       namePanel.add(new JLabel("Hero Name:"));
-       JTextField myHeroField = new JTextField(15);
-       namePanel.add(myHeroField);
+        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        namePanel.add(new JLabel("Hero Name:"));
+        JTextField myHeroField = new JTextField(15);
+        namePanel.add(myHeroField);
 
         //select hero type
-       JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-       buttonPanel.add(new JLabel("Choose your hero type:"));
-       JRadioButton warrior = new JRadioButton("Warrior");
-       JRadioButton priestess = new JRadioButton("Priestess");
-       JRadioButton thief = new JRadioButton("Thief");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(new JLabel("Choose your hero type:"));
+        JRadioButton warrior = new JRadioButton("Warrior");
+        JRadioButton priestess = new JRadioButton("Priestess");
+        JRadioButton thief = new JRadioButton("Thief");
 
-       //checkbox style
-       ButtonGroup bGroup = new ButtonGroup();
-       bGroup.add(warrior);
-       bGroup.add(priestess);
-       bGroup.add(thief);
-       warrior.setSelected(true);
+        //checkbox style
+        ButtonGroup bGroup = new ButtonGroup();
+        bGroup.add(warrior);
+        bGroup.add(priestess);
+        bGroup.add(thief);
+        warrior.setSelected(true);
 
-       buttonPanel.add(warrior);
-       buttonPanel.add(priestess);
-       buttonPanel.add(thief);
+        buttonPanel.add(warrior);
+        buttonPanel.add(priestess);
+        buttonPanel.add(thief);
 
-       chTypePanel.add(namePanel);
-       chTypePanel.add(buttonPanel);
+        chTypePanel.add(namePanel);
+        chTypePanel.add(buttonPanel);
 
-       int result = JOptionPane.showConfirmDialog(
-               myFrame, chTypePanel, "New Hero",  JOptionPane.OK_CANCEL_OPTION);
-       if (result == JOptionPane.OK_OPTION) {
-           myHeroName = myHeroField.getText().trim();
-           if (myHeroName.isEmpty()) {
-               characterTypePrompt();
-           }
-           if (warrior.isSelected()) {
+        int result = JOptionPane.showConfirmDialog(
+                myFrame, chTypePanel, "New Hero", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            myHeroName = myHeroField.getText().trim();
+            if (myHeroName.isEmpty()) {
+                characterTypePrompt();
+            }
+            if (warrior.isSelected()) {
                 myHeroType = "Warrior";
-           } else if (priestess.isSelected()) {
-               myHeroType = "Priestess";
-           } else {
-               myHeroType = "Thief";
-           }
-       } else if (result == JOptionPane.CANCEL_OPTION) {
-           gameTypePrompt();
-       } else {
-           System.exit(0);
-       }
-    }
-
-    public String getHeroName() {
-        return myHeroName;
-    }
-
-    public String getHeroType() {
-        return myHeroType;
+            } else if (priestess.isSelected()) {
+                myHeroType = "Priestess";
+            } else {
+                myHeroType = "Thief";
+            }
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+            gameTypePrompt();
+        } else {
+            System.exit(0);
+        }
     }
 }

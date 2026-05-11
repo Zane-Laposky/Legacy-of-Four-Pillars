@@ -43,7 +43,8 @@ public class GameMenuBar {
     }
 
     /**
-     * Create file menu with new, open, save and quit options.
+     * Create file menu with new, open, save and quit options, each with
+     * keyboard shortcuts.
      *
      * @return the file menu
      */
@@ -84,7 +85,7 @@ public class GameMenuBar {
     }
 
     /**
-     * Create view menu with inventory, status and keyboard shortcut option.
+     * Create view menu with options to see inventory, character status and keyboard shortcut option.
      *
      * @return the view menu
      */
@@ -104,7 +105,8 @@ public class GameMenuBar {
     }
 
     /**
-     * Create help menu with game guidelines and about.
+     * Create help menu with game guidelines and about section that displays information
+     * popups when clicked.
      *
      * @return the help menu
      */
