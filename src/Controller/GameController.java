@@ -63,7 +63,20 @@ public class GameController {
      * a Warrior character.
      */
     private void createHero() {
-        myHero = new Warrior("Warrior");
+        String heroName = myGameView.getHeroName();
+        String heroType = myGameView.getHeroType();
+
+        if(heroName == null){
+            heroName = "Warrior"; 
+        }
+
+        if("Warrior".equals(heroType) {
+            myHero = new Warrior(heroName);
+        } else if ("Priestess".equals(heroType) {
+            myHero = new Priestess(heroName);
+        } else if ("Thief".equals(heroType) {
+            myHero = new Thief(heroName);
+        }
     }
 
     /**
