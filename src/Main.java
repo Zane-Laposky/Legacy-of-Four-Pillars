@@ -1,4 +1,4 @@
-import Controller.GameController;
+import controller.GameController;
 import model.Dungeon;
 import view.GameView;
 
@@ -7,6 +7,6 @@ public class Main {
         int difficulty = 3;
         Dungeon myGameModel = new Dungeon(difficulty);
         GameView myGameGUI = new GameView();
-        GameController myController = new GameController(myGameModel, myGameGUI);
+        GameController myController = new GameController();
     }
 }

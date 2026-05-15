@@ -96,4 +96,7 @@ public class DungeonPanel {
     public void enableVisionRooms(final Room theCurrentRoom) {
         //
     }
+
+    public void displayCurrentRoom(Room theRoom) {
+    }
 }

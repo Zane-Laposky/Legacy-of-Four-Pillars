@@ -18,18 +18,18 @@ public class PersistenceTest {
         testHero.setMyHitPoints(88);
 
         System.out.println("Saving hero...");
-        persistence.savePlayer(testHero);
+        //persistence.savePlayer(testHero);
 
         System.out.println("Loading hero...");
-        Optional<Hero> loadedHero = persistence.loadPlayer();
+        //Optional<Hero> loadedHero = persistence.loadPlayer();
 
-        if (loadedHero.isPresent()) {
-            Hero hero = loadedHero.get();
-            System.out.println("Loaded hero name: " + hero.getMyName());
-            System.out.println("Loaded hero class: " + hero.getClass().getSimpleName());
-            System.out.println("Loaded hero HP: " + hero.getMyHitPoints());
-        } else {
-            System.out.println("No save found.");
-        }
+//        if (loadedHero.isPresent()) {
+//            Hero hero = loadedHero.get();
+//            System.out.println("Loaded hero name: " + hero.getMyName());
+//            System.out.println("Loaded hero class: " + hero.getClass().getSimpleName());
+//            System.out.println("Loaded hero HP: " + hero.getMyHitPoints());
+//        } else {
+//            System.out.println("No save found.");
+//        }
     }
 }

@@ -4,6 +4,8 @@
  */
 package view;
 
+import model.Room;
+
 import javax.swing.*;
 import java.awt.*;
 

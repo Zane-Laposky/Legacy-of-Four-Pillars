@@ -88,4 +88,7 @@ public class StatsPanel {
     public void updateHP(final int theHP) {
         myHitPt.setText(String.valueOf(theHP));
     }
+
+    public void updateHitPoint(int myHitPoints) {
+    }
 }

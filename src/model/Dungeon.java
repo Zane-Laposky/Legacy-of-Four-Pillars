@@ -4,50 +4,43 @@
  */
 package model;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
 /**
- * Dungeon represents a randomly generated collection of interconnected
- * rooms used within the dungeon adventure game.
+ * Dungeon represents a randomly generated collection of
+ * interconnected rooms used within the dungeon adventure game.
  *
- * The dungeon is generated recursively beginning from a single entrance
- * room. Rooms are connected through directional references representing
- * north, south, east, and west movement. The class is also responsible
- * for determining the dungeon entrance, the farthest room used as the
- * exit, and generating a formatted visual representation of the dungeon.
+ * <p>
+ * The dungeon begins with a single entrance room and expands
+ * recursively by creating connected rooms in random directions.
+ * The dungeon also tracks the entrance, exit, hero position,
+ * generated rooms, and special pillar objects required for
+ * game completion.
+ * </p>
+ *
+ * <p>
+ * This class additionally provides functionality for:
+ * </p>
+ *
+ * <ul>
+ *     <li>Dungeon generation</li>
+ *     <li>Exit room validation</li>
+ *     <li>Item generation</li>
+ *     <li>Monster generation</li>
+ *     <li>Dungeon visualization</li>
+ * </ul>
  *
  * @author Zane Laposky
- * @version 1.1
+ * @version 1.3 - 5/15/2026
  */
-public class Dungeon {
-
-    /**
-     * The starting room of the dungeon.
-     */
-    private Room myEntrance;
-
-    /**
-     * The exit room of the dungeon.
-     */
-    private Room myExit;
-
-    /**
-     * The collection of pillars that must be placed in the dungeon.
-     */
-    private Pillar[] myPillarsToPlace;
-
-    /**
-     * Tracks the total number of generated rooms.
-     */
-    private int myIterationCount;
-
-    /**
-     * Stores the greatest room depth discovered during generation.
-     */
-    private int myMaxDistance;
-
+public class Dungeon
+{
     /**
      * Pillar representing encapsulation.
      */
@@ -63,7 +56,7 @@ public class Dungeon {
     /**
      * Pillar representing inheritance.
      */
-    private static final Pillar PILLAR_OF_INHERITENCE =
+    private static final Pillar PILLAR_OF_INHERITANCE =
             new Pillar("Pillar of Inheritance");
 
     /**
@@ -75,406 +68,599 @@ public class Dungeon {
     /**
      * Probability used when generating items.
      */
-    private static final double CHANCE_TO_GENERATE_ITEM = .05;
+    private static final double CHANCE_TO_GENERATE_ITEM = 0.05;
 
     /**
      * Probability used when generating monsters.
      */
-    private static final double CHANCE_TO_GENERATE_MONSTER = .3;
+    private static final double CHANCE_TO_GENERATE_MONSTER =
+            0.30;
 
     /**
-     * The hero's current horizontal position.
+     * Dungeon entrance room.
+     */
+    private Room myEntrance;
+
+    /**
+     * Candidate exit rooms discovered during generation.
+     */
+    private Room[] myPossibleExits;
+
+    /**
+     * Final validated dungeon exit room.
+     */
+    private Room myExit;
+
+    /**
+     * Pillars remaining to be placed in the dungeon.
+     */
+    private Pillar[] myPillarsToPlace;
+
+    /**
+     * Collection of generated dungeon rooms indexed by
+     * coordinate key.
+     */
+    private HashMap<String, Room> myRooms;
+
+    /**
+     * Number of rooms generated during dungeon creation.
+     */
+    private int myIterationCount;
+
+    /**
+     * Maximum room depth discovered during generation.
+     */
+    private int myMaxDistance;
+
+    /**
+     * Hero horizontal position.
      */
     private int myHeroX;
 
     /**
-     * The hero's current vertical position.
+     * Hero vertical position.
      */
     private int myHeroY;
 
     /**
-     * Determines the overall dungeon size.
+     * Approximate dungeon size and complexity.
      */
     private int myDifficulty;
 
     /**
-     * Constructs a dungeon using the specified difficulty level.
+     * Constructs a dungeon using the specified difficulty.
      *
-     * The difficulty determines the approximate number of rooms
-     * generated within the dungeon.
+     * <p>
+     * The difficulty value controls the approximate number
+     * of generated rooms.
+     * </p>
      *
-     * @param theDifficulty the dungeon difficulty level
+     * @param theDifficulty the dungeon difficulty
      */
-    public Dungeon(final int theDifficulty) {
-
+    public Dungeon(final int theDifficulty)
+    {
         myHeroX = 0;
         myHeroY = 0;
+
+        myMaxDistance = 0;
+        myIterationCount = 0;
+
         myDifficulty = theDifficulty;
 
+        myPillarsToPlace = new Pillar[]
+                {
+                        PILLAR_OF_POLYMORPHISM,
+                        PILLAR_OF_ENCAPSULATION,
+                        PILLAR_OF_ABSTRACTION,
+                        PILLAR_OF_INHERITANCE
+                };
+
+        myRooms = new HashMap<>();
+
         myEntrance = new Room(null);
+
+        myPossibleExits = new Room[0];
+
+        myRooms.put("0,0", myEntrance);
+
         myEntrance.setIsEntrance(true);
         myEntrance.setCords(0, 0);
         myEntrance.setDepth(0);
 
-        myMaxDistance = 0;
+        while (myRooms.keySet().size() < 5)
+        {
+            generateDungeon(myEntrance, new Random());
+        }
 
-        myPillarsToPlace = new Pillar[]{
-                PILLAR_OF_ENCAPSULATION,
-                PILLAR_OF_ABSTRACTION,
-                PILLAR_OF_INHERITENCE,
-                PILLAR_OF_POLYMORPHISM
-        };
+        validateExit(new Random());
 
-        myIterationCount = 0;
-
-        generateDungeon(myEntrance, new Random());
-
-        myExit.setIsExit(true);
-        myExit.clearRoom();
-
-        generateItems();
+        generateItems(new Random());
     }
 
     /**
-     * Entry point used for testing dungeon generation.
+     * Executes a simple dungeon generation test.
+     *
+     * @param theArgs command-line arguments
+     *
+     * @throws IOException if file writing fails
      */
-    public static void main() {
+    public static void main(final String[] theArgs)
+            throws IOException
+    {
+        final Dungeon dungeon = new Dungeon(400);
 
-        final Dungeon dungeon = new Dungeon(3);
+        final Writer writer =
+                new PrintWriter("Dungeon.txt");
+
+        writer.write(dungeon.toString());
+
+        writer.close();
 
         System.out.println(dungeon.toString());
     }
 
     /**
-     * Randomly generates items and monsters throughout the dungeon.
+     * Randomly generates items and monsters throughout
+     * the dungeon.
+     *
+     * <p>
+     * Pillars are placed first in valid empty rooms.
+     * Remaining empty rooms may then receive either items
+     * or monsters based on generation probabilities.
+     * </p>
+     *
+     * @param theRandom random number generator
      */
-    private void generateItems() {
+    private void generateItems(final Random theRandom)
+    {
+        while (myPillarsToPlace.length > 0
+                && myRooms.size() > 6)
+        {
+            final Room room =
+                    (Room) myRooms.values().toArray()
+                            [theRandom.nextInt(myRooms.size())];
 
+            final Pillar pillar =
+                    myPillarsToPlace[
+                            theRandom.nextInt(
+                                    myPillarsToPlace.length)];
+
+            if (room.isEmpty())
+            {
+                room.addItem(pillar);
+
+                myPillarsToPlace =
+                        Arrays.stream(myPillarsToPlace)
+                                .filter(thePillar ->
+                                        thePillar != pillar)
+                                .toArray(Pillar[]::new);
+            }
+        }
+
+        for (final Room room : myRooms.values())
+        {
+            if (room.isEmpty()
+                    && theRandom.nextDouble(0, 1)
+                    <= CHANCE_TO_GENERATE_ITEM)
+            {
+                room.addItem(
+                        chooseItem(theRandom));
+
+            }
+            if (room.isEmpty()
+                    && theRandom.nextDouble(0, 1)
+                    <= CHANCE_TO_GENERATE_MONSTER)
+            {
+                room.addMonster(
+                        chooseMonster(theRandom));
+            }
+        }
+    }
+
+    /**
+     * Randomly selects a monster type.
+     *
+     * @param theRandom random number generator
+     *
+     * @return randomly selected monster
+     */
+    private Monster chooseMonster(
+            final Random theRandom)
+    {
+        final Monster[] monsters =
+                {
+                        new Ogre(),
+                        new Gremlin(),
+                        new Skeleton()
+                };
+
+        return monsters[
+                theRandom.nextInt(0, monsters.length)];
+    }
+
+    /**
+     * Randomly selects an item type.
+     *
+     * @param theRandom random number generator
+     *
+     * @return randomly selected item
+     */
+    private Item chooseItem(final Random theRandom)
+    {
+        final Item[] items =
+                {
+                        new VisionPotion(),
+                        new HealingPotion()
+                };
+
+        return items[
+                theRandom.nextInt(0, items.length)];
+    }
+
+    /**
+     * Randomizes the order of all movement directions.
+     *
+     * @param theRandom random number generator
+     *
+     * @return shuffled direction array
+     */
+    private Direction[] shuffleDirections(
+            final Random theRandom)
+    {
+        final Direction[] directions =
+                Direction.values();
+
+        for (int i = directions.length - 1;
+             i > 0;
+             i--)
+        {
+            final int randomIndex =
+                    theRandom.nextInt(i + 1);
+
+            final Direction temporaryDirection =
+                    directions[i];
+
+            directions[i] =
+                    directions[randomIndex];
+
+            directions[randomIndex] =
+                    temporaryDirection;
+        }
+
+        return directions;
+    }
+
+    /**
+     * Selects a valid dungeon exit room from the list
+     * of possible exits.
+     *
+     * <p>
+     * A valid exit room must satisfy the room exit
+     * validation rules defined within the Room class.
+     * </p>
+     *
+     * @param theRandom random number generator
+     */
+    private void validateExit(final Random theRandom)
+    {
+        for (int i = myPossibleExits.length - 1;
+             i >= 0;
+             i--)
+        {
+            if (myPossibleExits[i].isValidExit())
+            {
+                myPossibleExits[i].setIsExit(true);
+
+                myPossibleExits[i].clearRoom();
+
+                myExit = myPossibleExits[i];
+
+                return;
+            }
+        }
     }
 
     /**
      * Recursively generates connected dungeon rooms.
      *
-     * Each recursive call either creates a new adjacent room or
-     * continues traversal into an existing neighboring room.
-     * The room with the greatest depth from the entrance becomes
-     * the dungeon exit.
+     * <p>
+     * The generation process creates adjacent rooms
+     * in randomized directions while tracking the
+     * deepest rooms discovered.
+     * </p>
      *
-     * @param theCurrentRoom the current room being processed
-     * @param theRandom the random number generator
+     * @param theCurrentRoom current room being processed
+     * @param theRandom random number generator
      */
-    public void generateDungeon(final Room theCurrentRoom,
-                                final Random theRandom) {
-
-        if (theCurrentRoom == null) {
+    private void generateDungeon(
+            final Room theCurrentRoom,
+            final Random theRandom)
+    {
+        if (theCurrentRoom == null
+                || theCurrentRoom.getDepth() > 1900
+                || myIterationCount
+                >= myDifficulty * 8)
+        {
             return;
         }
 
         if (!theCurrentRoom.getIsEntrance()
-                && theCurrentRoom.getDepth() > myMaxDistance) {
+                && theCurrentRoom.getDepth()
+                > myMaxDistance)
+        {
+            myMaxDistance =
+                    theCurrentRoom.getDepth();
 
-            myMaxDistance = theCurrentRoom.getDepth();
-            myExit = theCurrentRoom;
+            myPossibleExits =
+                    Arrays.copyOf(
+                            myPossibleExits,
+                            myPossibleExits.length + 1);
+
+            myPossibleExits[
+                    myPossibleExits.length - 1]
+                    = theCurrentRoom;
         }
 
-        if (myIterationCount >= myDifficulty * myDifficulty) {
-            return;
+        Direction[] shuffledRooms =
+                shuffleDirections(theRandom);
+
+        if (theRandom.nextInt(1, 3) == 1)
+        {
+            shuffledRooms =
+                    Arrays.copyOf(
+                            shuffledRooms,
+                            theRandom.nextInt(
+                                    2,
+                                    shuffledRooms.length));
+        }
+        else
+        {
+            shuffledRooms =
+                    Arrays.copyOf(
+                            shuffledRooms,
+                            theRandom.nextInt(
+                                    1,
+                                    shuffledRooms.length));
         }
 
-        final int tempNum = theRandom.nextInt(4);
+        for (final Direction direction
+                : shuffledRooms)
+        {
+            final int newX =
+                    direction.newX(theCurrentRoom);
 
-        if (tempNum == 0) {
+            final int newY =
+                    direction.newY(theCurrentRoom);
 
-            if (theCurrentRoom.getNorthRoom() == null) {
+            Room newRoom =
+                    theCurrentRoom.getDirection(
+                            direction);
 
+            if (newRoom == null
+                    && !myRooms.containsKey(
+                    newX + "," + newY))
+            {
                 myIterationCount++;
 
-                final Room newRoom = new Room(null);
+                newRoom = new Room(null);
 
-                newRoom.setDepth(theCurrentRoom.getDepth() + 1);
-                newRoom.setSouthRoom(theCurrentRoom);
+                myRooms.put(
+                        newX + "," + newY,
+                        newRoom);
 
-                newRoom.setCords(
-                        theCurrentRoom.getX(),
-                        theCurrentRoom.getY() + 1
-                );
+                theCurrentRoom.setConnection(
+                        direction,
+                        newRoom);
 
-                theCurrentRoom.setNorthRoom(newRoom);
+                newRoom.setCords(newX, newY);
 
-                generateDungeon(newRoom, theRandom);
-
-            } else {
-
-                generateDungeon(
-                        theCurrentRoom.getNorthRoom(),
-                        theRandom
-                );
-            }
-
-        } else if (tempNum == 1) {
-
-            if (theCurrentRoom.getSouthRoom() == null) {
-
-                myIterationCount++;
-
-                final Room newRoom = new Room(null);
-
-                newRoom.setDepth(theCurrentRoom.getDepth() + 1);
-                newRoom.setNorthRoom(theCurrentRoom);
-
-                newRoom.setCords(
-                        theCurrentRoom.getX(),
-                        theCurrentRoom.getY() - 1
-                );
-
-                theCurrentRoom.setSouthRoom(newRoom);
-
-                generateDungeon(newRoom, theRandom);
-
-            } else {
+                newRoom.setDepth(
+                        theCurrentRoom.getDepth() + 1);
 
                 generateDungeon(
-                        theCurrentRoom.getSouthRoom(),
-                        theRandom
-                );
-            }
-
-        } else if (tempNum == 2) {
-
-            if (theCurrentRoom.getWestRoom() == null) {
-
-                myIterationCount++;
-
-                final Room newRoom = new Room(null);
-
-                newRoom.setDepth(theCurrentRoom.getDepth() + 1);
-                newRoom.setEastRoom(theCurrentRoom);
-
-                newRoom.setCords(
-                        theCurrentRoom.getX() - 1,
-                        theCurrentRoom.getY()
-                );
-
-                theCurrentRoom.setWestRoom(newRoom);
-
-                generateDungeon(newRoom, theRandom);
-
-            } else {
-
-                generateDungeon(
-                        theCurrentRoom.getWestRoom(),
-                        theRandom
-                );
-            }
-
-        } else {
-
-            if (theCurrentRoom.getEastRoom() == null) {
-
-                myIterationCount++;
-
-                final Room newRoom = new Room(null);
-
-                newRoom.setWestRoom(theCurrentRoom);
-                newRoom.setDepth(theCurrentRoom.getDepth() + 1);
-
-                newRoom.setCords(
-                        theCurrentRoom.getX() + 1,
-                        theCurrentRoom.getY()
-                );
-
-                theCurrentRoom.setEastRoom(newRoom);
-
-                generateDungeon(newRoom, theRandom);
-
-            } else {
-
-                generateDungeon(
-                        theCurrentRoom.getEastRoom(),
-                        theRandom
-                );
+                        newRoom,
+                        theRandom);
             }
         }
     }
 
     /**
-     * Returns a formatted visual representation of the dungeon.
+     * Returns a formatted visual representation of
+     * the dungeon layout.
      *
-     * The dungeon is rendered row by row using each room's
-     * individual string representation.
+     * <p>
+     * Each room is rendered row-by-row using the
+     * string representation provided by the Room class.
+     * </p>
      *
-     * @return the formatted dungeon layout
+     * @return formatted dungeon map
      */
     @Override
-    public String toString() {
-
-        if (myEntrance == null) {
+    public String toString()
+    {
+        if (myEntrance == null)
+        {
             return "Dungeon not generated.";
         }
 
-        final HashMap<String, Room> roomMap = new HashMap<>();
-        final HashSet<Room> visitedRooms = new HashSet<>();
+        final HashSet<Room> visitedRooms =
+                new HashSet<>();
 
-        populateRoomMap(myEntrance, roomMap, visitedRooms);
+        populateRoomMap(
+                myEntrance,
+                myRooms,
+                visitedRooms);
 
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
+
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
 
-        for (final String key : roomMap.keySet()) {
+        for (final String key : myRooms.keySet())
+        {
+            final String[] splitKey =
+                    key.split(",");
 
-            final String[] split = key.split(",");
+            final int x =
+                    Integer.parseInt(splitKey[0]);
 
-            final int x = Integer.parseInt(split[0]);
-            final int y = Integer.parseInt(split[1]);
+            final int y =
+                    Integer.parseInt(splitKey[1]);
 
-            if (x > maxX) {
+            if (x > maxX)
+            {
                 maxX = x;
             }
 
-            if (x < minX) {
+            if (x < minX)
+            {
                 minX = x;
             }
 
-            if (y > maxY) {
+            if (y > maxY)
+            {
                 maxY = y;
             }
 
-            if (y < minY) {
+            if (y < minY)
+            {
                 minY = y;
             }
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder stringBuilder =
+                new StringBuilder();
 
-        for (int y = maxY; y >= minY; y--) {
+        for (int y = maxY; y >= minY; y--)
+        {
+            final StringBuilder top =
+                    new StringBuilder();
 
-            final StringBuilder top = new StringBuilder();
-            final StringBuilder mid = new StringBuilder();
-            final StringBuilder bot = new StringBuilder();
+            final StringBuilder middle =
+                    new StringBuilder();
 
-            for (int x = minX; x <= maxX; x++) {
+            final StringBuilder bottom =
+                    new StringBuilder();
 
-                final Room room = roomMap.get(x + "," + y);
+            for (int x = minX; x <= maxX; x++)
+            {
+                final Room room =
+                        myRooms.get(x + "," + y);
 
-                if (room == null) {
-
-                    top.append("    ");
-                    mid.append("    ");
-                    bot.append("    ");
-
-                } else {
-
-                    final String[] parts =
+                if (room == null)
+                {
+                    top.append("   ");
+                    middle.append("   ");
+                    bottom.append("   ");
+                }
+                else
+                {
+                    final String[] roomParts =
                             room.toString().split("%%");
 
-                    if (parts.length == 3) {
-
-                        top.append(parts[0]).append(" ");
-                        mid.append(parts[1]).append(" ");
-                        bot.append(parts[2]).append(" ");
-
-                    } else {
-
-                        top.append("*** ");
-                        mid.append(" ?  ");
-                        bot.append("*** ");
+                    if (roomParts.length == 3)
+                    {
+                        top.append(roomParts[0]);
+                        middle.append(roomParts[1]);
+                        bottom.append(roomParts[2]);
+                    }
+                    else
+                    {
+                        top.append("***");
+                        middle.append(" ? ");
+                        bottom.append("***");
                     }
                 }
             }
 
-            sb.append(top).append("\n");
-            sb.append(mid).append("\n");
-            sb.append(bot).append("\n\n");
+            stringBuilder.append(top).append("\n");
+            stringBuilder.append(middle).append("\n");
+            stringBuilder.append(bottom).append("\n");
         }
 
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
     /**
-     * Traverses all connected rooms and stores them in a map
-     * using their coordinates as keys.
+     * Traverses all connected rooms and stores them
+     * within the provided room map.
      *
-     * @param theRoom the current room being processed
-     * @param theMap the map storing discovered rooms
-     * @param theVisitedRooms the set of previously visited rooms
+     * @param theRoom current room being processed
+     * @param theMap map storing discovered rooms
+     * @param theVisitedRooms previously visited rooms
      */
-    private void populateRoomMap(final Room theRoom,
-                                 final HashMap<String, Room> theMap,
-                                 final HashSet<Room> theVisitedRooms) {
-
+    private void populateRoomMap(
+            final Room theRoom,
+            final HashMap<String, Room> theMap,
+            final HashSet<Room> theVisitedRooms)
+    {
         if (theRoom == null
-                || theVisitedRooms.contains(theRoom)) {
-
+                || theVisitedRooms.contains(theRoom))
+        {
             return;
         }
 
         theVisitedRooms.add(theRoom);
 
         final String key =
-                theRoom.getX() + "," + theRoom.getY();
+                theRoom.getX()
+                        + ","
+                        + theRoom.getY();
 
         theMap.put(key, theRoom);
 
         populateRoomMap(
                 theRoom.getNorthRoom(),
                 theMap,
-                theVisitedRooms
-        );
+                theVisitedRooms);
 
         populateRoomMap(
                 theRoom.getSouthRoom(),
                 theMap,
-                theVisitedRooms
-        );
+                theVisitedRooms);
 
         populateRoomMap(
                 theRoom.getWestRoom(),
                 theMap,
-                theVisitedRooms
-        );
+                theVisitedRooms);
 
         populateRoomMap(
                 theRoom.getEastRoom(),
                 theMap,
-                theVisitedRooms
-        );
-    }
-
-    /**
-     * Validates the integrity of dungeon room connections.
-     */
-    private void validateDungeon() {
-
+                theVisitedRooms);
     }
 
     /**
      * Moves the hero within the dungeon.
      *
-     * @param theXChange the horizontal movement amount
-     * @param theYChange the vertical movement amount
+     * @param theXChange horizontal movement amount
+     * @param theYChange vertical movement amount
      */
-    public void moveHero(final int theXChange,
-                         final int theYChange) {
+    public void moveHero(
+            final int theXChange,
+            final int theYChange)
+    {
 
     }
 
     /**
-     * Returns the hero's current horizontal position.
+     * Returns the hero horizontal position.
      *
-     * @return the hero x-coordinate
+     * @return hero x-coordinate
      */
-    public int getX() {
+    public int getX()
+    {
         return myHeroX;
     }
 
     /**
-     * Returns the hero's current vertical position.
+     * Returns the hero vertical position.
      *
-     * @return the hero y-coordinate
+     * @return hero y-coordinate
      */
-    public int getY() {
+    public int getY()
+    {
         return myHeroY;
     }
 }

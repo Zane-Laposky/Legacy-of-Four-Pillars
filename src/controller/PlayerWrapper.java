@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 import model.Hero;
 import model.Item;
 import model.Room;
@@ -17,7 +17,7 @@ import model.Room;
  */
 public class PlayerWrapper {
     /**
-     * The hero controlled by the player.
+     * The hero controlled fby the player.
      */
     private Hero myHero;
 
