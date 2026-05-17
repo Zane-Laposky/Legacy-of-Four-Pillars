@@ -7,6 +7,9 @@ package view;
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * This class creates the  menu bar for the game. The menu bar is
@@ -15,12 +18,21 @@ import java.awt.event.KeyEvent;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-class GameMenuBar {
+class GameMenuBar implements PropertyChangeListener {
 
+    private final PropertyChangeSupport myChangeSupport;
     /**
      * Menu Bar used in the game window.
      */
     private final JMenuBar myMenuBar;
+
+    private JMenuItem myNewGame;
+    private JMenuItem myLoadGame;
+    private JMenuItem myExitGame;
+    private JMenuItem myAboutGame;
+    private JMenuItem myGuidelines;
+    private JMenuItem myKeyboardSC;
+
 
     /**
      * Constructs a GameMenuBar object and adds all menus
@@ -29,8 +41,9 @@ class GameMenuBar {
     public GameMenuBar() {
         myMenuBar = new JMenuBar();
         myMenuBar.add(fileMenuBar());
-        myMenuBar.add(viewMenuBar());
         myMenuBar.add(helpMenuBar());
+        myChangeSupport = new PropertyChangeSupport(this);
+        addListeners();
     }
 
     /**
@@ -52,56 +65,20 @@ class GameMenuBar {
         JMenu fileMenu = new JMenu("File");
 
         //menu item in file
-        JMenuItem newGame = new JMenuItem("New");
-        JMenuItem loadGame = new JMenuItem("Open...");
-        JMenuItem saveGame = new JMenuItem("Save");
-        JMenuItem exitGame = new JMenuItem("Quit");
+        myNewGame = new JMenuItem("New");
+        myLoadGame = new JMenuItem("Open...");
+        myExitGame = new JMenuItem("Quit");
 
         //keyboard shortcut for each item in file
-        newGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-        loadGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        saveGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        exitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
+        myNewGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+        myLoadGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+        myExitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
 
-        //STILL NEED ACTION
-        //need to controller to tell what it does
-        newGame.addActionListener(_ -> {
-
-        });
-        loadGame.addActionListener(_ -> {
-        });
-        saveGame.addActionListener(_ -> {
-        });
-        exitGame.addActionListener(_ -> {
-            System.exit(0);
-        });
-
-        fileMenu.add(newGame);
-        fileMenu.add(loadGame);
-        fileMenu.add(saveGame);
-        fileMenu.add(exitGame);
+        fileMenu.add(myNewGame);
+        fileMenu.add(myLoadGame);
+        fileMenu.add(myExitGame);
 
         return fileMenu;
-    }
-
-    /**
-     * Create view menu with options to see inventory, character status and keyboard shortcut option.
-     *
-     * @return the view menu
-     */
-    private JMenu viewMenuBar() {
-        JMenu viewMenu = new JMenu("View");
-
-        //menu item in view
-        JMenuItem inventoryView = new JMenuItem("Inventory");
-        JMenuItem statusView = new JMenuItem("Character Stats");
-        JMenuItem keyboardShortcuts = new JMenuItem("Keyboard Shortcuts");
-
-        viewMenu.add(inventoryView);
-        viewMenu.add(statusView);
-        viewMenu.add(keyboardShortcuts);
-
-        return viewMenu;
     }
 
     /**
@@ -114,38 +91,73 @@ class GameMenuBar {
         JMenu helpMenu = new JMenu("Help");
 
         //menu item in help
-        JMenuItem guidelines = new JMenuItem("Game Guidelines");
-        JMenuItem aboutGame = new JMenuItem("About");
+        myGuidelines = new JMenuItem("Game Guidelines");
+        myKeyboardSC = new JMenuItem("Keyboard Shortcuts");
+        myAboutGame = new JMenuItem("About");
 
-        helpMenu.add(guidelines);
-        helpMenu.add(aboutGame);
+        helpMenu.add(myGuidelines);
+        helpMenu.add(myKeyboardSC);
+        helpMenu.add(myAboutGame);
 
-        guidelines.addActionListener(_ -> {
-            JOptionPane.showMessageDialog(
-                    null,
-                    """
-                            Legacy of Four Pillars
-                            
-                            Explore a dungeon, collect all four Pillars of OO and reach the exit to win.
-                            The hero may take damage from falling into pits or fighting monsters.
-                            Use potions to heal and special abilities to defeat monsters.
-                            """
-            );
-        });
-
-        aboutGame.addActionListener(_ -> {
-            JOptionPane.showMessageDialog(
-                    null,
-                    """
-                            Legacy of Four Pillars
-                            
-                            Created by Devin Riel, Ryan Nguyen, Zane Laposky, Emily Hernandez
-                            
-                            Version 1.0, Spring 2026
-                            """
-            );
-        });
         return helpMenu;
     }
 
+    private void addListeners() {
+        myNewGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+                "menu", "", "NewGame"));
+        myLoadGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+                "menu", "", "LoadGame"));
+        myExitGame.addActionListener(_ -> System.exit(0));
+
+        myGuidelines.addActionListener(_ -> JOptionPane.showMessageDialog(
+                null,
+                """
+                        Legacy of Four Pillars
+                        
+                        Explore a dungeon, collect all four Pillars of OO and reach the exit to win.
+                        The hero may take damage from falling into pits or fighting monsters.
+                        Use potions to heal and special abilities to defeat monsters.
+                        """
+        ));
+
+        myAboutGame.addActionListener(_ -> JOptionPane.showMessageDialog(
+                null,
+                """
+                        Legacy of Four Pillars
+                        
+                        Created by Devin Riel, Ryan Nguyen, Zane Laposky, Emily Hernandez
+                        
+                        Version 1.0, Spring 2026
+                        """
+        ));
+
+        myKeyboardSC.addActionListener(_ -> JOptionPane.showMessageDialog(
+                null,
+                """
+                        Keyboard Shortcuts
+                        
+                        W / ↑ = move up
+                        S / ↓ = move down
+                        A / ← = move left
+                        D / → = move right
+                        
+                        SPACE = Attack
+                          Q   = Special Ability
+                          E   = Pick up items
+                          H   = Healing Potion
+                          V   = Vision Potion
+                        """
+        ));
+    }
+
+    /**
+     * This method gets called when a bound property is changed.
+     *
+     * @param evt A PropertyChangeEvent object describing the event source
+     *            and the property that has changed.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+    }
 }

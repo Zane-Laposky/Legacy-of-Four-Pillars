@@ -57,6 +57,8 @@ class ControlPanel implements PropertyChangeListener {
      */
     private JButton mySpecialAttack;
 
+    private JButton myItem;
+
     /**
      * Button to activate healing potion
      */
@@ -123,8 +125,12 @@ class ControlPanel implements PropertyChangeListener {
         JPanel actionPanel = new JPanel(new GridLayout(2, 4, 2, 2));
 
         myRegularAttack = new JButton("Attack");
-        mySpecialAttack = new JButton("Special Skill");
+        mySpecialAttack = new JButton("Special Ability");
+        myItem = new JButton("Pick Up Item");
+        myItem.setEnabled(false);
+
         actionPanel.add(myRegularAttack);
+        actionPanel.add(myItem);
         actionPanel.add(mySpecialAttack);
 
         myHealingPotion = new JButton("Healing Potion");
@@ -155,6 +161,8 @@ class ControlPanel implements PropertyChangeListener {
                 myChangeSupport.firePropertyChange("attack", "", "Basic"));
         mySpecialAttack.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("attack", "", "Special"));
+        myItem.addActionListener(_ ->
+                myChangeSupport.firePropertyChange("grab", "", "Item"));
         myHealingPotion.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("potion", "", "Heal"));
         myVisionPotion.addActionListener(_ ->
@@ -173,6 +181,10 @@ class ControlPanel implements PropertyChangeListener {
             myDownButton.setEnabled(theNewRoom.getSouthRoom() != null);
             myRightButton.setEnabled(theNewRoom.getEastRoom() != null);
             myLeftButton.setEnabled(theNewRoom.getWestRoom() != null);
+        }
+
+        if  (theEvent.getPropertyName().equals("item")) {
+            myItem.setEnabled((boolean) theEvent.getNewValue());
         }
 
         if (theEvent.getPropertyName().equals("HealingPotion")) {
