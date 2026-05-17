@@ -63,9 +63,6 @@ class InventoryPanel {
     private void initialPanel() {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        //JLabel myTitle = new JLabel("INVENTORY");
-        //myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
-        //myPanel.add(myTitle);
 
         JPanel myHPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         myHPPanel.add(new JLabel("Healing Potion: "));

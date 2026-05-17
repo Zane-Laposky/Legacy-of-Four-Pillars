@@ -4,8 +4,13 @@
  */
 package view;
 
+import model.Room;
+
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * ControlPanel is a class that contains actions button for player
@@ -14,8 +19,9 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-class ControlPanel {
+class ControlPanel implements PropertyChangeListener {
 
+    private final PropertyChangeSupport myChangeSupport;
     /**
      * Control panels for the controls
      */
@@ -66,6 +72,7 @@ class ControlPanel {
      */
     public ControlPanel() {
         myControlPanel = new JPanel();
+        myChangeSupport = new PropertyChangeSupport(this);
         initPanel();
     }
 
@@ -94,6 +101,11 @@ class ControlPanel {
         myLeftButton = new JButton("◀");
         myRightButton = new JButton("▶");
 
+        myUpButton.setEnabled(false);
+        myDownButton.setEnabled(false);
+        myLeftButton.setEnabled(false);
+        myRightButton.setEnabled(false);
+
         directionPanel.add(myUpButton);
         directionPanel.add(myLeftButton);
         directionPanel.add(myRightButton);
@@ -117,6 +129,9 @@ class ControlPanel {
 
         myHealingPotion = new JButton("Healing Potion");
         myVisionPotion = new JButton("Vision Potion");
+        myHealingPotion.setEnabled(false);
+        myVisionPotion.setEnabled(false);
+
         actionPanel.add(myHealingPotion);
         actionPanel.add(myVisionPotion);
 
@@ -124,29 +139,55 @@ class ControlPanel {
     }
 
     /**
-     * Registers action listeners for the buttons
+     * set up button with action listener
      */
     private void addListeners() {
         myUpButton.addActionListener(_ ->
-                myUpButton.setEnabled(false));
+                myChangeSupport.firePropertyChange("move", "", "North"));
         myDownButton.addActionListener(_ ->
-                myDownButton.setEnabled(false));
+                myChangeSupport.firePropertyChange("move", "", "South"));
         myRightButton.addActionListener(_ ->
-                myRightButton.setEnabled(false));
+                myChangeSupport.firePropertyChange("move", "", "East"));
         myLeftButton.addActionListener(_ ->
-                myLeftButton.setEnabled(false));
+                myChangeSupport.firePropertyChange("move", "", "West"));
 
         myRegularAttack.addActionListener(_ ->
-                myRegularAttack.setEnabled(false));
+                myChangeSupport.firePropertyChange("attack", "", "Basic"));
         mySpecialAttack.addActionListener(_ ->
-                mySpecialAttack.setEnabled(false));
+                myChangeSupport.firePropertyChange("attack", "", "Special"));
         myHealingPotion.addActionListener(_ ->
-                myHealingPotion.setEnabled(false));
+                myChangeSupport.firePropertyChange("potion", "", "Heal"));
         myVisionPotion.addActionListener(_ ->
-                myVisionPotion.setEnabled(false));
+                myChangeSupport.firePropertyChange("potion", "", "Vision"));
 
     }
 
+    /**
+     * receive events from others to set up the buttons between update
+     */
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("room")) {
+            Room theNewRoom = (Room) theEvent.getNewValue();
+            myUpButton.setEnabled(theNewRoom.getNorthRoom() != null);
+            myDownButton.setEnabled(theNewRoom.getSouthRoom() != null);
+            myRightButton.setEnabled(theNewRoom.getEastRoom() != null);
+            myLeftButton.setEnabled(theNewRoom.getWestRoom() != null);
+        }
+
+        if (theEvent.getPropertyName().equals("HealingPotion")) {
+            myHealingPotion.setEnabled((int) theEvent.getNewValue() > 0);
+        }
+
+        if (theEvent.getPropertyName().equals("VisionPotion")) {
+            myVisionPotion.setEnabled((int) theEvent.getNewValue() > 0);
+        }
+    }
+
+    //allowing controller or other class to listen in on action changes
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        myChangeSupport.addPropertyChangeListener(listener);
+    }
     /**
      * Return the control panel
      *
@@ -155,7 +196,4 @@ class ControlPanel {
     public JPanel getPanel() {
         return myControlPanel;
     }
-
-
-
 }
