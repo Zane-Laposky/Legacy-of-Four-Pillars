@@ -139,13 +139,19 @@ public class Dungeon
      */
     public Dungeon(final int theDifficulty)
     {
+
         myHeroX = 0;
         myHeroY = 0;
 
         myMaxDistance = 0;
         myIterationCount = 0;
 
-        myDifficulty = theDifficulty;
+        if (theDifficulty < 1){
+            myDifficulty = 1;
+        } else {
+            myDifficulty = theDifficulty;
+        }
+
 
         myPillarsToPlace = new Pillar[]
                 {
@@ -641,7 +647,8 @@ public class Dungeon
             final int theXChange,
             final int theYChange)
     {
-
+        myHeroX = theXChange + myHeroX;
+        myHeroY = theYChange + myHeroY;
     }
 
     /**
@@ -662,5 +669,13 @@ public class Dungeon
     public int getY()
     {
         return myHeroY;
+    }
+    /**
+     * Return's the dungeon's rooms
+     *
+     * @return Dungeon's Rooms in a hash map
+     */
+    public Object getRooms() {
+        return myRooms;
     }
 }
