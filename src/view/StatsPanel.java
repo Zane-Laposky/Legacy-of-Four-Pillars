@@ -68,15 +68,6 @@ class StatsPanel implements PropertyChangeListener {
     }
 
     /**
-     * Return the Stats Panel
-     *
-     * @return the Stats Panel
-     */
-    public JPanel getPanel() {
-        return myPanel;
-    }
-
-    /**
      * Set up the buttons between update according to receive events from others
      *
      * @param theEvent Property Change Event
@@ -89,5 +80,14 @@ class StatsPanel implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("HP")) {
             myHitPt.setText(String.valueOf(theEvent.getNewValue()));
         }
+    }
+
+    /**
+     * Return the Stats Panel
+     *
+     * @return the Stats Panel
+     */
+    public JPanel getPanel() {
+        return myPanel;
     }
 }
