@@ -21,7 +21,11 @@ import java.beans.PropertyChangeSupport;
  */
 class ControlPanel implements PropertyChangeListener {
 
+    /**
+     * Property Change support
+     */
     private final PropertyChangeSupport myChangeSupport;
+
     /**
      * Control panels for the controls
      */
@@ -57,6 +61,9 @@ class ControlPanel implements PropertyChangeListener {
      */
     private JButton mySpecialAttack;
 
+    /**
+     * Button to pick up items
+     */
     private JButton myItem;
 
     /**
@@ -122,11 +129,13 @@ class ControlPanel implements PropertyChangeListener {
      * @return action panel
      */
     private JPanel buildActionPanel() {
-        JPanel actionPanel = new JPanel(new GridLayout(2, 4, 2, 2));
+        JPanel actionPanel = new JPanel(new GridLayout(2, 3, 2, 2));
 
         myRegularAttack = new JButton("Attack");
         mySpecialAttack = new JButton("Special Ability");
         myItem = new JButton("Pick Up Item");
+        myRegularAttack.setEnabled(false);
+        mySpecialAttack.setEnabled(false);
         myItem.setEnabled(false);
 
         actionPanel.add(myRegularAttack);
@@ -145,7 +154,7 @@ class ControlPanel implements PropertyChangeListener {
     }
 
     /**
-     * set up button with action listener
+     * Set up action listener
      */
     private void addListeners() {
         myUpButton.addActionListener(_ ->
@@ -171,7 +180,9 @@ class ControlPanel implements PropertyChangeListener {
     }
 
     /**
-     * receive events from others to set up the buttons between update
+     * Set up the buttons between update according to receive events from others
+     *
+     * @param theEvent Property Change Event
      */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
@@ -183,7 +194,7 @@ class ControlPanel implements PropertyChangeListener {
             myLeftButton.setEnabled(theNewRoom.getWestRoom() != null);
         }
 
-        if  (theEvent.getPropertyName().equals("item")) {
+        if (theEvent.getPropertyName().equals("grab")) {
             myItem.setEnabled((boolean) theEvent.getNewValue());
         }
 
@@ -201,10 +212,13 @@ class ControlPanel implements PropertyChangeListener {
         }
     }
 
-    //allowing controller or other class to listen in on action changes
+    /**
+     * Allow controller or other class to listen in on action changes
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         myChangeSupport.addPropertyChangeListener(listener);
     }
+
     /**
      * Return the control panel
      *

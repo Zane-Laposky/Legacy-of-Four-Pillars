@@ -18,19 +18,46 @@ import java.beans.PropertyChangeSupport;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-class GameMenuBar implements PropertyChangeListener {
+class GameMenuBar {
 
+    /**
+     * Property Change support
+     */
     private final PropertyChangeSupport myChangeSupport;
+
     /**
      * Menu Bar used in the game window.
      */
     private final JMenuBar myMenuBar;
 
+    /**
+     *  New game menu item
+     */
     private JMenuItem myNewGame;
+
+    /**
+     * Load game menu item
+     */
     private JMenuItem myLoadGame;
+
+    /**
+     * Exit game menu item.
+     */
     private JMenuItem myExitGame;
+
+    /**
+     * About game menu item.
+     */
     private JMenuItem myAboutGame;
+
+    /**
+     * Guidelines menu item.
+     */
     private JMenuItem myGuidelines;
+
+    /**
+     * Keyboard shortcut menu item.
+     */
     private JMenuItem myKeyboardSC;
 
 
@@ -72,7 +99,7 @@ class GameMenuBar implements PropertyChangeListener {
         //keyboard shortcut for each item in file
         myNewGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         myLoadGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        myExitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
+        myExitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
         fileMenu.add(myNewGame);
         fileMenu.add(myLoadGame);
@@ -82,7 +109,7 @@ class GameMenuBar implements PropertyChangeListener {
     }
 
     /**
-     * Create help menu with game guidelines and about section that displays information
+     * Create help menu with game guidelines, keyboard shortcuts and about section that displays information
      * popups when clicked.
      *
      * @return the help menu
@@ -102,6 +129,9 @@ class GameMenuBar implements PropertyChangeListener {
         return helpMenu;
     }
 
+    /**
+     * Set up action listener
+     */
     private void addListeners() {
         myNewGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
                 "menu", "", "NewGame"));
@@ -151,13 +181,9 @@ class GameMenuBar implements PropertyChangeListener {
     }
 
     /**
-     * This method gets called when a bound property is changed.
-     *
-     * @param evt A PropertyChangeEvent object describing the event source
-     *            and the property that has changed.
+     * Allow controller or other class to listen in on action changes
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        myChangeSupport.addPropertyChangeListener(listener);
     }
 }
