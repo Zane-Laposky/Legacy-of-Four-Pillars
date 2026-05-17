@@ -7,6 +7,7 @@ public class Main {
         int difficulty = 3;
         Dungeon myGameModel = new Dungeon(difficulty);
         GameView myGameGUI = new GameView();
-        GameController myController = new GameController();
+        GameController myController = new GameController(myGameModel, myGameGUI);
+
     }
 }

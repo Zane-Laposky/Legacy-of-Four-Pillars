@@ -15,7 +15,7 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version Spring 2026
  */
-public class DungeonPanel {
+class DungeonPanel {
 
     /**
      * Dimension of the player's view for the game

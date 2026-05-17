@@ -234,7 +234,4 @@ public class GameView {
         myDungeonPanel.displayCurrentRoom(theRoom);
     }
 
-    public void enableVisionRooms(final Room theCurrentRoom) {
-        myDungeonPanel.enableVisionRooms(theCurrentRoom);
-    }
 }
