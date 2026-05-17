@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-public class GameMenuBar {
+class GameMenuBar {
 
     /**
      * Menu Bar used in the game window.

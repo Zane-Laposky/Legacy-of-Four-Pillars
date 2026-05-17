@@ -8,6 +8,8 @@ import model.Room;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * GameView is the class which represents main GUI of the game.
@@ -16,7 +18,7 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-public class GameView {
+public class GameView implements PropertyChangeListener {
 
     /**
      * Main window
@@ -46,6 +48,9 @@ public class GameView {
      * Bottom view of the Game window
      */
     private JSplitPane myBottomPanel;
+
+    private JPanel myMessagePanel;
+    private JLabel myMessageLabel;
 
     /**
      * Constructs the game window and initialize GUI components
@@ -108,6 +113,9 @@ public class GameView {
         myStatsPanel = new StatsPanel(myHeroName);
         myInventoryPanel = new InventoryPanel();
         myControlPanel = new ControlPanel();
+        myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        myMessageLabel = new JLabel("");
+        myMessagePanel.add(myMessageLabel);
 
         splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
                 myControlPanel.getPanel());
@@ -120,10 +128,10 @@ public class GameView {
      * Arrange the game window into section by putting game map on top, with stats,
      * inventory, and controls split across the bottom.
      *
-     * @param statsPanel player status
+     * @param statsPanel     player status
      * @param inventoryPanel player's inventory
-     * @param myGamePanel the game main area
-     * @param controlPanel game controls
+     * @param myGamePanel    the game main area
+     * @param controlPanel   game controls
      */
     private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
                              final JPanel myGamePanel, final JPanel controlPanel) {
@@ -134,13 +142,18 @@ public class GameView {
         myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
         myLeftBottomPanel.setEnabled(false);
 
+        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, myGamePanel, myMessagePanel);
+        myTopMainPanel.setDividerSize(1);
+        myTopMainPanel.setResizeWeight(0.9);
+        myTopMainPanel.setEnabled(false);
+
         myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, controlPanel);
         myBottomPanel.setDividerSize(1);
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
 
         myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        myMainPanel.setTopComponent(myGamePanel);
+        myMainPanel.setTopComponent(myTopMainPanel);
         myMainPanel.setBottomComponent(myBottomPanel);
         myMainPanel.setDividerSize(1);
         myMainPanel.setResizeWeight(0.95);
@@ -221,20 +234,31 @@ public class GameView {
         }
     }
 
-    public void updateHP(final int theHP) {
-        myStatsPanel.updateHP(theHP);
-    }
-
-    public void updateInventory(final int theHealingPotion, final int theVisionPotion,
-                                final int thePillars) {
-        myInventoryPanel.updateInventory(theHealingPotion, theVisionPotion, thePillars);
-    }
-
-    public void updateRoom(final Room theRoom) {
-        myDungeonPanel.displayCurrentRoom(theRoom);
-    }
-
-    public void enableVisionRooms(final Room theCurrentRoom) {
-        myDungeonPanel.enableVisionRooms(theCurrentRoom);
+    /**
+     * This method gets called when a bound property is changed.
+     *
+     * @param theEvent A PropertyChangeEvent object describing the event source
+     *            and the property that has changed.
+     */
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("message")) {
+            myMessageLabel.setText((String) theEvent.getNewValue());
+        }
+        if (theEvent.getPropertyName().equals("HP")) {
+            myStatsPanel.updateHP((int) theEvent.getNewValue());
+        }
+        if  (theEvent.getPropertyName().equals("HitPoints")) {
+            myInventoryPanel.updateHPCount((int) theEvent.getNewValue());
+        }
+        if  (theEvent.getPropertyName().equals("VisionPoints")) {
+            myInventoryPanel.updateVPCount((int) theEvent.getNewValue());
+        }
+        if (theEvent.getPropertyName().equals("Pillars")) {
+            myInventoryPanel.updatePilCount((int) theEvent.getNewValue());
+        }
+        if (theEvent.getPropertyName().equals("Room")) {
+            myDungeonPanel.displayCurrentRoom((Room) theEvent.getNewValue());
+        }
     }
 }

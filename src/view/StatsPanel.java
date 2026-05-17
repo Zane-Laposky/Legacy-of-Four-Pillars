@@ -14,7 +14,7 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0, Spring 2026
  */
-public class StatsPanel {
+class StatsPanel {
 
     /**
      * Maximum hit point character can take.
