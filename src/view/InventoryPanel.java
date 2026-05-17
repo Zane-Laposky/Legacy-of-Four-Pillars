@@ -6,15 +6,17 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This class represents the inventory panel in the game. It displays
  * the player's collection of healing points, vision points, and pillars.
  *
  * @author Emily Hernandez
- * version 1.0, Spring 2026
+ * @version 1.0, Spring 2026
  */
-class InventoryPanel {
+class InventoryPanel implements PropertyChangeListener {
 
     /**
      * Initial value for all inventory counts.
@@ -85,23 +87,29 @@ class InventoryPanel {
     }
 
     /**
+     * Set up the buttons between update according to receive events from others
+     *
+     * @param theEvent Property Change Event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("HealingPotion")) {
+            myHP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("VisionPotion")) {
+            myVP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("Pillar")) {
+            myPillar.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+    }
+
+    /**
      * Return the inventory panel
      *
      * @return the inventory panel
      */
     public JPanel getPanel() {
         return myPanel;
-    }
-
-    //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateHPCount(final int theHP) {
-        myHP.setText(String.valueOf(theHP));
-    }
-    public void updateVPCount(final int theVP) {
-        myVP.setText(String.valueOf(theVP));
-    }
-
-    public void updatePilCount(final int thePillar) {
-        myPillar.setText(String.valueOf(thePillar));
     }
 }
