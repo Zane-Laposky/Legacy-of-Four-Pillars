@@ -182,6 +182,11 @@ class ControlPanel implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("VisionPotion")) {
             myVisionPotion.setEnabled((int) theEvent.getNewValue() > 0);
         }
+
+        if (theEvent.getPropertyName().equals("Monster")) {
+            myRegularAttack.setEnabled((boolean) theEvent.getNewValue());
+            mySpecialAttack.setEnabled((boolean) theEvent.getNewValue());
+        }
     }
 
     //allowing controller or other class to listen in on action changes
