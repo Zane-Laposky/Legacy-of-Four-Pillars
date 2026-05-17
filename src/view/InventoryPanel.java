@@ -96,18 +96,15 @@ class InventoryPanel {
         return myPanel;
     }
 
-
-    /**
-     * Update any chances in inventory count as the game play
-     *
-     * @param theHP     the healing point
-     * @param theVP     the vision point
-     * @param thePillar the count of collected pillar
-     */
     //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateInventory(int theHP, int theVP, int thePillar) {
+    public void updateHPCount(final int theHP) {
         myHP.setText(String.valueOf(theHP));
+    }
+    public void updateVPCount(final int theVP) {
         myVP.setText(String.valueOf(theVP));
+    }
+
+    public void updatePilCount(final int thePillar) {
         myPillar.setText(String.valueOf(thePillar));
     }
 }
