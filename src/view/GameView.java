@@ -245,9 +245,6 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("message")) {
             myMessageLabel.setText((String) theEvent.getNewValue());
         }
-        if (theEvent.getPropertyName().equals("HP")) {
-            myStatsPanel.updateHP((int) theEvent.getNewValue());
-        }
         if  (theEvent.getPropertyName().equals("HitPoints")) {
             myInventoryPanel.updateHPCount((int) theEvent.getNewValue());
         }

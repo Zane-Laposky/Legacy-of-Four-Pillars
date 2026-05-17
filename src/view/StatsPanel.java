@@ -6,6 +6,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This class represents the stats panel in the game. This class displays
@@ -14,12 +16,12 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0, Spring 2026
  */
-class StatsPanel {
+class StatsPanel implements PropertyChangeListener {
 
     /**
      * Maximum hit point character can take.
      */
-    private static final int MAX_HITPOINT = 100; // NEED UPDATE
+    private final JLabel myMaxHP;
 
     /**
      * The stats panel for the game
@@ -31,19 +33,17 @@ class StatsPanel {
      */
     private final JLabel myHitPt;
 
-
     /**
      * Constructs a StatsPanel object and initializes all components.
      *
      * @param theCharacterName the character's name
      */
-    //NEED UPDATE FROM CONTROLLER ON THE INITIAL VALUE
-    public StatsPanel(final String theCharacterName/*, final int theHitPoint*/) {
+    public StatsPanel(final String theCharacterName) {
         myPanel = new JPanel();
-        myHitPt = new JLabel(String.valueOf(MAX_HITPOINT)); // NEED UPDATE FROM CONTROLLER
+        myMaxHP = new JLabel("0");
+        myHitPt = new JLabel("0");
         initialPanel(theCharacterName);
     }
-
 
     /**
      * Initializes the StatsPanel and other components such as myNamePanel
@@ -58,16 +58,14 @@ class StatsPanel {
         myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
         myPanel.add(myTitle);
 
-
         JPanel myHitPtPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         myHitPtPanel.add(new JLabel("HP: "));
         myHitPtPanel.add(myHitPt);
-        myHitPtPanel.add(new JLabel("/" + MAX_HITPOINT));
-
+        myHitPtPanel.add(new JLabel("/"));
+        myHitPtPanel.add(myMaxHP);
 
         myPanel.add(myHitPtPanel);
     }
-
 
     /**
      * Return the Stats Panel
@@ -78,17 +76,18 @@ class StatsPanel {
         return myPanel;
     }
 
-
     /**
-     * Update the available hit point during the game.
+     * Set up the buttons between update according to receive events from others
      *
-     * @param theHP available hit point
+     * @param theEvent Property Change Event
      */
-    //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateHP(final int theHP) {
-        myHitPt.setText(String.valueOf(theHP));
-    }
-
-    public void updateHitPoint(int myHitPoints) {
+    @Override
+    public void propertyChange(PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("MaxHP")) {
+            myMaxHP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("HP")) {
+            myHitPt.setText(String.valueOf(theEvent.getNewValue()));
+        }
     }
 }
