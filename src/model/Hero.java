@@ -116,4 +116,34 @@ public abstract class Hero extends DungeonCharacter {
         }
         myInventory = newInventory;
     }
+    
+    /**
+     * Removes one specific item from the hero's inventory.
+     *
+     * @param theItem the item to remove
+     */
+    public void removeItem(final Item theItem) {
+        if (theItem == null || myInventory == null || myInventory.length == 0) {
+            return;
+        }
+
+        Item[] newInventory = new Item[myInventory.length - 1];
+        boolean removed = false;
+        int index = 0;
+
+        for (Item item : myInventory) {
+            if (!removed && item == theItem) {
+                removed = true;
+            } else {
+                if (index < newInventory.length) {
+                    newInventory[index] = item;
+                    index++;
+                }
+            }
+        }
+
+        if (removed) {
+            myInventory = newInventory;
+        }
+    }
 }
