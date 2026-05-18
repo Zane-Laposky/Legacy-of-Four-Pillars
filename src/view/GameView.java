@@ -134,4 +134,54 @@ public class GameView {
     public String getHeroType() {
         return myHeroType;
     }
+    
+        /**
+     * Connects the main dungeon controller to the view.
+     *
+     * This method allows the controller to listen to button events
+     * from the control panel and allows all view panels to listen
+     * to updates from the controller.
+     *
+     * @param theController the dungeon controller for the game
+     */
+    public void connectController(final DungeonController theController) {
+        /*
+         * Allows the controller to receive button actions from the control panel.
+         *
+         * ControlPanel sends events such as:
+         * "move", "attack", "grab", and "potion".
+         */
+        myControlPanel.addPropertyChangeListener(theController);
+
+        /*
+         * Allows the view panels to receive game updates from the controller.
+         *
+         * StatsPanel listens for:
+         * "HP" and "MaxHP".
+         *
+         * InventoryPanel listens for:
+         * "HealingPotion", "VisionPotion", and "Pillar".
+         *
+         * DungeonPanel listens for:
+         * "room" and "vision".
+         *
+         * ControlPanel listens for:
+         * "room", "grab", "HealingPotion", "VisionPotion", and "Monster".
+         *
+         * GameView listens for:
+         * "message".
+         */
+        theController.addPropertyChangeListener(myStatsPanel);
+        theController.addPropertyChangeListener(myInventoryPanel);
+        theController.addPropertyChangeListener(myDungeonPanel);
+        theController.addPropertyChangeListener(myControlPanel);
+        theController.addPropertyChangeListener(this);
+
+        /*
+         * Allows keyboard controls to work.
+         */
+        myFrame.addKeyListener(theController);
+        myFrame.setFocusable(true);
+        myFrame.requestFocusInWindow();
+    }
 }
