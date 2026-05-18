@@ -86,15 +86,50 @@ public class GameController {
 
     /**
      * Creates the starting room for the hero.
+     *
+     * This first version creates a small test dungeon so movement buttons
+     * can become enabled immediately.
      */
     private void createStartingRoom() {
         myStartingRoom = new Room(null);
         myStartingRoom.setIsEntrance(true);
         myStartingRoom.setCords(0, 0);
 
+        /*
+         * Test rooms so the movement buttons have real rooms to detect.
+         */
+        Room northRoom = new Room(null);
+        northRoom.setCords(0, 1);
+
+        Room eastRoom = new Room(null);
+        eastRoom.setCords(1, 0);
+
+        Room southRoom = new Room(null);
+        southRoom.setCords(0, -1);
+
+        Room westRoom = new Room(null);
+        westRoom.setCords(-1, 0);
+
+        /*
+         * setConnection creates two-way links between rooms.
+         */
+        myStartingRoom.setConnection(Direction.NORTH, northRoom);
+        myStartingRoom.setConnection(Direction.EAST, eastRoom);
+        myStartingRoom.setConnection(Direction.SOUTH, southRoom);
+        myStartingRoom.setConnection(Direction.WEST, westRoom);
+
+        /*
+         * Optional testing items/monster.
+         * Remove these later when using the real Dungeon generator.
+         */
+        northRoom.addItem(new HealingPotion());
+        eastRoom.addItem(new VisionPotion());
+        southRoom.addMonster(new Gremlin());
+
         myHero.setCurrentRoom(myStartingRoom);
         myStartingRoom.enter(myHero);
     }
+
 
 
     /**
