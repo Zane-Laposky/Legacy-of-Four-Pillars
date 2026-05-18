@@ -375,6 +375,9 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 HealingPotion potion = (HealingPotion) item;
                 myHero.setMyHitPoints(myHero.getMyHitPoints() + potion.getMyHealAmount());
                 sendMessage("Used Healing Potion.");
+
+                myHero.removeItem(item);
+
                 return;
             }
         }
@@ -383,13 +386,18 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     }
 
     private void useVisionPotion() {
-        if (countVisionPotions() <= 0) {
-            sendMessage("You do not have a Vision Potion.");
-            return;
-        }
+        Item[] inventory = myHero.getMyInventory();
 
-        myChangeSupport.firePropertyChange("vision", null, myRoom);
-        sendMessage("Used Vision Potion.");
+        for (Item item : inventory) {
+            if (item instanceof VisionPotion) {
+                myChangeSupport.firePropertyChange("vision", null, myRoom);
+                sendMessage("Used Vision Potion.");
+
+                myHero.removeItem(item);
+
+                return;
+            }
+        }
     }
 
     private void handleMenu(final String theMenuOption) {
