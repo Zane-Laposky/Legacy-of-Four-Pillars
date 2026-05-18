@@ -4,12 +4,11 @@
  */
 package view;
 
-import model.Room;
-
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * GameView is the class which represents main GUI of the game.
@@ -25,19 +24,10 @@ public class GameView implements PropertyChangeListener {
      */
     private JFrame myFrame;
 
-    private StatsPanel myStatsPanel;
-    private InventoryPanel myInventoryPanel;
-    private DungeonPanel myDungeonPanel;
-    private ControlPanel myControlPanel;
     /**
      * Hero's name
      */
     private String myHeroName;
-
-    /**
-     * Selected Hero's type
-     */
-    private String myHeroType;
 
     /**
      * Main view of the Game window
@@ -52,10 +42,12 @@ public class GameView implements PropertyChangeListener {
     private JPanel myMessagePanel;
     private JLabel myMessageLabel;
 
+    private final PropertyChangeSupport myChangeSupport;
     /**
      * Constructs the game window and initialize GUI components
      */
     public GameView() {
+        myChangeSupport = new PropertyChangeSupport(this);
         initFrameLayout();
         gameTypePrompt();
         initGuiComponent();
@@ -64,35 +56,6 @@ public class GameView implements PropertyChangeListener {
         myMainPanel.setDividerLocation(0.75);
         myBottomPanel.setDividerLocation(0.4);
     }
-
-    /**
-     * Return the main game frame
-     *
-     * @return the game frame
-     */
-    public JFrame getFrame() {
-        return myFrame;
-    }
-
-    /**
-     * Return the player's input hero's name
-     *
-     * @return the hero name
-     */
-    public String getHeroName() {
-        return myHeroName;
-    }
-
-
-    /**
-     * Return the selected hero type
-     *
-     * @return the hero type
-     */
-    public String getHeroType() {
-        return myHeroType;
-    }
-
 
     /**
      * Set up the game window's properties such as title, size and close behavior.
@@ -109,10 +72,10 @@ public class GameView implements PropertyChangeListener {
      * Create all the game panels and adds them to the window.
      */
     private void initGuiComponent() {
-        myDungeonPanel = new DungeonPanel();
-        myStatsPanel = new StatsPanel(myHeroName);
-        myInventoryPanel = new InventoryPanel();
-        myControlPanel = new ControlPanel();
+        DungeonPanel myDungeonPanel = new DungeonPanel();
+        StatsPanel myStatsPanel = new StatsPanel(myHeroName);
+        InventoryPanel myInventoryPanel = new InventoryPanel();
+        ControlPanel myControlPanel = new ControlPanel();
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         myMessageLabel = new JLabel("");
         myMessagePanel.add(myMessageLabel);
@@ -174,7 +137,7 @@ public class GameView implements PropertyChangeListener {
         if (choice == JOptionPane.YES_OPTION) {
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
-            // NEED INFO FROM CONTROLLER to call persistence
+            myChangeSupport.firePropertyChange("menu", "", "LoadGame");
         }
     }
 
@@ -191,6 +154,7 @@ public class GameView implements PropertyChangeListener {
         namePanel.add(new JLabel("Hero Name:"));
         JTextField myHeroField = new JTextField(15);
         namePanel.add(myHeroField);
+        myHeroField.requestFocusInWindow(); //ready to type
 
         //select hero type
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -219,13 +183,18 @@ public class GameView implements PropertyChangeListener {
             myHeroName = myHeroField.getText().trim();
             if (myHeroName.isEmpty()) {
                 characterTypePrompt();
-            }
-            if (warrior.isSelected()) {
-                myHeroType = "Warrior";
-            } else if (priestess.isSelected()) {
-                myHeroType = "Priestess";
             } else {
-                myHeroType = "Thief";
+                String myHeroType;
+                if (warrior.isSelected()) {
+                    myHeroType = "Warrior";
+                } else if (priestess.isSelected()) {
+                    myHeroType = "Priestess";
+                } else {
+                    myHeroType = "Thief";
+                }
+
+                myChangeSupport.firePropertyChange("Hero", null,
+                        new String[]{myHeroName, myHeroType});
             }
         } else if (result == JOptionPane.CANCEL_OPTION) {
             gameTypePrompt();
@@ -245,5 +214,21 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("message")) {
             myMessageLabel.setText((String) theEvent.getNewValue());
         }
+    }
+
+    /**
+     * Allow controller or other class to listen in on action changes
+     */
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        myChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Return the main game frame
+     *
+     * @return the game frame
+     */
+    public JFrame getFrame() {
+        return myFrame;
     }
 }
