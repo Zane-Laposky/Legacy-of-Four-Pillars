@@ -15,3 +15,5 @@ Features:
 Issues from Iteration 3:
 
 1. The challenge I had this week was figuring out how to let the controller know what is happening on the GUI without giving it direct access to every panel. I learned how to use PropertyChangeSupport and PropertyChangeListener properly to send and receive signals. - Emily Hernandez
+
+2. My biggest issue this week was trying to use PropertyChangeListener and redo all the code to use it. I also struggled with tryint to get the view and the control to communicate properly through the PropertyChangeListener and had to spend several hours researhing PropertyChangeListener to figure out how to properly set it all up. - Devin Riel 
