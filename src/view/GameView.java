@@ -245,8 +245,5 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("message")) {
             myMessageLabel.setText((String) theEvent.getNewValue());
         }
-        if (theEvent.getPropertyName().equals("Room")) {
-            myDungeonPanel.displayCurrentRoom((Room) theEvent.getNewValue());
-        }
     }
 }

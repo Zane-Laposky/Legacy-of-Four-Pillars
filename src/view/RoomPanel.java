@@ -101,7 +101,19 @@ class RoomPanel {
      * @param theRoom the requested room to Display
      */
     public void displayRoom(final Room theRoom) {
-        drawRoom(theRoom);
+        if (theRoom != null) {
+            drawRoom(theRoom);
+        } else {
+            clearRoom();
+        }
+    }
+
+    public void clearRoom() {
+        for (int row =  0; row < DIMENSION; row++) {
+            for (int col =  0; col < DIMENSION; col++) {
+                myRoomStructure[row][col].setText("");
+            }
+        }
     }
 }
 
