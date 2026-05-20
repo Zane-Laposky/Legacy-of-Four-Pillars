@@ -51,7 +51,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * Wrapper object used to help interact with the hero,
      * especially for inventory-related actions
      */
-    private PlayerWrapper playerWrapper;
+    private PlayerWrapperController playerWrapper;
     /**
      * The Stats panel from the view.
      * This allows the controller to update the displayed hit points.
@@ -72,7 +72,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     public DungeonController(final Hero theHero) {
         myHero = theHero;
-        playerWrapper = new PlayerWrapper(myHero);
+        playerWrapper = new PlayerWrapperController(myHero);
         myChangeSupport = new PropertyChangeSupport(this);
 
         //Store a reference to the specific hero type for special abilities
