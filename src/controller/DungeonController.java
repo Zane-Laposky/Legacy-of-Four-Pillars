@@ -8,6 +8,9 @@ import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 
 import view.GameView;
+import java.util.Arrays;
+
+import view.StatsPanel;
 import model.*;
 
 /**
@@ -26,7 +29,7 @@ import model.*;
  * @author Devin Riel
  * @version 1.0
  */
-public class controller implements KeyListener, PropertyChangeListener {
+public class DungeonController implements KeyListener {
 
     /**
      * The hero currently being controlled by the player.

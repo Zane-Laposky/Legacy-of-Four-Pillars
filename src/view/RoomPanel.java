@@ -16,7 +16,7 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0 Spring 2026
  */
-public class RoomPanel {
+class RoomPanel {
 
     /**
      * Dimension of the room layout
@@ -45,7 +45,7 @@ public class RoomPanel {
 
 
     /**
-     * Initializes the room panel by setting background, layout, and alignment
+     * Sets up a 3x3 grid of labels to display a room's characters. 
      */
     private void initPanel() {
         myOneRoomPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
@@ -76,7 +76,8 @@ public class RoomPanel {
 
 
     /**
-     * Draw the requested room layout on the panel.
+     * Draw a single room by converting the room's string representation into a 3x3
+     * grid of characters displayed on the panel.
      *
      * @param theRoom the requested room.
      */
@@ -100,7 +101,19 @@ public class RoomPanel {
      * @param theRoom the requested room to Display
      */
     public void displayRoom(final Room theRoom) {
-        drawRoom(theRoom);
+        if (theRoom != null) {
+            drawRoom(theRoom);
+        } else {
+            clearRoom();
+        }
+    }
+
+    public void clearRoom() {
+        for (int row =  0; row < DIMENSION; row++) {
+            for (int col =  0; col < DIMENSION; col++) {
+                myRoomStructure[row][col].setText("");
+            }
+        }
     }
 }
 

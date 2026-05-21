@@ -6,6 +6,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This class represents the stats panel in the game. This class displays
@@ -14,12 +16,12 @@ import java.awt.*;
  * @author Emily Hernandez
  * @version 1.0, Spring 2026
  */
-public class StatsPanel {
+class StatsPanel implements PropertyChangeListener {
 
     /**
      * Maximum hit point character can take.
      */
-    private static final int MAX_HITPOINT = 100; // NEED UPDATE
+    private final JLabel myMaxHP;
 
     /**
      * The stats panel for the game
@@ -31,19 +33,17 @@ public class StatsPanel {
      */
     private final JLabel myHitPt;
 
-
     /**
      * Constructs a StatsPanel object and initializes all components.
      *
      * @param theCharacterName the character's name
      */
-    //NEED UPDATE FROM CONTROLLER ON THE INITIAL VALUE
-    public StatsPanel(final String theCharacterName/*, final int theHitPoint*/) {
+    public StatsPanel(final String theCharacterName) {
         myPanel = new JPanel();
-        myHitPt = new JLabel(String.valueOf(MAX_HITPOINT)); // NEED UPDATE FROM CONTROLLER
+        myMaxHP = new JLabel("0");
+        myHitPt = new JLabel("0");
         initialPanel(theCharacterName);
     }
-
 
     /**
      * Initializes the StatsPanel and other components such as myNamePanel
@@ -54,24 +54,33 @@ public class StatsPanel {
     private void initialPanel(final String theCharacterName) {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        JLabel myTitle = new JLabel("STATS");
+        JLabel myTitle = new JLabel(theCharacterName);
         myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
         myPanel.add(myTitle);
 
-
-        JPanel myNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myNamePanel.add(new JLabel("Name: " + theCharacterName));
-
         JPanel myHitPtPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myHitPtPanel.add(new JLabel("Hit Points: "));
+        myHitPtPanel.add(new JLabel("HP: "));
         myHitPtPanel.add(myHitPt);
-        myHitPtPanel.add(new JLabel("/" + MAX_HITPOINT));
+        myHitPtPanel.add(new JLabel("/"));
+        myHitPtPanel.add(myMaxHP);
 
-
-        myPanel.add(myNamePanel);
         myPanel.add(myHitPtPanel);
     }
 
+    /**
+     * Set up the buttons between update according to receive events from others
+     *
+     * @param theEvent Property Change Event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("MaxHP")) {
+            myMaxHP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("HP")) {
+            myHitPt.setText(String.valueOf(theEvent.getNewValue()));
+        }
+    }
 
     /**
      * Return the Stats Panel
@@ -80,16 +89,5 @@ public class StatsPanel {
      */
     public JPanel getPanel() {
         return myPanel;
-    }
-
-
-    /**
-     * Update the available hit point during the game.
-     *
-     * @param theHitPoint available hit point
-     */
-    //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateHitPoint(final int theHitPoint) {
-        myHitPt.setText(String.valueOf(theHitPoint));
     }
 }

@@ -15,9 +15,9 @@ import model.Room;
  * @author Devin Riel
  * @version 1.0
  */
-public class PlayerWrapper {
+public class ControllerPlayerWrapper {
     /**
-     * The hero controlled fby the player.
+     * The hero controlled by the player.
      */
     private Hero myHero;
 
@@ -26,7 +26,7 @@ public class PlayerWrapper {
      *
      * @param theHero the hero controlled by the player
      */
-    public PlayerWrapper(Hero theHero) {
+    public ControllerPlayerWrapper(Hero theHero) {
         this.myHero = theHero;
     }
 

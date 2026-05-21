@@ -6,15 +6,17 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This class represents the inventory panel in the game. It displays
  * the player's collection of healing points, vision points, and pillars.
  *
  * @author Emily Hernandez
- * version 1.0, Spring 2026
+ * @version 1.0, Spring 2026
  */
-public class InventoryPanel {
+class InventoryPanel implements PropertyChangeListener {
 
     /**
      * Initial value for all inventory counts.
@@ -63,12 +65,9 @@ public class InventoryPanel {
     private void initialPanel() {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        JLabel myTitle = new JLabel("INVENTORY");
-        myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
-        myPanel.add(myTitle);
 
         JPanel myHPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        myHPPanel.add(new JLabel("Healing Point: "));
+        myHPPanel.add(new JLabel("Healing Potion: "));
         myHPPanel.add(myHP);
 
         JPanel myVPPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -78,10 +77,31 @@ public class InventoryPanel {
         JPanel myPillarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         myPillarPanel.add(new JLabel("Pillar: "));
         myPillarPanel.add(myPillar);
+        myPillarPanel.add(new JLabel("/ 4"));
 
         myPanel.add(myHPPanel);
         myPanel.add(myVPPanel);
         myPanel.add(myPillarPanel);
+
+        myPanel.setMinimumSize(myPanel.getPreferredSize());
+    }
+
+    /**
+     * Set up the buttons between update according to receive events from others
+     *
+     * @param theEvent Property Change Event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("HealingPotion")) {
+            myHP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("VisionPotion")) {
+            myVP.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
+        if (theEvent.getPropertyName().equals("Pillar")) {
+            myPillar.setText(String.valueOf((int) theEvent.getNewValue()));
+        }
     }
 
     /**
@@ -91,20 +111,5 @@ public class InventoryPanel {
      */
     public JPanel getPanel() {
         return myPanel;
-    }
-
-
-    /**
-     * Update any chances in inventory count as the game play
-     *
-     * @param theHP the healing point
-     * @param theVP the vision point
-     * @param thePillar the count of collected pillar
-     */
-    //NEED CONTROLLER TO PASS THE UPDATE
-    public void updateInventory(int theHP, int theVP, int thePillar) {
-        myHP.setText(String.valueOf(theHP));
-        myVP.setText(String.valueOf(theVP));
-        myPillar.setText(String.valueOf(thePillar));
     }
 }
