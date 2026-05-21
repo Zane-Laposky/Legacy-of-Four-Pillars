@@ -129,27 +129,33 @@ class ControlPanel implements PropertyChangeListener {
      * @return action panel
      */
     private JPanel buildActionPanel() {
-        JPanel actionPanel = new JPanel(new GridLayout(2, 3, 2, 2));
+        JPanel actionPanel = new JPanel(new GridLayout(2, 1, 2, 2));
+
+        JPanel topActionPanel = new JPanel(new GridLayout(1, 2, 2, 2));
 
         myRegularAttack = new JButton("Attack");
         mySpecialAttack = new JButton("Special Ability");
-        myItem = new JButton("Pick Up Item");
         myRegularAttack.setEnabled(false);
         mySpecialAttack.setEnabled(false);
-        myItem.setEnabled(false);
 
-        actionPanel.add(myRegularAttack);
-        actionPanel.add(myItem);
-        actionPanel.add(mySpecialAttack);
+        topActionPanel.add(myRegularAttack);
+        topActionPanel.add(mySpecialAttack);
+
+        JPanel bottomActionPanel = new JPanel(new GridLayout(1, 3, 2, 2));
 
         myHealingPotion = new JButton("Healing Potion");
         myVisionPotion = new JButton("Vision Potion");
+        myItem = new JButton("Pick Up Item");
         myHealingPotion.setEnabled(false);
         myVisionPotion.setEnabled(false);
+        myItem.setEnabled(false);
 
-        actionPanel.add(myHealingPotion);
-        actionPanel.add(myVisionPotion);
+        bottomActionPanel.add(myHealingPotion);
+        bottomActionPanel.add(myVisionPotion);
+        bottomActionPanel.add(myItem);
 
+        actionPanel.add(topActionPanel);
+        actionPanel.add(bottomActionPanel);
         return actionPanel;
     }
 
