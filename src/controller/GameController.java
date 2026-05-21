@@ -2,7 +2,6 @@ package controller;
 
 import model.*;
 import view.GameView;
-import view.StatsPanel;
 
 /**
  * GameController is responsible for starting the first version of the game.
@@ -46,64 +45,106 @@ public class GameController {
         startGame();
     }
 
-    /**
-     * Starts the game by creating the hero, creating the starting room,
-     * and connecting the controller to the game view.
-     */
-    private void startGame() {
-        createHero();
-        createStartingRoom();
-        connectControllerToGame();
-    }
 
     /**
-     * Creates the player's hero.
-     *
-     * In this first version, the player is automatically assigned
-     * a Warrior character.
+     * Starts the game by creating the view, creating the hero,
+     * creating the starting room, and connecting the controller.
+     */
+    private void startGame() {
+        myGameView = new GameView();
+
+        createHero();
+        createStartingRoom();
+        createDungeonController();
+
+        myDungeonController.propertyChange(
+                new java.beans.PropertyChangeEvent(this, "startup", null, null)
+        );
+    }
+
+
+    /**
+     * Creates the player's hero based on the type chosen in GameView.
      */
     private void createHero() {
-        myHero = new Warrior("Warrior");
+        String heroName = myGameView.getHeroName();
+        String heroType = myGameView.getHeroType();
+
+        if (heroName == null || heroName.isBlank()) {
+            heroName = "Hero";
+        }
+
+        if ("Priestess".equals(heroType)) {
+            myHero = new Priestess(heroName);
+        } else if ("Thief".equals(heroType)) {
+            myHero = new Thief(heroName);
+        } else {
+            myHero = new Warrior(heroName);
+        }
     }
+
 
     /**
      * Creates the starting room for the hero.
      *
-     * The hero is placed inside this room, and the room is told that
-     * the hero has entered it.
+     * This first version creates a small test dungeon so movement buttons
+     * can become enabled immediately.
      */
     private void createStartingRoom() {
         myStartingRoom = new Room(null);
+        myStartingRoom.setIsEntrance(true);
+        myStartingRoom.setCords(0, 0);
+
+        /*
+         * Test rooms so the movement buttons have real rooms to detect.
+         */
+        Room northRoom = new Room(null);
+        northRoom.setCords(0, 1);
+
+        Room eastRoom = new Room(null);
+        eastRoom.setCords(1, 0);
+
+        Room southRoom = new Room(null);
+        southRoom.setCords(0, -1);
+
+        Room westRoom = new Room(null);
+        westRoom.setCords(-1, 0);
+
+        /*
+         * setConnection creates two-way links between rooms.
+         */
+        myStartingRoom.setConnection(Direction.NORTH, northRoom);
+        myStartingRoom.setConnection(Direction.EAST, eastRoom);
+        myStartingRoom.setConnection(Direction.SOUTH, southRoom);
+        myStartingRoom.setConnection(Direction.WEST, westRoom);
+
+        /*
+         * Optional testing items/monster.
+         * Remove these later when using the real Dungeon generator.
+         */
+        northRoom.addItem(new HealingPotion());
+        eastRoom.addItem(new VisionPotion());
+        southRoom.addMonster(new Gremlin());
+
         myHero.setCurrentRoom(myStartingRoom);
         myStartingRoom.enter(myHero);
     }
 
+
+
     /**
-     * Connects the controller, view, and stats panel together.
-     *
-     * This method creates the stats panel, creates the dungeon controller,
-     * creates the game view, and adds the dungeon controller as a key listener
-     * so the player can control the hero with the keyboard.
+     * Connects the dungeon controller to the game view.
      */
-    private void connectControllerToGame() {
-        /*
-         * Creates the stats panel using the hero's name.
-         */
-        StatsPanel statsPanel = new StatsPanel(myHero.getMyName());
+    private void createDungeonController() {
+        myDungeonController = new DungeonController(myHero);
+
+        myGameView.connectController(myDungeonController);
 
         /*
-         * Creates the dungeon controller and gives it access to the hero
-         * and the stats panel so it can update the game state.
+         * Sends the first update so the view displays the starting room,
+         * HP, inventory, movement buttons, and combat buttons correctly.
          */
-        myDungeonController = new DungeonController(myHero, statsPanel);
-        /*
-         * Creates the main game view.
-         */
-        myGameView = new GameView();
-
-        myGameView.getFrame().addKeyListener(myDungeonController);
-        myGameView.getFrame().setFocusable(true);
-        myGameView.getFrame().requestFocusInWindow();
+        myDungeonController.updateView();
     }
 
     /**

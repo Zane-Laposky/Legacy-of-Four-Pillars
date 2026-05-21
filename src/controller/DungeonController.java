@@ -2,6 +2,12 @@ package controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
+
+import view.GameView;
 import java.util.Arrays;
 
 import view.StatsPanel;
@@ -48,27 +54,29 @@ public class DungeonController implements KeyListener {
      * Wrapper object used to help interact with the hero,
      * especially for inventory-related actions
      */
-    private PlayerWrapper playerWrapper;
+    private PlayerWrapperController playerWrapper;
     /**
      * The Stats panel from the view.
      * This allows the controller to update the displayed hit points.
      */
-    private StatsPanel myStatsPanel;
+    private GameView myGameView;
+
+
+    private final PropertyChangeSupport myChangeSupport;
 
     /**
-     * Constructs the first version of the DungeonController.
+     * Constructs the first version of the controller.
      *
      * This connects the selected hero and the stats panel to the controller.
      * It also checks what type of hero was chosen so the correct special
      * ability can be used later.
      *
      * @param theHero the hero controlled by the player
-     * @param theStatsPanel the stats panel that displays hero information
      */
-    public DungeonController(final Hero theHero, final StatsPanel theStatsPanel) {
+    public controller(final Hero theHero) {
         myHero = theHero;
-        playerWrapper = new PlayerWrapper(myHero);
-        myStatsPanel = theStatsPanel;
+        playerWrapper = new PlayerWrapperController(myHero);
+        myChangeSupport = new PropertyChangeSupport(this);
 
         //Store a reference to the specific hero type for special abilities
         if(myHero instanceof Warrior){
@@ -82,6 +90,8 @@ public class DungeonController implements KeyListener {
         //Set the starting room based on the heros current room
         myRoom = myHero.getCurrentRoom();
     }
+
+
 
     /**
      * keyTyped is required by KeyListener, but it is not used
@@ -97,91 +107,33 @@ public class DungeonController implements KeyListener {
      * Handles keyboard input from the player.
      * Movement, attacks, item pickup, and abilities are controlled here.
      *
-     * @param e the key event created when the player presses a key
+     * @param theEvent the key event created when the player presses a key
      */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent theEvent) {
+        int keyCode = theEvent.getKeyCode();
 
-        /*
-         * In this first version, the player cannot leave the room
-         * while there are still living monsters inside.
-         */
-        if(roomHasLivingMonsters()){
-            return;
-        }
-
-        /*
-         * Move west using A or the left arrow key.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_A ||  e.getKeyCode() == KeyEvent.VK_LEFT) {
-            moveHero("West");
-            updateStatsPanel();
-        }
-
-        /*
-         * Move east using D or the right arrow key.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_D ||  e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            moveHero("East");
-            updateStatsPanel();
-        }
-
-        /*
-         * Move north using W or the up arrow key.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_W ||  e.getKeyCode() == KeyEvent.VK_UP) {
+        if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
             moveHero("North");
-            updateStatsPanel();
-        }
-
-        /*
-         * Move south using S or the down arrow key.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_S ||  e.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) {
             moveHero("South");
-            updateStatsPanel();
-        }
-
-        /*
-         * Pick up all items in the current room.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_E) {
-            pickUpItems();
-            updateStatsPanel();
-        }
-
-        /*
-         * Use the hero's special ability.
-         */
-        if (e.getKeyCode() == KeyEvent.VK_Q) {
-            useSpecialAbility();
-            updateStatsPanel();
-        }
-
-        /*
-         * Use the hero's basic attack.
-         */
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+        } else if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
+            moveHero("West");
+        } else if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
+            moveHero("East");
+        } else if (keyCode == KeyEvent.VK_SPACE) {
             useBasicAttack();
-            updateStatsPanel();
+        } else if (keyCode == KeyEvent.VK_Q) {
+            useSpecialAbility();
+        } else if (keyCode == KeyEvent.VK_E) {
+            pickUpItems();
+        } else if (keyCode == KeyEvent.VK_H) {
+            useHealingPotion();
+        } else if (keyCode == KeyEvent.VK_V) {
+            useVisionPotion();
         }
 
-        /*
-         * Placeholder for using a healing item.
-         * This can be implemented in a later version.
-         */
-        if(e.getKeyCode() == KeyEvent.VK_H){
-            //HEAL
-        }
-
-        /*
-         * Placeholder for using a vision potion.
-         * This can be implemented in a later version.
-         */
-        if(e.getKeyCode() == KeyEvent.VK_V){
-            //INCREASED VISION
-        }
-
+        updateView();
     }
 
     /**
@@ -199,65 +151,6 @@ public class DungeonController implements KeyListener {
             }
         }
         return false;
-    }
-
-    /**
-     * Uses the selected hero's special ability.
-     * Warriors and Thieves need a monster target.
-     * Priestess can heal herself.
-     */
-    private void useSpecialAbility() {
-        Monster monster = activeLivingMonster();
-
-        /*
-         * Priestess special ability heals herself.
-         */
-        if(myHero instanceof Priestess){
-            ((Priestess) myHero).healSelf();
-        }
-
-        /*
-         * If there is no monster, attack-based abilities cannot be used.
-         */
-        if(monster == null) {
-            System.out.println("There is no living monster");
-            return;
-        }
-
-        /*
-         * Uses the correct special ability depending on hero type.
-         */
-        if(myHero instanceof Warrior){
-            ((Warrior) myHero).crushingBlow(monster);
-        } else if(myHero instanceof Thief){
-            ((Thief) myHero).surpriseAttack(monster);
-        }
-    }
-
-    /**
-     * Makes the hero attack the first living monster in the room.
-     */
-    private void useBasicAttack() {
-        Monster monster = activeLivingMonster();
-        /*
-         * The hero cannot attack if there are no living monsters.
-         */
-        if(monster == null) {
-            System.out.println("There is no living monster");
-            return;
-        }
-
-        /*
-         * Hero attacks the monster.
-         */
-        myHero.attack(monster);
-        updateStatsPanel();
-        System.out.println(myHero.getMyName() + " attacks " + monster.getMyName());
-
-        /*
-         * Handles what happens after the hero attacks.
-         */
-        afterHeroAttacks(monster);
     }
 
     /**
@@ -336,15 +229,7 @@ public class DungeonController implements KeyListener {
              */
             updateCurrentRoom();
             System.out.println("An update has occurred");
-        }
-    }
-
-    /**
-     * Updates the current room reference after the hero moves.
-     */
-    private void updateCurrentRoom() {
-        if(myHero != null) {
-            myRoom = myHero.getCurrentRoom();
+            //updateView();
         }
     }
 
@@ -377,14 +262,6 @@ public class DungeonController implements KeyListener {
         }
     }
 
-    /**
-     * Updates the stats panel with the hero's current hit points.
-     */
-    private void updateStatsPanel() {
-        if(myStatsPanel != null && playerWrapper != null) {
-            myStatsPanel.updateHitPoint(myHero.getMyHitPoints());
-        }
-    }
 
     /**
      * keyReleased is required by KeyListener, but it is not used
@@ -396,4 +273,209 @@ public class DungeonController implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
+
+    /**
+     * Allows view panels to listen to controller updates.
+     *
+     * @param theListener the listener being added
+     */
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
+    }
+
+    /**
+     * Receives button/menu events from the view.
+     *
+     * @param theEvent the property change event
+     */
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        String propertyName = theEvent.getPropertyName();
+
+        if ("move".equals(propertyName)) {
+            moveHero((String) theEvent.getNewValue());
+        } else if ("attack".equals(propertyName)) {
+            handleAttack((String) theEvent.getNewValue());
+        } else if ("grab".equals(propertyName)) {
+            pickUpItems();
+        } else if ("potion".equals(propertyName)) {
+            handlePotion((String) theEvent.getNewValue());
+        } else if ("menu".equals(propertyName)) {
+            handleMenu((String) theEvent.getNewValue());
+        }
+
+        updateView();
+    }
+
+    private void handleAttack(final String theAttackType) {
+        if ("Basic".equals(theAttackType)) {
+            useBasicAttack();
+        } else if ("Special".equals(theAttackType)) {
+            useSpecialAbility();
+        }
+    }
+
+    /**
+     * Uses the selected hero's special ability.
+     * Warriors and Thieves need a monster target.
+     * Priestess can heal herself.
+     */
+    private void useSpecialAbility() {
+        Monster monster = activeLivingMonster();
+
+        /*
+         * Priestess special ability heals herself.
+         */
+        if(myHero instanceof Priestess){
+            ((Priestess) myHero).healSelf();
+        }
+
+        /*
+         * If there is no monster, attack-based abilities cannot be used.
+         */
+        if(monster == null) {
+            System.out.println("There is no living monster");
+            return;
+        }
+
+        /*
+         * Uses the correct special ability depending on hero type.
+         */
+        if(myHero instanceof Warrior){
+            ((Warrior) myHero).crushingBlow(monster);
+        } else if(myHero instanceof Thief){
+            ((Thief) myHero).surpriseAttack(monster);
+        }
+    }
+
+    private void useBasicAttack() {
+        Monster monster = activeLivingMonster();
+
+        if (monster == null) {
+            sendMessage("There is no living monster.");
+            return;
+        }
+
+        myHero.attack(monster);
+        sendMessage(myHero.getMyName() + " attacks " + monster.getMyName() + ".");
+
+        afterHeroAttacks(monster);
+    }
+
+    private void handlePotion(final String thePotionType) {
+        if ("Heal".equals(thePotionType)) {
+            useHealingPotion();
+        } else if ("Vision".equals(thePotionType)) {
+            useVisionPotion();
+        }
+    }
+
+    private void useHealingPotion() {
+        Item[] inventory = myHero.getMyInventory();
+
+        for (Item item : inventory) {
+            if (item instanceof HealingPotion) {
+                HealingPotion potion = (HealingPotion) item;
+                myHero.setMyHitPoints(myHero.getMyHitPoints() + potion.getMyHealAmount());
+                sendMessage("Used Healing Potion.");
+
+                myHero.removeItem(item);
+
+                return;
+            }
+        }
+
+        sendMessage("You do not have a Healing Potion.");
+    }
+
+    private void useVisionPotion() {
+        Item[] inventory = myHero.getMyInventory();
+
+        for (Item item : inventory) {
+            if (item instanceof VisionPotion) {
+                myChangeSupport.firePropertyChange("vision", null, myRoom);
+                sendMessage("Used Vision Potion.");
+
+                myHero.removeItem(item);
+
+                return;
+            }
+        }
+    }
+
+    private void handleMenu(final String theMenuOption) {
+        if ("NewGame".equals(theMenuOption)) {
+            sendMessage("New game selected.");
+        } else if ("LoadGame".equals(theMenuOption)) {
+            sendMessage("Load game selected.");
+        }
+    }
+
+    private void updateCurrentRoom() {
+        myRoom = myHero.getCurrentRoom();
+    }
+
+    void updateView() {
+        myChangeSupport.firePropertyChange("room", null, myRoom);
+        myChangeSupport.firePropertyChange("HP", null, myHero.getMyHitPoints());
+        myChangeSupport.firePropertyChange("MaxHP", null, getHeroMaxHP());
+        myChangeSupport.firePropertyChange("HealingPotion", null, countHealingPotions());
+        myChangeSupport.firePropertyChange("VisionPotion", null, countVisionPotions());
+        myChangeSupport.firePropertyChange("Pillar", null, countPillars());
+        myChangeSupport.firePropertyChange("grab", null, myRoom.getItems().length > 0);
+        myChangeSupport.firePropertyChange("Monster", null, roomHasLivingMonsters());
+    }
+
+    private void sendMessage(final String theMessage) {
+        myChangeSupport.firePropertyChange("message", null, theMessage);
+    }
+
+    private int countHealingPotions() {
+        int count = 0;
+
+        for (Item item : myHero.getMyInventory()) {
+            if (item instanceof HealingPotion) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int countVisionPotions() {
+        int count = 0;
+
+        for (Item item : myHero.getMyInventory()) {
+            if (item instanceof VisionPotion) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int countPillars() {
+        int count = 0;
+
+        for (Item item : myHero.getMyInventory()) {
+            if (item instanceof Pillar) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int getHeroMaxHP() {
+        if (myHero instanceof Warrior) {
+            return 125;
+        } else if (myHero instanceof Priestess) {
+            return 75;
+        } else if (myHero instanceof Thief) {
+            return 75;
+        }
+
+        return myHero.getMyHitPoints();
+    }
+
 }
