@@ -1,13 +1,14 @@
 //TESTING PURPOSE ONLY
 package view;
 
+import model.Monster;
 import model.Room;
 import model.Skeleton;
 import model.VisionPotion;
 import model.Warrior;
 
 public class GUITestEnvironment {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         GameView testEnvironment = new GameView();
 
 
@@ -22,17 +23,30 @@ public class GUITestEnvironment {
         testNRoom.addItem(new VisionPotion());
         testERoom.addMonster(new Skeleton());
 
-        //temp character
-        Warrior testWarrior = new Warrior("SUBJECT11");
-        testWarrior.setMyAttackSpeed(10);
-        testWarrior.setMyChanceToBlock(7.0);
-        testWarrior.setMyMaxDamage(100);
-
-        //fire changes
-        testEnvironment.testFireEvent("room", null, testRoom);
-        testEnvironment.testFireEvent("Hero", null, testWarrior);
-        testEnvironment.testFireEvent("Pillar", 0, 3);
+        //Listener in GameView
         testEnvironment.testFireEvent("message", "", "Testing 1 2 3");
+        Thread.sleep(3000);
+        //Listener in ControlPanel
+        testEnvironment.testFireEvent("message", "", "Entered Room");
+        testEnvironment.testFireEvent("room", null, testRoom);
+        Thread.sleep(3000);
+
+        testEnvironment.testFireEvent("message", "", "Monster in the Room");
+        testEnvironment.testFireEvent("room", null, testERoom);
+        testEnvironment.testFireEvent("Monster", false, true);
+        Thread.sleep(3000);
+
+        testEnvironment.testFireEvent("message", "", "Change in inventory");
+        testEnvironment.testFireEvent("Pillar", 0, 3);
+        testEnvironment.testFireEvent("HealingPotion", 0, 4);
+        Thread.sleep(3000);
+
+        testEnvironment.testFireEvent("message", "", "Vision Potion Activated");
+        testEnvironment.testFireEvent("room", testERoom, testRoom);
+        testEnvironment.testFireEvent("vision", null, testRoom);
+        Thread.sleep(3000);
+
+
     }
 
 }
