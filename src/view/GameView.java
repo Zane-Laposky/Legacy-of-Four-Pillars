@@ -63,9 +63,10 @@ public class GameView implements PropertyChangeListener {
     private void initFrameLayout() {
         myFrame = new JFrame("Legacy of Four Pillars");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(500, 600);
-        myFrame.setMinimumSize(new Dimension(400, 600));
+        myFrame.setSize(600, 700);
+        myFrame.setMinimumSize(new Dimension(550, 600));
         myFrame.setResizable(true);
+        myFrame.setLocationRelativeTo(null);
     }
 
     /**
@@ -79,6 +80,12 @@ public class GameView implements PropertyChangeListener {
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         myMessageLabel = new JLabel("");
         myMessagePanel.add(myMessageLabel);
+
+        myChangeSupport.addPropertyChangeListener(myControlPanel);
+        myChangeSupport.addPropertyChangeListener(myStatsPanel);
+        myChangeSupport.addPropertyChangeListener(myInventoryPanel);
+        myChangeSupport.addPropertyChangeListener(myDungeonPanel);
+        myChangeSupport.addPropertyChangeListener(this);
 
         splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
                 myControlPanel.getPanel());
@@ -230,5 +237,10 @@ public class GameView implements PropertyChangeListener {
      */
     public JFrame getFrame() {
         return myFrame;
+    }
+
+    //TESTING PURPOSE ONLY
+    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
+        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
     }
 }
