@@ -1,0 +1,23 @@
+Index: src/Controller/PlayerWrapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Controller;\nimport model.Hero;\nimport model.Item;\nimport model.Room;\n\n\n/**\n * PlayerWrapper is a helper class for the first version of the game.\n *\n * This class wraps around the Hero object so the controller can access\n * important hero information without directly handling every model detail.\n * It helps the controller get the hero, check hit points, add items to the\n * inventory, and check the hero's current room.\n *\n * @author Devin Riel\n * @version 1.0\n */\npublic class PlayerWrapper {\n    /**\n     * The hero controlled by the player.\n     */\n    private Hero myHero;\n\n    /**\n     * Creates a PlayerWrapper for the given hero.\n     *\n     * @param theHero the hero controlled by the player\n     */\n    public PlayerWrapper(Hero theHero) {\n        this.myHero = theHero;\n    }\n\n    /**\n     * Gets the hero stored inside this wrapper.\n     *\n     * @return the hero controlled by the player\n     */\n    public Hero getMyHero() {\n        return myHero;\n    }\n\n    /**\n     * Sets the hero stored inside this wrapper.\n     *\n     * @param theHero the new hero to store\n     */\n    public void setMyHero(Hero theHero) {\n        this.myHero = theHero;\n    }\n\n    /**\n     * Gets the hero's current hit points.\n     *\n     * @return the hero's current hit points\n     */\n    public int getHeroHitPoints() {\n        return myHero.getMyHitPoints();\n    }\n\n    /**\n     * Adds an item array to the hero's inventory.\n     *\n     * The Hero class currently expects an Item array, so this method passes\n     * the array directly into the hero's addItem method.\n     *\n     * @param theItem the item array being added to the hero's inventory\n     */\n    public void addItemtoInventory(Item theItem []) {\n        myHero.addItem(theItem);\n    }\n\n    /**\n     * Gets the room the hero is currently inside.\n     *\n     * @return the hero's current room\n     */\n    public Room getCurrentRoom() {\n        return myHero.getCurrentRoom();\n    }\n\n\n    /**\n     * Checks whether the hero's current room has monsters.\n     *\n     * This only checks whether the monster array exists.\n     * It does not check whether the monsters are alive.\n     *\n     * @return true if the current room has a monster array, false otherwise\n     */\n    public boolean currentRoomHasMonster() {\n        if (myHero.getCurrentRoom().getMonsters() != null) {\n            return true;\n        } else  {\n            return false;\n        }\n    }\n}\n
+===================================================================
+diff --git a/src/Controller/PlayerWrapper.java b/src/Controller/PlayerWrapper.java
+--- a/src/Controller/PlayerWrapper.java	(revision 051213fdc69c29e1508fcfc73f31896f0b860d12)
++++ b/src/Controller/PlayerWrapper.java	(date 1779345266938)
+@@ -1,4 +1,4 @@
+-package Controller;
++package controller;
+ import model.Hero;
+ import model.Item;
+ import model.Room;
+@@ -17,7 +17,7 @@
+  */
+ public class PlayerWrapper {
+     /**
+-     * The hero controlled by the player.
++     * The hero controlled fby the player.
+      */
+     private Hero myHero;
+ 
