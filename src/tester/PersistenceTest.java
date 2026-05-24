@@ -10,7 +10,9 @@ import java.util.Optional;
 
 /**
  * Manual test for the Data save/load system.
- * This tests saving and loading multiple hero types.
+ *
+ * Iteration 4 update:
+ * This test checks repeated saves to make sure old save data gets updated.
  */
 public class PersistenceTest {
 
@@ -21,16 +23,16 @@ public class PersistenceTest {
         testHeroSaveLoad(persistence, new Thief("Test Thief"), 72);
         testHeroSaveLoad(persistence, new Priestess("Test Priestess"), 64);
 
+        testRepeatedSaveOverwrite(persistence);
+
+        System.out.println("--------------------------------");
         System.out.println("PersistenceTest finished.");
     }
 
-    private static void testHeroSaveLoad(Persistence persistence, Hero hero, int hp) {
-        hero.setMyHitPoints(hp);
-        hero.setMyMinDamage(10);
-        hero.setMyMaxDamage(25);
-        hero.setMyAttackSpeed(5);
-        hero.setMyChanceToHit(0.75);
-        hero.setMyChanceToBlock(0.25);
+    private static void testHeroSaveLoad(final Persistence persistence,
+                                         final Hero hero,
+                                         final int hp) {
+        setTestStats(hero, hp, 10, 25, 5, 0.75, 0.25);
 
         System.out.println("--------------------------------");
         System.out.println("Saving hero: " + hero.getMyName()
@@ -42,33 +44,133 @@ public class PersistenceTest {
 
         if (loadedHero.isPresent()) {
             Hero loaded = loadedHero.get();
+            printLoadedHero(loaded);
 
-            System.out.println("Loaded hero name: " + loaded.getMyName());
-            System.out.println("Loaded hero class: " + loaded.getClass().getSimpleName());
-            System.out.println("Loaded hero HP: " + loaded.getMyHitPoints());
-            System.out.println("Loaded min damage: " + loaded.getMyMinDamage());
-            System.out.println("Loaded max damage: " + loaded.getMyMaxDamage());
-            System.out.println("Loaded attack speed: " + loaded.getMyAttackSpeed());
-            System.out.println("Loaded chance to hit: " + loaded.getMyChanceToHit());
-            System.out.println("Loaded chance to block: " + loaded.getMyChanceToBlock());
+            boolean passed = heroMatchesExpected(
+                    loaded,
+                    hero.getMyName(),
+                    hero.getClass().getSimpleName(),
+                    hp,
+                    10,
+                    25,
+                    5,
+                    0.75,
+                    0.25
+            );
 
-            boolean passed =
-                    loaded.getMyName().equals(hero.getMyName())
-                            && loaded.getClass().getSimpleName().equals(hero.getClass().getSimpleName())
-                            && loaded.getMyHitPoints() == hp
-                            && loaded.getMyMinDamage() == 10
-                            && loaded.getMyMaxDamage() == 25
-                            && loaded.getMyAttackSpeed() == 5
-                            && loaded.getMyChanceToHit() == 0.75
-                            && loaded.getMyChanceToBlock() == 0.25;
-
-            if (passed) {
-                System.out.println("Save/load test passed.");
-            } else {
-                System.out.println("Save/load test failed. Loaded data did not match saved data.");
-            }
+            printResult("Basic save/load test", passed);
         } else {
-            System.out.println("Save/load test failed. No saved hero was loaded.");
+            System.out.println("Basic save/load test failed. No saved hero was loaded.");
+        }
+    }
+
+    /**
+     * Tests saving over an existing save.
+     *
+     * The first save uses one set of values.
+     * The second save changes those values.
+     * The test passes only if the second loaded hero has the updated values.
+     */
+    private static void testRepeatedSaveOverwrite(final Persistence persistence) {
+        System.out.println("--------------------------------");
+        System.out.println("Testing repeated save overwrite behavior.");
+
+        Hero hero = new Warrior("Overwrite Test");
+
+        setTestStats(hero, 88, 10, 25, 5, 0.75, 0.25);
+        System.out.println("First save:");
+        persistence.savePlayer(hero);
+
+        Optional<Hero> firstLoad = persistence.loadPlayer();
+
+        if (firstLoad.isPresent()) {
+            System.out.println("First loaded save:");
+            printLoadedHero(firstLoad.get());
+        } else {
+            System.out.println("Repeated save test failed. First save did not load.");
+            return;
+        }
+
+        setTestStats(hero, 40, 12, 30, 7, 0.85, 0.35);
+        System.out.println("Second save with updated values:");
+        persistence.savePlayer(hero);
+
+        Optional<Hero> secondLoad = persistence.loadPlayer();
+
+        if (secondLoad.isPresent()) {
+            Hero loaded = secondLoad.get();
+
+            System.out.println("Second loaded save after overwrite:");
+            printLoadedHero(loaded);
+
+            boolean passed = heroMatchesExpected(
+                    loaded,
+                    "Overwrite Test",
+                    "Warrior",
+                    40,
+                    12,
+                    30,
+                    7,
+                    0.85,
+                    0.35
+            );
+
+            printResult("Repeated save overwrite test", passed);
+        } else {
+            System.out.println("Repeated save test failed. Second save did not load.");
+        }
+    }
+
+    private static void setTestStats(final Hero hero,
+                                     final int hp,
+                                     final int minDamage,
+                                     final int maxDamage,
+                                     final int attackSpeed,
+                                     final double chanceToHit,
+                                     final double chanceToBlock) {
+        hero.setMyHitPoints(hp);
+        hero.setMyMinDamage(minDamage);
+        hero.setMyMaxDamage(maxDamage);
+        hero.setMyAttackSpeed(attackSpeed);
+        hero.setMyChanceToHit(chanceToHit);
+        hero.setMyChanceToBlock(chanceToBlock);
+    }
+
+    private static boolean heroMatchesExpected(final Hero loaded,
+                                               final String expectedName,
+                                               final String expectedClass,
+                                               final int expectedHp,
+                                               final int expectedMinDamage,
+                                               final int expectedMaxDamage,
+                                               final int expectedAttackSpeed,
+                                               final double expectedChanceToHit,
+                                               final double expectedChanceToBlock) {
+        return loaded.getMyName().equals(expectedName)
+                && loaded.getClass().getSimpleName().equals(expectedClass)
+                && loaded.getMyHitPoints() == expectedHp
+                && loaded.getMyMinDamage() == expectedMinDamage
+                && loaded.getMyMaxDamage() == expectedMaxDamage
+                && loaded.getMyAttackSpeed() == expectedAttackSpeed
+                && Double.compare(loaded.getMyChanceToHit(), expectedChanceToHit) == 0
+                && Double.compare(loaded.getMyChanceToBlock(), expectedChanceToBlock) == 0;
+    }
+
+    private static void printLoadedHero(final Hero loaded) {
+        System.out.println("Loaded hero name: " + loaded.getMyName());
+        System.out.println("Loaded hero class: " + loaded.getClass().getSimpleName());
+        System.out.println("Loaded hero HP: " + loaded.getMyHitPoints());
+        System.out.println("Loaded min damage: " + loaded.getMyMinDamage());
+        System.out.println("Loaded max damage: " + loaded.getMyMaxDamage());
+        System.out.println("Loaded attack speed: " + loaded.getMyAttackSpeed());
+        System.out.println("Loaded chance to hit: " + loaded.getMyChanceToHit());
+        System.out.println("Loaded chance to block: " + loaded.getMyChanceToBlock());
+    }
+
+    private static void printResult(final String testName, final boolean passed) {
+        if (passed) {
+            System.out.println(testName + " passed.");
+        } else {
+            System.out.println(testName + " failed. Loaded data did not match saved data.");
         }
     }
 }
