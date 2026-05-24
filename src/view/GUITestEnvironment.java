@@ -11,7 +11,6 @@ public class GUITestEnvironment {
     public static void main(String[] args) throws InterruptedException {
         GameView testEnvironment = new GameView();
 
-
         //temp Room to test
         Room testRoom = new Room(null);
         Room testERoom = new Room(null);
