@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 import model.Hero;
 import model.Item;
 import model.Room;
@@ -15,7 +15,7 @@ import model.Room;
  * @author Devin Riel
  * @version 1.0
  */
-public class PlayerWrapper {
+public class PlayerWrapperController {
     /**
      * The hero controlled by the player.
      */
@@ -26,7 +26,7 @@ public class PlayerWrapper {
      *
      * @param theHero the hero controlled by the player
      */
-    public PlayerWrapper(Hero theHero) {
+    public PlayerWrapperController(Hero theHero) {
         this.myHero = theHero;
     }
 
