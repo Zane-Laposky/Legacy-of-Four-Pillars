@@ -467,6 +467,38 @@ public class Room
                 theMonster;
     }
 
+    
+    /**
+     * Removes a monster from this room.
+     * Very similar to removeItem in model.Hero
+     *
+     * @param theMonster the monster to remove
+     */
+    public void removeMonster(final Monster theMonster) {
+        if (theMonster == null || myMonsters == null || myMonsters.length == 0) {
+            return;
+        }
+
+        Monster[] newMonsters = new Monster[myMonsters.length - 1];
+        boolean removed = false;
+        int index = 0;
+
+        for (Monster monster : myMonsters) {
+            if (!removed && monster == theMonster) {
+                removed = true;
+            } else {
+                if (index < newMonsters.length) {
+                    newMonsters[index] = monster;
+                    index++;
+                }
+            }
+        }
+
+        if (removed) {
+            myMonsters = newMonsters;
+        }
+    }
+    
     /**
      * Removes all items and monsters from this room.
      */
