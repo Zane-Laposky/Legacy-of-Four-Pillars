@@ -326,13 +326,14 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if(myHero instanceof Priestess){
             ((Priestess) myHero).healSelf();
+            sendMessage(myHero.getMyName() + " used her special ability.");
         }
 
         /*
          * If there is no monster, attack-based abilities cannot be used.
          */
         if(monster == null) {
-            System.out.println("There is no living monster");
+            sendMessage("There is no living monster.");
             return;
         }
 
@@ -341,9 +342,12 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if(myHero instanceof Warrior){
             ((Warrior) myHero).crushingBlow(monster);
+            sendMessage(myHero.getMyName() + " used Crushing Blow.");
         } else if(myHero instanceof Thief){
             ((Thief) myHero).surpriseAttack(monster);
+            sendMessage(myHero.getMyName() + " used Surprise Attack.");
         }
+        afterHeroAttacks(monster);
     }
 
     private void useBasicAttack() {
