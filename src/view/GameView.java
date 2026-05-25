@@ -60,7 +60,16 @@ public class GameView implements PropertyChangeListener {
      * Constructs the game window and initialize GUI components
      */
     public GameView() {
+        this(null);
+    }
+
+    public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
+
+        if (theController != null) {
+            myChangeSupport.addPropertyChangeListener(theController);
+        }
+
         initFrameLayout();
         gameTypePrompt();
         initGuiComponent();
@@ -306,23 +315,5 @@ public class GameView implements PropertyChangeListener {
         myFrame.addKeyListener(theController);
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
-    }
-    
-    /**
-     * Gets the hero name selected by the player.
-     *
-     * @return the selected hero name
-     */
-    public String getHeroName() {
-        return myHeroName;
-    }
-
-    /**
-     * Gets the hero type selected by the player.
-     *
-     * @return the selected hero type
-     */
-    public String getHeroType() {
-        return myHeroType;
     }
 }
