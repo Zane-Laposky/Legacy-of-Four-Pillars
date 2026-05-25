@@ -29,6 +29,11 @@ public class GameView implements PropertyChangeListener {
      */
     private String myHeroName;
 
+     /**
+     * Hero type selected by the player.
+     */
+    private String myHeroType = "Warrior";
+
     /**
      * Main view of the Game window
      */
@@ -41,6 +46,7 @@ public class GameView implements PropertyChangeListener {
 
     private JPanel myMessagePanel;
     private JLabel myMessageLabel;
+    private GameMenuBar myGameMenuBar;
 
     private final PropertyChangeSupport myChangeSupport;
     /**
@@ -91,7 +97,8 @@ public class GameView implements PropertyChangeListener {
                 myControlPanel.getPanel());
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
-        myFrame.setJMenuBar(new GameMenuBar().getMenuBar());
+        myGameMenuBar = new GameMenuBar();
+        myFrame.setJMenuBar(myGameMenuBar.getMenuBar());
     }
 
     /**
@@ -292,5 +299,23 @@ public class GameView implements PropertyChangeListener {
         myFrame.addKeyListener(theController);
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
+    }
+    
+    /**
+     * Gets the hero name selected by the player.
+     *
+     * @return the selected hero name
+     */
+    public String getHeroName() {
+        return myHeroName;
+    }
+
+    /**
+     * Gets the hero type selected by the player.
+     *
+     * @return the selected hero type
+     */
+    public String getHeroType() {
+        return myHeroType;
     }
 }
