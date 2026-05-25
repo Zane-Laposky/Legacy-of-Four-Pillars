@@ -105,6 +105,7 @@ public class GameView implements PropertyChangeListener {
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
         myGameMenuBar = new GameMenuBar();
+        myGameMenuBar.addPropertyChangeListener(this);
         myFrame.setJMenuBar(myGameMenuBar.getMenuBar());
     }
 
@@ -235,6 +236,10 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("message")) {
             myMessageLabel.setText((String) theEvent.getNewValue());
         }
+        if (theEvent.getPropertyName().equals("menu")
+                && theEvent.getNewValue().equals("NewGame")) {
+            resetGame();
+        }
     }
 
     /**
@@ -244,19 +249,7 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(listener);
     }
 
-    /**
-     * Return the main game frame
-     *
-     * @return the game frame
-     */
-    public JFrame getFrame() {
-        return myFrame;
-    }
 
-    //TESTING PURPOSE ONLY
-    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
-        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
-    }
     
         /**
      * Connects the main dungeon controller to the view.
@@ -307,22 +300,29 @@ public class GameView implements PropertyChangeListener {
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
     }
-    
-    /**
-     * Gets the hero name selected by the player.
-     *
-     * @return the selected hero name
-     */
-    public String getHeroName() {
-        return myHeroName;
+
+    private void resetGame() {
+        myMessageLabel.setText("");
+        myChangeSupport.firePropertyChange("HP", null, 0);
+        myChangeSupport.firePropertyChange("MaxHP", null, 0);
+        myChangeSupport.firePropertyChange("HealingPotion", null, 0);
+        myChangeSupport.firePropertyChange("VisionPotion", null, 0);
+        myChangeSupport.firePropertyChange("Pillar", null, 0);
+        myChangeSupport.firePropertyChange("room", null, null);
+        characterTypePrompt();
     }
 
     /**
-     * Gets the hero type selected by the player.
+     * Return the main game frame
      *
-     * @return the selected hero type
+     * @return the game frame
      */
-    public String getHeroType() {
-        return myHeroType;
+    public JFrame getFrame() {
+        return myFrame;
+    }
+
+    //TESTING PURPOSE ONLY
+    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
+        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
     }
 }
