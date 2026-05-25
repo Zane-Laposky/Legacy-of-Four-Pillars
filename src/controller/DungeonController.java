@@ -163,6 +163,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if(!theMonster.isAlive()){
             sendMessage(myHero.getMyName() + " slayed " + theMonster.getMyName() + "!");
+            myRoom.removeMonster(theMonster);
             return;
         }
 
