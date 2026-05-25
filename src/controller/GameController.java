@@ -3,9 +3,8 @@ package controller;
 import model.*;
 import view.GameView;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
+import java.beans.PropertyChangeEvent;
 /**
  * GameController is responsible for starting the first version of the game.
  *
