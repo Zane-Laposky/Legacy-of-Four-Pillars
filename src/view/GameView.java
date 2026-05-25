@@ -114,6 +114,7 @@ public class GameView implements PropertyChangeListener {
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
         myGameMenuBar = new GameMenuBar();
+        myGameMenuBar.addPropertyChangeListener(this);
         myFrame.setJMenuBar(myGameMenuBar.getMenuBar());
     }
 
@@ -244,6 +245,10 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("message")) {
             myMessageLabel.setText((String) theEvent.getNewValue());
         }
+        if (theEvent.getPropertyName().equals("menu")
+                && theEvent.getNewValue().equals("NewGame")) {
+            resetGame();
+        }
     }
 
     /**
@@ -253,19 +258,7 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(listener);
     }
 
-    /**
-     * Return the main game frame
-     *
-     * @return the game frame
-     */
-    public JFrame getFrame() {
-        return myFrame;
-    }
 
-    //TESTING PURPOSE ONLY
-    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
-        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
-    }
     
         /**
      * Connects the main dungeon controller to the view.
@@ -315,5 +308,30 @@ public class GameView implements PropertyChangeListener {
         myFrame.addKeyListener(theController);
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
+    }
+
+    private void resetGame() {
+        myMessageLabel.setText("");
+        myChangeSupport.firePropertyChange("HP", null, 0);
+        myChangeSupport.firePropertyChange("MaxHP", null, 0);
+        myChangeSupport.firePropertyChange("HealingPotion", null, 0);
+        myChangeSupport.firePropertyChange("VisionPotion", null, 0);
+        myChangeSupport.firePropertyChange("Pillar", null, 0);
+        myChangeSupport.firePropertyChange("room", null, null);
+        characterTypePrompt();
+    }
+
+    /**
+     * Return the main game frame
+     *
+     * @return the game frame
+     */
+    public JFrame getFrame() {
+        return myFrame;
+    }
+
+    //TESTING PURPOSE ONLY
+    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
+        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
     }
 }

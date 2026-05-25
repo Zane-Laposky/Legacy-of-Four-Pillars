@@ -1,11 +1,9 @@
 //TESTING PURPOSE ONLY
 package view;
 
-import model.Monster;
 import model.Room;
 import model.Skeleton;
 import model.VisionPotion;
-import model.Warrior;
 
 public class GUITestEnvironment {
     public static void main(String[] args) throws InterruptedException {
