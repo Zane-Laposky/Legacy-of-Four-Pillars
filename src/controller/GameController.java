@@ -16,7 +16,7 @@ import view.GameView;
  * @author Devin Riel
  * @version 1.0
  */
-public class GameController {
+public class GameController implements PropertyChangeListener {
 
     /**
      * The hero controlled by the player.
@@ -38,6 +38,10 @@ public class GameController {
      */
     private GameView myGameView;
 
+
+    private String myHeroName;
+    private String myHeroType;
+
     /**
      * Constructs a GameController and immediately starts the game.
      */
@@ -51,14 +55,18 @@ public class GameController {
      * creating the starting room, and connecting the controller.
      */
     private void startGame() {
-        myGameView = new GameView();
+        myGameView = new GameView(this);
 
-        createHero();
         createStartingRoom();
-        createDungeonController();
+
+        myHero.setCurrentRoom(myStartingRoom);
+
+        myDungeonController = new DungeonController(myHero);
+
+        myGameView.connectController(myDungeonController);
 
         myDungeonController.propertyChange(
-                new java.beans.PropertyChangeEvent(this, "startup", null, null)
+                new PropertyChangeEvent(this, "startup", null, null)
         );
     }
 
@@ -66,20 +74,17 @@ public class GameController {
     /**
      * Creates the player's hero based on the type chosen in GameView.
      */
-    private void createHero() {
-        String heroName = myGameView.getHeroName();
-        String heroType = myGameView.getHeroType();
-
-        if (heroName == null || heroName.isBlank()) {
-            heroName = "Hero";
+  private void createHero() {
+        if (myHeroName == null || myHeroName.isBlank()) {
+            myHeroName = "Hero";
         }
 
-        if ("Priestess".equals(heroType)) {
-            myHero = new Priestess(heroName);
-        } else if ("Thief".equals(heroType)) {
-            myHero = new Thief(heroName);
+        if ("Priestess".equals(myHeroType)) {
+            myHero = new Priestess(myHeroName);
+        } else if ("Thief".equals(myHeroType)) {
+            myHero = new Thief(myHeroName);
         } else {
-            myHero = new Warrior(heroName);
+            myHero = new Warrior(myHeroName);
         }
     }
 
@@ -163,5 +168,17 @@ public class GameController {
      */
     public DungeonController getDungeonController() {
         return myDungeonController;
+    }
+    
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        if ("Hero".equals(theEvent.getPropertyName())) {
+            String[] heroInfo = (String[]) theEvent.getNewValue();
+
+            myHeroName = heroInfo[0];
+            myHeroType = heroInfo[1];
+
+            createHero();
+        }
     }
 }

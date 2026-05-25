@@ -60,8 +60,17 @@ public class GameView implements PropertyChangeListener {
      * Constructs the game window and initialize GUI components
      */
     public GameView() {
+        this(null);
+    }
+
+    public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
         playerWon = false;
+
+        if (theController != null) {
+            myChangeSupport.addPropertyChangeListener(theController);
+        }
+
         initFrameLayout();
         gameTypePrompt();
         initGuiComponent();
@@ -321,6 +330,7 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("HealingPotion", null, 0);
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
+        myChangeSupport.firePropertyChange("room", null, null);
         characterTypePrompt();
     }
 
@@ -353,15 +363,6 @@ public class GameView implements PropertyChangeListener {
      */
     public JFrame getFrame() {
         return myFrame;
-    }
-
-    //TEMP
-    public String getHeroName() {
-        return myHeroName;
-    }
-
-    public String getHeroType() {
-        return myHeroType;
     }
 
     //TESTING PURPOSE ONLY
