@@ -378,10 +378,12 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         for (Item item : inventory) {
             if (item instanceof HealingPotion) {
                 HealingPotion potion = (HealingPotion) item;
-                myHero.setMyHitPoints(myHero.getMyHitPoints() + potion.getMyHealAmount());
-                sendMessage("Used Healing Potion.");
+                int gainedHealthPoints = potion.getMyHealAmount();
+                int healedHitPoints = myHero.getMyHitPoints() + gainedHealthPoints;
 
+                myHero.setMyHitPoints(Math.min(healedHitPoints, getHeroMaxHP()));
                 myHero.removeItem(item);
+                sendMessage("Gained " + gainedHealthPoints + " health points.");
 
                 return;
             }
