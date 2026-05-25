@@ -162,8 +162,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * If the monster died, end combat for this turn.
          */
         if(!theMonster.isAlive()){
-            System.out.println(theMonster.getMyName() + " has been vanquished!");
-
+            sendMessage(myHero.getMyName() + " slayed " + theMonster.getMyName() + "!");
             return;
         }
 
@@ -176,13 +175,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * Monster attacks the hero.
          */
         theMonster.attack(myHero);
-        System.out.println(theMonster.getMyName() + " attacks " + myHero.getMyName());
+        sendMessage(theMonster.getMyName() + " attacked " + myHero.getMyName() + "!");
 
         /*
          * Checks if the hero has been defeated.
          */
         if(!myHero.isAlive()) {
-            System.out.println(myHero.getMyName() + " has been defeated!");
+            sendMessage(myHero.getMyName() + " has been defeated!");
         }
     }
 
@@ -216,7 +215,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * The player cannot leave the room while monsters are alive.
          */
         if (roomHasLivingMonsters()){
-            System.out.println("There are monsters in the way!");
+            sendMessage("There are monsters in the way!");
         } else {
             /*
              * Attempts to move through the door in the chosen direction.
@@ -226,7 +225,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
              * Updates the controller's room reference after movement.
              */
             updateCurrentRoom();
-            System.out.println("An update has occurred");
+            sendMessage(myHero.getMyName() + " moved " + theDirection + "!");
             //updateView();
         }
     }
@@ -242,7 +241,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * If the room has no items, there is nothing to pick up.
          */
         if(roomItems == null || roomItems.length == 0) {
-            System.out.println("There are no room items to pick up");
+            sendMessage("There are no items in the room!");
             return;
         }
         /*
@@ -250,7 +249,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         playerWrapper.addItemtoInventory(myRoom.getItems());
 
-        System.out.println("Picked up: " + Arrays.toString(roomItems));
+        sendMessage(myHero.getMyName() + " picked up " + roomItems[0].getMyName() + "!");
 
         /*
          * Removes each picked-up item from the room.
@@ -405,6 +404,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 return;
             }
         }
+        sendMessage("You do not have a Vision Potion.");
     }
 
     private void handleMenu(final String theMenuOption) {
