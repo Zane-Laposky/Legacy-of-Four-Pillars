@@ -3,6 +3,8 @@ package controller;
 import model.*;
 import view.GameView;
 
+import java.beans.PropertyChangeListener;
+
 /**
  * GameController is responsible for starting the first version of the game.
  *
