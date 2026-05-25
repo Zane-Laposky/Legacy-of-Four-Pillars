@@ -307,22 +307,4 @@ public class GameView implements PropertyChangeListener {
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
     }
-    
-    /**
-     * Gets the hero name selected by the player.
-     *
-     * @return the selected hero name
-     */
-    public String getHeroName() {
-        return myHeroName;
-    }
-
-    /**
-     * Gets the hero type selected by the player.
-     *
-     * @return the selected hero type
-     */
-    public String getHeroType() {
-        return myHeroType;
-    }
 }
