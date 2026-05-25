@@ -38,6 +38,11 @@ public class GameController implements PropertyChangeListener {
      */
     private GameView myGameView;
 
+     /**
+     * The randomly generated dungeon map.
+     */
+    private Dungeon myDungeon;
+
 
     private String myHeroName;
     private String myHeroType;
@@ -90,50 +95,24 @@ public class GameController implements PropertyChangeListener {
 
 
     /**
-     * Creates the starting room for the hero.
-     *
-     * This first version creates a small test dungeon so movement buttons
-     * can become enabled immediately.
+     * Creates the starting room using the randomly generated dungeon.
      */
     private void createStartingRoom() {
-        myStartingRoom = new Room(null);
-        myStartingRoom.setIsEntrance(true);
-        myStartingRoom.setCords(0, 0);
+        /*
+         * Creates a random dungeon.
+         * The number controls the size/difficulty of the dungeon.
+         */
+        myDungeon = new Dungeon(5);
 
         /*
-         * Test rooms so the movement buttons have real rooms to detect.
+         * The hero starts at the dungeon entrance.
          */
-        Room northRoom = new Room(null);
-        northRoom.setCords(0, 1);
-
-        Room eastRoom = new Room(null);
-        eastRoom.setCords(1, 0);
-
-        Room southRoom = new Room(null);
-        southRoom.setCords(0, -1);
-
-        Room westRoom = new Room(null);
-        westRoom.setCords(-1, 0);
-
-        /*
-         * setConnection creates two-way links between rooms.
-         */
-        myStartingRoom.setConnection(Direction.NORTH, northRoom);
-        myStartingRoom.setConnection(Direction.EAST, eastRoom);
-        myStartingRoom.setConnection(Direction.SOUTH, southRoom);
-        myStartingRoom.setConnection(Direction.WEST, westRoom);
-
-        /*
-         * Optional testing items/monster.
-         * Remove these later when using the real Dungeon generator.
-         */
-        northRoom.addItem(new HealingPotion());
-        eastRoom.addItem(new VisionPotion());
-        southRoom.addMonster(new Gremlin());
+        myStartingRoom = myDungeon.getEntrance();
 
         myHero.setCurrentRoom(myStartingRoom);
         myStartingRoom.enter(myHero);
     }
+
 
 
 
