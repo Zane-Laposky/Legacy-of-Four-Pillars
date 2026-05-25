@@ -7,7 +7,9 @@ link: https://github.com/Zane-Laposky/Legacy-of-Four-Pillars
 
 A Java-based dungeon adventure game built with the MVC design pattern. Features a procedurally generated maze, hero classes, turn-based combat, item collection, and save/load functionality using serialization.
 
-Issues from Iteration 3:
+Issues from Iteration 4:
+
+1. My biggest challenge for iteration 4 was ensuring tha that the new wall designs for the dungeons correctly matched one another so that upon generation you can visually and easily seperate the different rooms from one another - Zane Laposky
 
 1. The challenge I had this week was figuring out how to let the controller know what is happening on the GUI without giving it direct access to every panel. I learned how to use PropertyChangeSupport and PropertyChangeListener properly to send and receive signals. - Emily Hernandez
 

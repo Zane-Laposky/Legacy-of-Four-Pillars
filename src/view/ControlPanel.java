@@ -163,24 +163,24 @@ class ControlPanel implements PropertyChangeListener {
      * Set up action listener
      */
     private void addListeners() {
-        myUpButton.addActionListener(_ ->
+        myUpButton.addActionListener(e ->
                 myChangeSupport.firePropertyChange("move", "", "North"));
-        myDownButton.addActionListener(_ ->
+        myDownButton.addActionListener(e ->
                 myChangeSupport.firePropertyChange("move", "", "South"));
-        myRightButton.addActionListener(_ ->
+        myRightButton.addActionListener(e ->
                 myChangeSupport.firePropertyChange("move", "", "East"));
-        myLeftButton.addActionListener(_ ->
+        myLeftButton.addActionListener(e ->
                 myChangeSupport.firePropertyChange("move", "", "West"));
 
-        myRegularAttack.addActionListener(_ ->
+        myRegularAttack.addActionListener(e ->
                 myChangeSupport.firePropertyChange("attack", "", "Basic"));
-        mySpecialAttack.addActionListener(_ ->
+        mySpecialAttack.addActionListener(e ->
                 myChangeSupport.firePropertyChange("attack", "", "Special"));
-        myItem.addActionListener(_ ->
+        myItem.addActionListener(e ->
                 myChangeSupport.firePropertyChange("grab", "", "Item"));
-        myHealingPotion.addActionListener(_ ->
+        myHealingPotion.addActionListener(e ->
                 myChangeSupport.firePropertyChange("potion", "", "Heal"));
-        myVisionPotion.addActionListener(_ ->
+        myVisionPotion.addActionListener(e ->
                 myChangeSupport.firePropertyChange("potion", "", "Vision"));
 
     }

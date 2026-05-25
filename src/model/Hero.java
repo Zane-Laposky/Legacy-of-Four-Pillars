@@ -111,7 +111,7 @@ public abstract class Hero extends DungeonCharacter {
 
         Item[] newInventory = Arrays.copyOf(myInventory, myInventory.length + theItem.length);
 
-        for(int i = 0; i < myInventory.length; i++) {
+        for(int i = 0; i < theItem.length; i++) {
             newInventory[myInventory.length + i] = theItem[i];
         }
         myInventory = newInventory;

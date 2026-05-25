@@ -133,13 +133,13 @@ class GameMenuBar {
      * Set up action listener
      */
     private void addListeners() {
-        myNewGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+        myNewGame.addActionListener(e -> myChangeSupport.firePropertyChange(
                 "menu", "", "NewGame"));
-        myLoadGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+        myLoadGame.addActionListener(e -> myChangeSupport.firePropertyChange(
                 "menu", "", "LoadGame"));
-        myExitGame.addActionListener(_ -> System.exit(0));
+        myExitGame.addActionListener(e -> System.exit(0));
 
-        myGuidelines.addActionListener(_ -> JOptionPane.showMessageDialog(
+        myGuidelines.addActionListener(e -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -150,7 +150,7 @@ class GameMenuBar {
                         """
         ));
 
-        myAboutGame.addActionListener(_ -> JOptionPane.showMessageDialog(
+        myAboutGame.addActionListener(e -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -161,7 +161,7 @@ class GameMenuBar {
                         """
         ));
 
-        myKeyboardSC.addActionListener(_ -> JOptionPane.showMessageDialog(
+        myKeyboardSC.addActionListener(e -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Keyboard Shortcuts

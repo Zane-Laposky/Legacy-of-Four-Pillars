@@ -8,9 +8,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 
 import view.GameView;
-import java.util.Arrays;
 
-import view.StatsPanel;
 import model.*;
 
 /**
