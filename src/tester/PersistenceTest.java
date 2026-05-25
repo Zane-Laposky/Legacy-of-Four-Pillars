@@ -22,11 +22,8 @@ public class PersistenceTest {
         // testHeroSaveLoad(persistence, new Warrior("Ryan"), 88);
         // testHeroSaveLoad(persistence, new Thief("Test Thief"), 72);
         // testHeroSaveLoad(persistence, new Priestess("Test Priestess"), 64);
-        
+
         // testRepeatedSaveOverwrite(persistence);
-
-
-        testRepeatedSaveOverwrite(persistence);
 
         System.out.println("--------------------------------");
         System.out.println("PersistenceTest finished.");
