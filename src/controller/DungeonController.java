@@ -27,7 +27,7 @@ import model.*;
  * @author Devin Riel
  * @version 1.0
  */
-public class DungeonController implements KeyListener {
+public class DungeonController implements KeyListener, PropertyChangeListener {
 
     /**
      * The hero currently being controlled by the player.
@@ -71,7 +71,7 @@ public class DungeonController implements KeyListener {
      *
      * @param theHero the hero controlled by the player
      */
-    public controller(final Hero theHero) {
+    public DungeonController(final Hero theHero) {
         myHero = theHero;
         playerWrapper = new PlayerWrapperController(myHero);
         myChangeSupport = new PropertyChangeSupport(this);

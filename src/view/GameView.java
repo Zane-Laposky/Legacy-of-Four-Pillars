@@ -4,6 +4,8 @@
  */
 package view;
 
+import controller.DungeonController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -47,6 +49,11 @@ public class GameView implements PropertyChangeListener {
     private JPanel myMessagePanel;
     private JLabel myMessageLabel;
     private GameMenuBar myGameMenuBar;
+    private DungeonPanel myDungeonPanel;
+    private StatsPanel myStatsPanel;
+    private InventoryPanel myInventoryPanel;
+    private ControlPanel myControlPanel;
+
 
     private final PropertyChangeSupport myChangeSupport;
     /**
@@ -79,10 +86,10 @@ public class GameView implements PropertyChangeListener {
      * Create all the game panels and adds them to the window.
      */
     private void initGuiComponent() {
-        DungeonPanel myDungeonPanel = new DungeonPanel();
-        StatsPanel myStatsPanel = new StatsPanel(myHeroName);
-        InventoryPanel myInventoryPanel = new InventoryPanel();
-        ControlPanel myControlPanel = new ControlPanel();
+        myDungeonPanel = new DungeonPanel();
+        myStatsPanel = new StatsPanel(myHeroName);
+        myInventoryPanel = new InventoryPanel();
+        myControlPanel = new ControlPanel();
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         myMessageLabel = new JLabel("");
         myMessagePanel.add(myMessageLabel);
