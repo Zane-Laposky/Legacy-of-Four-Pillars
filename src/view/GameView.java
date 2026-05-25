@@ -53,7 +53,7 @@ public class GameView implements PropertyChangeListener {
     private StatsPanel myStatsPanel;
     private InventoryPanel myInventoryPanel;
     private ControlPanel myControlPanel;
-
+    private Boolean playerWon;
 
     private final PropertyChangeSupport myChangeSupport;
     /**
@@ -65,6 +65,7 @@ public class GameView implements PropertyChangeListener {
 
     public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
+        playerWon = false;
 
         if (theController != null) {
             myChangeSupport.addPropertyChangeListener(theController);
@@ -168,6 +169,7 @@ public class GameView implements PropertyChangeListener {
         if (choice == JOptionPane.YES_OPTION) {
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
+            //NEED FIXING
             myChangeSupport.firePropertyChange("menu", "", "LoadGame");
         }
     }
@@ -249,6 +251,14 @@ public class GameView implements PropertyChangeListener {
                 && theEvent.getNewValue().equals("NewGame")) {
             resetGame();
         }
+        if (theEvent.getPropertyName().equals("won")) {
+            playerWon = true;
+            endGame();
+        }
+        if (theEvent.getPropertyName().equals("lost")) {
+            playerWon = false;
+            endGame();
+        }
     }
 
     /**
@@ -310,6 +320,9 @@ public class GameView implements PropertyChangeListener {
         myFrame.requestFocusInWindow();
     }
 
+    /**
+     * Reset the game state and allow user to create new hero
+     */
     private void resetGame() {
         myMessageLabel.setText("");
         myChangeSupport.firePropertyChange("HP", null, 0);
@@ -320,6 +333,28 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("room", null, null);
         characterTypePrompt();
     }
+
+    private void endGame() {
+        String message = "";
+        if (playerWon) {
+            message = "Congratulations! You won!\n";
+        } else {
+            message = "Good Game\n";
+        }
+        Object[] options = {"Yes", "No"};
+        int choice = JOptionPane.showOptionDialog(myFrame,
+                message + "Play Again",
+                "Game Over", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, options, options[0]);
+        if (choice == JOptionPane.YES_OPTION) {
+            gameTypePrompt();
+        } else if (choice == JOptionPane.NO_OPTION) {
+            System.exit(0);
+        }
+
+    }
+
 
     /**
      * Return the main game frame
