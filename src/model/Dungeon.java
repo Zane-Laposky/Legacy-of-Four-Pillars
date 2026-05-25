@@ -670,6 +670,17 @@ public class Dungeon
     {
         return myHeroY;
     }
+
+    
+    /**
+     * Gets the entrance room of the dungeon.
+     *
+     * @return the starting entrance room
+     */
+    public Room getEntrance() {
+        return myEntrance;
+    }
+
     /**
      * Return's the dungeon's rooms
      *
