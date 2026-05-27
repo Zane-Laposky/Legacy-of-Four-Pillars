@@ -227,7 +227,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
              */
             updateCurrentRoom();
             sendMessage(myHero.getMyName() + " moved " + theDirection + "!");
-            //updateView();
+
+            if(roomHasLivingMonsters()) {
+                sendMessage("There is a " + activeLivingMonster().getMyName() + " in this room!");
+            }
         }
     }
 
