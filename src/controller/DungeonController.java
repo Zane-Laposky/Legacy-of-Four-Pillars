@@ -63,6 +63,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     private final PropertyChangeSupport myChangeSupport;
 
     /**
+     * Tracks whether the game has ended.
+     */
+    private boolean myGameOver;
+
+    /**
      * Constructs the first version of the controller.
      *
      * This connects the selected hero and the stats panel to the controller.
@@ -75,6 +80,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myHero = theHero;
         playerWrapper = new PlayerWrapperController(myHero);
         myChangeSupport = new PropertyChangeSupport(this);
+        myGameOver = false;
 
         //Store a reference to the specific hero type for special abilities
         if(myHero instanceof Warrior){
@@ -183,6 +189,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if(!myHero.isAlive()) {
             sendMessage(myHero.getMyName() + " has been defeated!");
+            updateView();
+            checkGameEnd();
         }
     }
 
@@ -232,6 +240,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 sendMessage("There is a " + activeLivingMonster().getMyName() + " in this room!");
             }
         }
+        checkGameEnd();
     }
 
     /**
@@ -306,6 +315,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
 
         updateView();
+        checkGameEnd();
     }
 
     private void handleAttack(final String theAttackType) {
@@ -485,5 +495,30 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         return myHero.getMyHitPoints();
     }
+    
+    /**
+     * Checks whether the player has won or lost the game.
+     */
+    private void checkGameEnd() {
+        /*
+         * Lose condition:
+         * The hero dies.
+         */
+        if (!myHero.isAlive()) {
+            myGameOver = true;
+            sendMessage(myHero.getMyName() + " has been defeated!");
+            myChangeSupport.firePropertyChange("lost", false, true);
+            return;
+        }
 
+        /*
+         * Win condition:
+         * The hero is in the exit room and has all four pillars.
+         */
+        if (myRoom.getIsExit() && countPillars() == 4) {
+            myGameOver = true;
+            sendMessage(myHero.getMyName() + " escaped with all four pillars!");
+            myChangeSupport.firePropertyChange("won", false, true);
+        }
+    }
 }
