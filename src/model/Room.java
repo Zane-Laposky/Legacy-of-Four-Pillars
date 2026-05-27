@@ -217,7 +217,6 @@ public class Room
 
         myHasVisitedBefore = true;
 
-        System.out.println("Entered room");
     }
 
     /**
@@ -261,10 +260,6 @@ public class Room
         }
         else
         {
-
-            System.out.println(
-                    "There is no room in that direction"
-            );
         }
     }
 
