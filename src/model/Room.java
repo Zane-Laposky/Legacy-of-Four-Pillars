@@ -377,7 +377,7 @@ public class Room
 
         if (myIsEntrance)
         {
-            roomSymbol = "I";
+            roomSymbol = "#";
         }
         else if (myIsExit)
         {

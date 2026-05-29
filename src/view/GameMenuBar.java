@@ -147,6 +147,24 @@ class GameMenuBar {
                         Explore a dungeon, collect all four Pillars of OO and reach the exit to win.
                         The hero may take damage from falling into pits or fighting monsters.
                         Use potions to heal and special abilities to defeat monsters.
+                        
+                        Items:
+                        Healing Potion - ♥
+                        Vision Potion - ⚇
+                        Pillar of Inheritance - I
+                        Pillar of Polymorphism - P
+                        Pillar of Encapsulation - E
+                        Pillar of Abstraction - A
+                        
+                        Enemies:
+                        Ogre - o
+                        Gremlin - g
+                        Skeleton - s
+                        
+                        Other:
+                        Locked Room - ⚿
+                        Entrance - #
+                        Exit - X
                         """
         ));
 
@@ -176,6 +194,8 @@ class GameMenuBar {
                           E   = Pick up items
                           H   = Healing Potion
                           V   = Vision Potion
+                          
+                        
                         """
         ));
     }
