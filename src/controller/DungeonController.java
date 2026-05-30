@@ -6,6 +6,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
+import javax.swing.Timer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import view.GameView;
 
@@ -68,6 +71,16 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     private boolean myGameOver;
 
     /**
+     * Stores messages waiting to be shown to the player.
+     */
+    private Queue<String> myMessageQueue;
+
+    /**
+     * Displays one queued message at a time.
+     */
+    private Timer myMessageTimer;
+
+    /**
      * Constructs the first version of the controller.
      *
      * This connects the selected hero and the stats panel to the controller.
@@ -82,6 +95,18 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myChangeSupport = new PropertyChangeSupport(this);
         myGameOver = false;
 
+        myMessageQueue = new LinkedList<>();
+
+        myMessageTimer = new Timer(1000, theEvent -> {
+            if (!myMessageQueue.isEmpty()) {
+                String nextMessage = myMessageQueue.poll();
+
+                myChangeSupport.firePropertyChange("message", null, nextMessage);
+            }
+        });
+
+        myMessageTimer.start();
+        
         //Store a reference to the specific hero type for special abilities
         if(myHero instanceof Warrior){
             myWarrior = (Warrior)myHero;
@@ -445,7 +470,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     }
 
     private void sendMessage(final String theMessage) {
-        myChangeSupport.firePropertyChange("message", null, theMessage);
+        myMessageQueue.add(theMessage);
     }
 
     private int countHealingPotions() {
