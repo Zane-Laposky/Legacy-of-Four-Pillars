@@ -8,6 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import model.Dungeon;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * Saves and loads player data.
  *
@@ -17,6 +25,8 @@ public class Persistence {
 
     private static final int MAIN_SAVE_ID = 1;
 
+    private static final String SAVE_FOLDER = "saves";
+    private static final String DUNGEON_SAVE_FILE = SAVE_FOLDER + "/dungeon_save.dat";
     /**
      * Saves the current hero to the SQLite database.
      *
@@ -140,6 +150,54 @@ public class Persistence {
 
         } catch (SQLException e) {
             System.out.println("Delete save failed: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Saves the current dungeon object.
+     *
+     * @param theDungeon the dungeon to save
+     */
+    public void saveDungeon(final Dungeon theDungeon) {
+        if (theDungeon == null) {
+            System.out.println("No dungeon to save.");
+            return;
+        }
+
+        new File(SAVE_FOLDER).mkdirs();
+
+        try (ObjectOutputStream output =
+                     new ObjectOutputStream(new FileOutputStream(DUNGEON_SAVE_FILE))) {
+
+            output.writeObject(theDungeon);
+            System.out.println("Dungeon saved.");
+
+        } catch (Exception e) {
+            System.out.println("Dungeon save failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads the saved dungeon object.
+     *
+     * @return the saved dungeon, or empty if it cannot be loaded
+     */
+    public Optional<Dungeon> loadDungeon() {
+        File saveFile = new File(DUNGEON_SAVE_FILE);
+
+        if (!saveFile.exists()) {
+            return Optional.empty();
+        }
+
+        try (ObjectInputStream input =
+                     new ObjectInputStream(new FileInputStream(saveFile))) {
+
+            Dungeon loadedDungeon = (Dungeon) input.readObject();
+            return Optional.of(loadedDungeon);
+
+        } catch (Exception e) {
+            System.out.println("Dungeon load failed: " + e.getMessage());
+            return Optional.empty();
         }
     }
 }
