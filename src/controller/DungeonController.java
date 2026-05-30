@@ -258,15 +258,25 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         if (roomHasLivingMonsters()){
             sendMessage("There are monsters in the way!");
         } else {
+
+            Room oldRoom = myHero.getCurrentRoom();
+
             /*
              * Attempts to move through the door in the chosen direction.
              */
-            myRoom.tryDoor(myHero, theDirection);
+            oldRoom.tryDoor(myHero, theDirection);
+
+            Room newRoom = myHero.getCurrentRoom();
+
             /*
              * Updates the controller's room reference after movement.
              */
             updateCurrentRoom();
-            sendMessage(myHero.getMyName() + " moved " + theDirection + "!");
+            if (newRoom != oldRoom) {
+                sendMessage("You moved " + theDirection + ".");
+            } else {
+                sendMessage("You cannot move " + theDirection + ".");
+            }
 
             if(roomHasLivingMonsters()) {
                 sendMessage("There is a " + activeLivingMonster().getMyName() + " in this room!");
@@ -274,6 +284,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
         checkGameEnd();
     }
+
 
     /**
      * Picks up all items from the current room and adds them
