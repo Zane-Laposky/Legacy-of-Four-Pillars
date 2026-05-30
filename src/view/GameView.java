@@ -4,68 +4,268 @@
  */
 package view;
 
-import controller.DungeonController;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+
+import controller.DungeonController;
+
 /**
- * GameView is the class which represents main GUI of the game.
- * It creates and organizes panels, menus, dialogs and  window layout for the game.
+ * GameView represents the main GUI for the game.
+ * It creates and organizes the panels, dialogs, menus, and window layout.
  *
- * @author Emily Hernandez
- * @version 1.0 Spring 2026
+ * @author Emily Hernandez updated by Zane Laposky
+ * @version 1.1 Spring 2026
  */
 public class GameView implements PropertyChangeListener {
 
     /**
-     * Main window
+     * Window title.
+     */
+    private static final String WINDOW_TITLE = "Legacy of Four Pillars";
+
+    /**
+     * Default frame width.
+     */
+    private static final int FRAME_WIDTH = 600;
+
+    /**
+     * Default frame height.
+     */
+    private static final int FRAME_HEIGHT = 700;
+
+    /**
+     * Minimum frame width.
+     */
+    private static final int MIN_FRAME_WIDTH = 550;
+
+    /**
+     * Minimum frame height.
+     */
+    private static final int MIN_FRAME_HEIGHT = 600;
+
+    /**
+     * Top-level divider location.
+     */
+    private static final double MAIN_DIVIDER_LOCATION = 0.75d;
+
+    /**
+     * Bottom divider location.
+     */
+    private static final double BOTTOM_DIVIDER_LOCATION = 0.40d;
+
+    /**
+     * Resize weight for the left bottom split pane.
+     */
+    private static final double LEFT_BOTTOM_RESIZE_WEIGHT = 0.30d;
+
+    /**
+     * Resize weight for the top split pane.
+     */
+    private static final double TOP_RESIZE_WEIGHT = 0.90d;
+
+    /**
+     * Resize weight for the bottom split pane.
+     */
+    private static final double BOTTOM_RESIZE_WEIGHT = 0.50d;
+
+    /**
+     * Resize weight for the main split pane.
+     */
+    private static final double MAIN_RESIZE_WEIGHT = 0.95d;
+
+    /**
+     * Property name for message updates.
+     */
+    private static final String PROPERTY_MESSAGE = "message";
+
+    /**
+     * Property name for menu actions.
+     */
+    private static final String PROPERTY_MENU = "menu";
+
+    /**
+     * Property name for win events.
+     */
+    private static final String PROPERTY_WON = "won";
+
+    /**
+     * Property name for loss events.
+     */
+    private static final String PROPERTY_LOST = "lost";
+
+    /**
+     * Property name for hero creation events.
+     */
+    private static final String PROPERTY_HERO = "Hero";
+
+    /**
+     * Property name for health point updates.
+     */
+    private static final String PROPERTY_HP = "HP";
+
+    /**
+     * Property name for maximum health point updates.
+     */
+    private static final String PROPERTY_MAX_HP = "MaxHP";
+
+    /**
+     * Property name for healing potion updates.
+     */
+    private static final String PROPERTY_HEALING_POTION = "HealingPotion";
+
+    /**
+     * Property name for vision potion updates.
+     */
+    private static final String PROPERTY_VISION_POTION = "VisionPotion";
+
+    /**
+     * Property name for pillar updates.
+     */
+    private static final String PROPERTY_PILLAR = "Pillar";
+
+    /**
+     * Property name for room updates.
+     */
+    private static final String PROPERTY_ROOM = "room";
+
+    /**
+     * Menu value for a new game.
+     */
+    private static final String NEW_GAME_VALUE = "NewGame";
+
+    /**
+     * Menu value for loading a game.
+     */
+    private static final String LOAD_GAME_VALUE = "LoadGame";
+
+    /**
+     * Default hero type.
+     */
+    private static final String DEFAULT_HERO_TYPE = "Warrior";
+
+    /**
+     * Message displayed when the player wins.
+     */
+    private static final String WIN_MESSAGE = "Congratulations! You won!\n";
+
+    /**
+     * Message displayed when the player loses.
+     */
+    private static final String LOSE_MESSAGE = "Good Game\n";
+
+    /**
+     * Prompt title shown when the game ends.
+     */
+    private static final String GAME_OVER_TITLE = "Game Over";
+
+    /**
+     * Prompt title shown when selecting a new hero.
+     */
+    private static final String NEW_HERO_TITLE = "New Hero";
+
+    /**
+     * Prompt title shown when choosing game type.
+     */
+    private static final String WELCOME_TITLE = "Welcome to Legacy of Four Pillars!";
+
+    /**
+     * Main application window.
      */
     private JFrame myFrame;
 
     /**
-     * Hero's name
+     * Hero name entered by the player.
      */
-    private String myHeroName;
-
-     /**
-     * Hero type selected by the player.
-     */
-    private String myHeroType = "Warrior";
+    private String myHeroName = "";
 
     /**
-     * Main view of the Game window
+     * Hero type selected by the player.
+     */
+    private String myHeroType = DEFAULT_HERO_TYPE;
+
+    /**
+     * Main split pane for the full window.
      */
     private JSplitPane myMainPanel;
 
     /**
-     * Bottom view of the Game window
+     * Bottom split pane containing status and controls.
      */
     private JSplitPane myBottomPanel;
 
-    private JPanel myMessagePanel;
-    private JLabel myMessageLabel;
-    private GameMenuBar myGameMenuBar;
-    private DungeonPanel myDungeonPanel;
-    private StatsPanel myStatsPanel;
-    private InventoryPanel myInventoryPanel;
-    private ControlPanel myControlPanel;
-    private Boolean playerWon;
-
-    private final PropertyChangeSupport myChangeSupport;
     /**
-     * Constructs the game window and initialize GUI components
+     * Panel that displays messages to the player.
+     */
+    private JPanel myMessagePanel;
+
+    /**
+     * Label used to show player messages.
+     */
+    private JLabel myMessageLabel;
+
+    /**
+     * Menu bar wrapper for the game menu.
+     */
+    private GameMenuBar myGameMenuBar;
+
+    /**
+     * Main dungeon view panel.
+     */
+    private DungeonPanel myDungeonPanel;
+
+    /**
+     * Statistics panel.
+     */
+    private StatsPanel myStatsPanel;
+
+    /**
+     * Inventory panel.
+     */
+    private InventoryPanel myInventoryPanel;
+
+    /**
+     * Control panel containing action buttons.
+     */
+    private ControlPanel myControlPanel;
+
+    /**
+     * Indicates whether the player has won.
+     */
+    private boolean myPlayerWon;
+
+    /**
+     * Property change support used to notify listeners.
+     */
+    private final PropertyChangeSupport myChangeSupport = new PropertyChangeSupport(this);
+
+    /**
+     * Constructs the game window using no controller listener.
      */
     public GameView() {
         this(null);
     }
 
+    /**
+     * Constructs the game window and optionally connects the controller.
+     *
+     * @param theController the controller to register with this view
+     */
     public GameView(final PropertyChangeListener theController) {
-        myChangeSupport = new PropertyChangeSupport(this);
-        playerWon = false;
+        myPlayerWon = false;
 
         if (theController != null) {
             myChangeSupport.addPropertyChangeListener(theController);
@@ -76,30 +276,31 @@ public class GameView implements PropertyChangeListener {
         initGuiComponent();
 
         myFrame.setVisible(true);
-        myMainPanel.setDividerLocation(0.75);
-        myBottomPanel.setDividerLocation(0.4);
+        myMainPanel.setDividerLocation(MAIN_DIVIDER_LOCATION);
+        myBottomPanel.setDividerLocation(BOTTOM_DIVIDER_LOCATION);
     }
 
     /**
-     * Set up the game window's properties such as title, size and close behavior.
+     * Sets up the game window's frame properties.
      */
     private void initFrameLayout() {
-        myFrame = new JFrame("Legacy of Four Pillars");
+        myFrame = new JFrame(WINDOW_TITLE);
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(600, 700);
-        myFrame.setMinimumSize(new Dimension(550, 600));
+        myFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        myFrame.setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
         myFrame.setResizable(true);
         myFrame.setLocationRelativeTo(null);
     }
 
     /**
-     * Create all the game panels and adds them to the window.
+     * Creates the panels and attaches them to the main window.
      */
     private void initGuiComponent() {
         myDungeonPanel = new DungeonPanel();
         myStatsPanel = new StatsPanel(myHeroName);
         myInventoryPanel = new InventoryPanel();
         myControlPanel = new ControlPanel();
+
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         myMessageLabel = new JLabel("");
         myMessagePanel.add(myMessageLabel);
@@ -110,124 +311,127 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(myDungeonPanel);
         myChangeSupport.addPropertyChangeListener(this);
 
-        splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
-                myControlPanel.getPanel());
+        splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(),
+                myDungeonPanel.getPanel(), myControlPanel.getPanel());
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
+
         myGameMenuBar = new GameMenuBar();
         myGameMenuBar.addPropertyChangeListener(this);
         myFrame.setJMenuBar(myGameMenuBar.getMenuBar());
     }
 
     /**
-     * Arrange the game window into section by putting game map on top, with stats,
-     * inventory, and controls split across the bottom.
+     * Arranges the game window into the requested split-pane layout.
      *
-     * @param statsPanel     player status
-     * @param inventoryPanel player's inventory
-     * @param myGamePanel    the game main area
-     * @param controlPanel   game controls
+     * @param theStatsPanel the player status panel
+     * @param theInventoryPanel the inventory panel
+     * @param theGamePanel the main game panel
+     * @param theControlPanel the control panel
      */
-    private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
-                             final JPanel myGamePanel, final JPanel controlPanel) {
-        JSplitPane myLeftBottomPanel = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT, statsPanel, inventoryPanel);
-        myLeftBottomPanel.setDividerSize(1);
-        myLeftBottomPanel.setResizeWeight(0.3);
-        myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
-        myLeftBottomPanel.setEnabled(false);
+    private void splitLayout(final JPanel theStatsPanel,
+                             final JPanel theInventoryPanel,
+                             final JPanel theGamePanel,
+                             final JPanel theControlPanel) {
+        final JSplitPane leftBottomPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT, theStatsPanel, theInventoryPanel);
+        leftBottomPanel.setDividerSize(1);
+        leftBottomPanel.setResizeWeight(LEFT_BOTTOM_RESIZE_WEIGHT);
+        leftBottomPanel.setMinimumSize(new Dimension(200, 0));
+        leftBottomPanel.setEnabled(false);
 
-        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, myGamePanel, myMessagePanel);
-        myTopMainPanel.setDividerSize(1);
-        myTopMainPanel.setResizeWeight(0.9);
-        myTopMainPanel.setEnabled(false);
+        final JSplitPane topMainPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT, theGamePanel, myMessagePanel);
+        topMainPanel.setDividerSize(1);
+        topMainPanel.setResizeWeight(TOP_RESIZE_WEIGHT);
+        topMainPanel.setEnabled(false);
 
-        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, controlPanel);
+        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                leftBottomPanel, theControlPanel);
         myBottomPanel.setDividerSize(1);
-        myBottomPanel.setResizeWeight(0.5);
+        myBottomPanel.setResizeWeight(BOTTOM_RESIZE_WEIGHT);
         myBottomPanel.setEnabled(false);
 
         myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        myMainPanel.setTopComponent(myTopMainPanel);
+        myMainPanel.setTopComponent(topMainPanel);
         myMainPanel.setBottomComponent(myBottomPanel);
         myMainPanel.setDividerSize(1);
-        myMainPanel.setResizeWeight(0.95);
+        myMainPanel.setResizeWeight(MAIN_RESIZE_WEIGHT);
         myMainPanel.setEnabled(false);
     }
 
     /**
-     * Create the prompt that lets the player choose between starting a new game or
-     * loading a saved one.
+     * Prompts the player to start a new game or load a saved game.
      */
     private void gameTypePrompt() {
-        Object[] options = {"New Game", "Load Game"};
-        int choice = JOptionPane.showOptionDialog(myFrame,
+        final Object[] options = {"New Game", "Load Game"};
+        final int choice = JOptionPane.showOptionDialog(myFrame,
                 "Would you like to start a new game or load a game?",
-                "Welcome to Legacy of Four Pillars!", JOptionPane.YES_NO_OPTION,
+                WELCOME_TITLE,
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                null, options, options[0]);
+                null,
+                options,
+                options[0]);
+
         if (choice == JOptionPane.YES_OPTION) {
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
-            //NEED FIXING
-            myChangeSupport.firePropertyChange("menu", "", "LoadGame");
+            myChangeSupport.firePropertyChange(PROPERTY_MENU, "", LOAD_GAME_VALUE);
         }
     }
 
     /**
-     * Creates popup where the player can enter their hero's name and select
-     * the hero type such as warrior, priestess or thief.
+     * Prompts the player for a hero name and hero type.
      */
     private void characterTypePrompt() {
-        JPanel chTypePanel = new JPanel();
-        chTypePanel.setLayout(new BoxLayout(chTypePanel, BoxLayout.Y_AXIS));
+        final JPanel characterTypePanel = new JPanel();
+        characterTypePanel.setLayout(new BoxLayout(characterTypePanel, BoxLayout.Y_AXIS));
 
-        //User type in name
-        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         namePanel.add(new JLabel("Hero Name:"));
-        JTextField myHeroField = new JTextField(15);
-        namePanel.add(myHeroField);
-        myHeroField.requestFocusInWindow(); //ready to type
+        final JTextField heroField = new JTextField(15);
+        namePanel.add(heroField);
+        heroField.requestFocusInWindow();
 
-        //select hero type
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(new JLabel("Choose your hero type:"));
-        JRadioButton warrior = new JRadioButton("Warrior");
-        JRadioButton priestess = new JRadioButton("Priestess");
-        JRadioButton thief = new JRadioButton("Thief");
+        final JRadioButton warriorButton = new JRadioButton("Warrior");
+        final JRadioButton priestessButton = new JRadioButton("Priestess");
+        final JRadioButton thiefButton = new JRadioButton("Thief");
 
-        //checkbox style
-        ButtonGroup bGroup = new ButtonGroup();
-        bGroup.add(warrior);
-        bGroup.add(priestess);
-        bGroup.add(thief);
-        warrior.setSelected(true);
+        final ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(warriorButton);
+        buttonGroup.add(priestessButton);
+        buttonGroup.add(thiefButton);
+        warriorButton.setSelected(true);
 
-        buttonPanel.add(warrior);
-        buttonPanel.add(priestess);
-        buttonPanel.add(thief);
+        buttonPanel.add(warriorButton);
+        buttonPanel.add(priestessButton);
+        buttonPanel.add(thiefButton);
 
-        chTypePanel.add(namePanel);
-        chTypePanel.add(buttonPanel);
+        characterTypePanel.add(namePanel);
+        characterTypePanel.add(buttonPanel);
 
-        int result = JOptionPane.showConfirmDialog(
-                myFrame, chTypePanel, "New Hero", JOptionPane.OK_CANCEL_OPTION);
+        final int result = JOptionPane.showConfirmDialog(
+                myFrame, characterTypePanel, NEW_HERO_TITLE, JOptionPane.OK_CANCEL_OPTION);
+
         if (result == JOptionPane.OK_OPTION) {
-            myHeroName = myHeroField.getText().trim();
+            myHeroName = heroField.getText().trim();
+
             if (myHeroName.isEmpty()) {
                 characterTypePrompt();
             } else {
-                String myHeroType;
-                if (warrior.isSelected()) {
+                if (warriorButton.isSelected()) {
                     myHeroType = "Warrior";
-                } else if (priestess.isSelected()) {
+                } else if (priestessButton.isSelected()) {
                     myHeroType = "Priestess";
                 } else {
                     myHeroType = "Thief";
                 }
 
-                myChangeSupport.firePropertyChange("Hero", null,
-                        new String[]{myHeroName, myHeroType});
+                myChangeSupport.firePropertyChange(PROPERTY_HERO, null,
+                        new String[] {myHeroName, myHeroType});
             }
         } else if (result == JOptionPane.CANCEL_OPTION) {
             gameTypePrompt();
@@ -237,127 +441,100 @@ public class GameView implements PropertyChangeListener {
     }
 
     /**
-     * This method gets called when a bound property is changed.
+     * Responds to property changes from the controller or menu bar.
      *
-     * @param theEvent A PropertyChangeEvent object describing the event source
-     *            and the property that has changed.
+     * @param theEvent the property change event
      */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
-        if (theEvent.getPropertyName().equals("message")) {
+        final String propertyName = theEvent.getPropertyName();
+
+        if (PROPERTY_MESSAGE.equals(propertyName)) {
             myMessageLabel.setText((String) theEvent.getNewValue());
-        }
-        if (theEvent.getPropertyName().equals("menu")
-                && theEvent.getNewValue().equals("NewGame")) {
+        } else if (PROPERTY_MENU.equals(propertyName)
+                && NEW_GAME_VALUE.equals(theEvent.getNewValue())) {
             resetGame();
-        }
-        if (theEvent.getPropertyName().equals("won")) {
-            playerWon = true;
+        } else if (PROPERTY_WON.equals(propertyName)) {
+            myPlayerWon = true;
             endGame();
-        }
-        if (theEvent.getPropertyName().equals("lost")) {
-            playerWon = false;
+        } else if (PROPERTY_LOST.equals(propertyName)) {
+            myPlayerWon = false;
             endGame();
         }
     }
 
     /**
-     * Allow controller or other class to listen in on action changes
+     * Allows other objects to listen for view-generated events.
+     *
+     * @param theListener the listener to register
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 
-
-    
-        /**
-     * Connects the main dungeon controller to the view.
+    /**
+     * Connects the controller to the view and registers the map panel.
      *
-     * This method allows the controller to listen to button events
-     * from the control panel and allows all view panels to listen
-     * to updates from the controller.
-     *
-     * @param theController the dungeon controller for the game
+     * @param theController the dungeon controller
      */
     public void connectController(final DungeonController theController) {
-        /*
-         * Allows the controller to receive button actions from the control panel.
-         *
-         * ControlPanel sends events such as:
-         * "move", "attack", "grab", and "potion".
-         */
         myControlPanel.addPropertyChangeListener(theController);
-
-        /*
-         * Allows the view panels to receive game updates from the controller.
-         *
-         * StatsPanel listens for:
-         * "HP" and "MaxHP".
-         *
-         * InventoryPanel listens for:
-         * "HealingPotion", "VisionPotion", and "Pillar".
-         *
-         * DungeonPanel listens for:
-         * "room" and "vision".
-         *
-         * ControlPanel listens for:
-         * "room", "grab", "HealingPotion", "VisionPotion", and "Monster".
-         *
-         * GameView listens for:
-         * "message".
-         */
         theController.addPropertyChangeListener(myStatsPanel);
         theController.addPropertyChangeListener(myInventoryPanel);
         theController.addPropertyChangeListener(myDungeonPanel);
         theController.addPropertyChangeListener(myControlPanel);
         theController.addPropertyChangeListener(this);
 
-        /*
-         * Allows keyboard controls to work.
-         */
+        final MapPanel mapPanel = new MapPanel();
+        mapPanel.getPanel().setPreferredSize(new Dimension(220, 0));
+        theController.addPropertyChangeListener(mapPanel);
+        myFrame.add(mapPanel.getPanel(), BorderLayout.EAST);
+        myFrame.revalidate();
+        myFrame.repaint();
+
         myFrame.addKeyListener(theController);
         myFrame.setFocusable(true);
         myFrame.requestFocusInWindow();
     }
 
     /**
-     * Reset the game state and allow user to create new hero
+     * Resets the game state and prompts the player to create a new hero.
      */
     private void resetGame() {
         myMessageLabel.setText("");
-        myChangeSupport.firePropertyChange("HP", null, 0);
-        myChangeSupport.firePropertyChange("MaxHP", null, 0);
-        myChangeSupport.firePropertyChange("HealingPotion", null, 0);
-        myChangeSupport.firePropertyChange("VisionPotion", null, 0);
-        myChangeSupport.firePropertyChange("Pillar", null, 0);
-        myChangeSupport.firePropertyChange("room", null, null);
+        myChangeSupport.firePropertyChange(PROPERTY_HP, null, 0);
+        myChangeSupport.firePropertyChange(PROPERTY_MAX_HP, null, 0);
+        myChangeSupport.firePropertyChange(PROPERTY_HEALING_POTION, null, 0);
+        myChangeSupport.firePropertyChange(PROPERTY_VISION_POTION, null, 0);
+        myChangeSupport.firePropertyChange(PROPERTY_PILLAR, null, 0);
+        myChangeSupport.firePropertyChange(PROPERTY_ROOM, null, null);
         characterTypePrompt();
     }
 
+    /**
+     * Displays the end-game prompt and either restarts or exits.
+     */
     private void endGame() {
-        String message = "";
-        if (playerWon) {
-            message = "Congratulations! You won!\n";
-        } else {
-            message = "Good Game\n";
-        }
-        Object[] options = {"Yes", "No"};
-        int choice = JOptionPane.showOptionDialog(myFrame,
+        final String message = myPlayerWon ? WIN_MESSAGE : LOSE_MESSAGE;
+        final Object[] options = {"Yes", "No"};
+        final int choice = JOptionPane.showOptionDialog(myFrame,
                 message + "Play Again",
-                "Game Over", JOptionPane.YES_NO_OPTION,
+                GAME_OVER_TITLE,
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                null, options, options[0]);
+                null,
+                options,
+                options[0]);
+
         if (choice == JOptionPane.YES_OPTION) {
             gameTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
             System.exit(0);
         }
-
     }
 
-
     /**
-     * Return the main game frame
+     * Returns the main game window.
      *
      * @return the game frame
      */
@@ -365,8 +542,16 @@ public class GameView implements PropertyChangeListener {
         return myFrame;
     }
 
-    //TESTING PURPOSE ONLY
-    public void testFireEvent(String eventName, Object oldValue, Object newValue) {
-        myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
+    /**
+     * Testing helper that forwards a property change event.
+     *
+     * @param theEventName the event name
+     * @param theOldValue the old value
+     * @param theNewValue the new value
+     */
+    public void testFireEvent(final String theEventName,
+                              final Object theOldValue,
+                              final Object theNewValue) {
+        myChangeSupport.firePropertyChange(theEventName, theOldValue, theNewValue);
     }
 }
