@@ -42,6 +42,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private Room myRoom;
 
+    private Dungeon myDungeon;
+
     /**
      * Specific hero references used for special abilities.
      * Only one of these will usually be active depending on
@@ -62,6 +64,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private GameView myGameView;
 
+    private Persistence myPersistence;
 
     private final PropertyChangeSupport myChangeSupport;
 
@@ -89,11 +92,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      *
      * @param theHero the hero controlled by the player
      */
-    public DungeonController(final Hero theHero) {
+    public DungeonController(final Hero theHero, final Dungeon theDungeon) {
         myHero = theHero;
         playerWrapper = new PlayerWrapperController(myHero);
+        myPersistence = new Persistence();
         myChangeSupport = new PropertyChangeSupport(this);
         myGameOver = false;
+        myDungeon = theDungeon;
 
         myMessageQueue = new LinkedList<>();
 
@@ -160,6 +165,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             useHealingPotion();
         } else if (keyCode == KeyEvent.VK_V) {
             useVisionPotion();
+        } else if (keyCode == KeyEvent.VK_P) {
+            saveGame();
         }
 
         updateView();
@@ -545,5 +552,15 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             sendMessage(myHero.getMyName() + " escaped with all four pillars!");
             myChangeSupport.firePropertyChange("won", false, true);
         }
+    }
+    
+    /**
+     * Saves the current game.
+     */
+    private void saveGame() {
+        myPersistence.savePlayer(myHero);
+        myPersistence.saveDungeon(myDungeon);
+
+        sendMessage("Game saved.");
     }
 }
