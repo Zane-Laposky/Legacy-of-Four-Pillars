@@ -17,12 +17,12 @@ import model.*;
 /**
  * DungeonController is the first version of the game controller for
  * Legacy of Four Pillars.
- *
+ * <p>
  * This controller handles keyboard input from the player and connects
  * the view to the model. It allows the player to move between rooms,
  * pick up items, use attacks, use special abilities, and update the
  * stats panel when the hero's hit points change.
- *
+ * <p>
  * Since this is the first version of the game, some actions such as
  * healing potions and vision potions are still placeholders and can be
  * expanded in later versions.
@@ -85,7 +85,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
     /**
      * Constructs the first version of the controller.
-     *
+     * <p>
      * This connects the selected hero and the stats panel to the controller.
      * It also checks what type of hero was chosen so the correct special
      * ability can be used later.
@@ -111,20 +111,19 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         });
 
         myMessageTimer.start();
-        
+
         //Store a reference to the specific hero type for special abilities
-        if(myHero instanceof Warrior){
-            myWarrior = (Warrior)myHero;
-        } else  if(myHero instanceof Thief){
-            myThief = (Thief)myHero;
-        }  else  if(myHero instanceof Priestess){
-            myPriestess = (Priestess)myHero;
+        if (myHero instanceof Warrior) {
+            myWarrior = (Warrior) myHero;
+        } else if (myHero instanceof Thief) {
+            myThief = (Thief) myHero;
+        } else if (myHero instanceof Priestess) {
+            myPriestess = (Priestess) myHero;
         }
 
         //Set the starting room based on the heros current room
         myRoom = myHero.getCurrentRoom();
     }
-
 
 
     /**
@@ -176,11 +175,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * @return true if at least one monster is alive, false otherwise
      */
     private boolean roomHasLivingMonsters() {
-        if(myRoom.getMonsters() == null){
+        if (myRoom.getMonsters() == null) {
             return false;
         }
-        for(Monster monster : myRoom.getMonsters()){
-            if(monster.isAlive()){
+        for (Monster monster : myRoom.getMonsters()) {
+            if (monster.isAlive()) {
                 return true;
             }
         }
@@ -197,7 +196,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * If the monster died, end combat for this turn.
          */
-        if(!theMonster.isAlive()){
+        if (!theMonster.isAlive()) {
             sendMessage(myHero.getMyName() + " slayed " + theMonster.getMyName() + "!");
             myRoom.removeMonster(theMonster);
             return;
@@ -217,7 +216,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * Checks if the hero has been defeated.
          */
-        if(!myHero.isAlive()) {
+        if (!myHero.isAlive()) {
             sendMessage(myHero.getMyName() + " has been defeated!");
             updateView();
             checkGameEnd();
@@ -232,12 +231,12 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     private Monster activeLivingMonster() {
         Monster[] monsters = myRoom.getMonsters();
 
-        if(monsters == null){
+        if (monsters == null) {
             return null;
         }
 
-        for(Monster monster : monsters){
-            if(monster != null && monster.isAlive()) {
+        for (Monster monster : monsters) {
+            if (monster != null && monster.isAlive()) {
                 return monster;
             }
         }
@@ -253,7 +252,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * The player cannot leave the room while monsters are alive.
          */
-        if (roomHasLivingMonsters()){
+        if (roomHasLivingMonsters()) {
             sendMessage("There are monsters in the way!");
         } else {
 
@@ -276,7 +275,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 sendMessage("You cannot move " + theDirection + ".");
             }
 
-            if(roomHasLivingMonsters()) {
+            if (roomHasLivingMonsters()) {
                 sendMessage("There is a " + activeLivingMonster().getMyName() + " in this room!");
             }
         }
@@ -294,7 +293,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * If the room has no items, there is nothing to pick up.
          */
-        if(roomItems == null || roomItems.length == 0) {
+        if (roomItems == null || roomItems.length == 0) {
             sendMessage("There are no items in the room!");
             return;
         }
@@ -357,7 +356,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             needUpdate = false;
         }
 
-        if(needUpdate) {
+        if (needUpdate) {
             updateView();
             checkGameEnd();
         }
@@ -382,7 +381,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * Priestess special ability heals herself.
          */
-        if(myHero instanceof Priestess){
+        if (myHero instanceof Priestess) {
             ((Priestess) myHero).healSelf();
             sendMessage(myHero.getMyName() + " used her special ability.");
         }
@@ -390,7 +389,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * If there is no monster, attack-based abilities cannot be used.
          */
-        if(monster == null) {
+        if (monster == null) {
             sendMessage("There is no living monster.");
             return;
         }
@@ -398,10 +397,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * Uses the correct special ability depending on hero type.
          */
-        if(myHero instanceof Warrior){
+        if (myHero instanceof Warrior) {
             ((Warrior) myHero).crushingBlow(monster);
             sendMessage(myHero.getMyName() + " used Crushing Blow.");
-        } else if(myHero instanceof Thief){
+        } else if (myHero instanceof Thief) {
             ((Thief) myHero).surpriseAttack(monster);
             sendMessage(myHero.getMyName() + " used Surprise Attack.");
         }
@@ -489,6 +488,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myChangeSupport.firePropertyChange("Pillar", null, countPillars());
         myChangeSupport.firePropertyChange("grab", null, myRoom.getItems().length > 0);
         myChangeSupport.firePropertyChange("Monster", null, roomHasLivingMonsters());
+        myChangeSupport.firePropertyChange("name", null, myHero.getMyName());
     }
 
     private void sendMessage(final String theMessage) {
@@ -542,7 +542,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         return myHero.getMyHitPoints();
     }
-    
+
     /**
      * Checks whether the player has won or lost the game.
      */
@@ -568,7 +568,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             myChangeSupport.firePropertyChange("won", false, true);
         }
     }
-    
+
     /**
      * Saves the current game.
      */
@@ -577,5 +577,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myPersistence.saveDungeon(myDungeon);
 
         sendMessage("Game saved.");
+    }
+
+    /**
+     * Stop the message timer and clear the message when starting new game
+     */
+    public void clearMessage() {
+        myMessageTimer.stop();
+        myMessageQueue.clear();
     }
 }

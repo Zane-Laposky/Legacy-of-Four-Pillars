@@ -9,10 +9,10 @@ import java.util.Optional;
 
 /**
  * GameController is responsible for starting the first version of the game.
- *
+ * <p>
  * This controller creates the hero, creates the starting room, connects the
  * DungeonController to the view, and prepares the game so the player can begin.
- *
+ * <p>
  * In this first version, the game automatically starts with a Warrior.
  * Later versions could allow the player to choose between Warrior, Thief,
  * and Priestess.
@@ -42,7 +42,7 @@ public class GameController implements PropertyChangeListener {
      */
     private GameView myGameView;
 
-     /**
+    /**
      * The randomly generated dungeon map.
      */
     private Dungeon myDungeon;
@@ -70,22 +70,22 @@ public class GameController implements PropertyChangeListener {
         myGameView.connectMenuBar(this);
         myGameView.startGamePrompt();
 
-        if (myHero == null) {
-            createHero();
-        }
-
-        createStartingRoom();
-
-        myHero.setCurrentRoom(myStartingRoom);
-
-        createDungeonController();
+//        if (myHero == null) {
+//            createHero();
+//        }
+//
+//        createStartingRoom();
+//
+//        myHero.setCurrentRoom(myStartingRoom);
+//
+//        createDungeonController();
     }
 
 
     /**
      * Creates the player's hero based on the type chosen in GameView.
      */
-  private void createHero() {
+    private void createHero() {
         if (myHeroName == null || myHeroName.isBlank()) {
             myHeroName = "Hero";
         }
@@ -120,12 +120,14 @@ public class GameController implements PropertyChangeListener {
     }
 
 
-
-
     /**
      * Connects the dungeon controller to the game view.
      */
     private void createDungeonController() {
+        if (myDungeonController != null) {
+            myDungeonController.clearMessage();
+            myGameView.deleteOldController();
+        }
         myDungeonController = new DungeonController(myHero, myDungeon);
 
         myGameView.connectController(myDungeonController);
@@ -215,7 +217,7 @@ public class GameController implements PropertyChangeListener {
         return null;
     }
 
-    
+
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         if ("Hero".equals(theEvent.getPropertyName())) {
