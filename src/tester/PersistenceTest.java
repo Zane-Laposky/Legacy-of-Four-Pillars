@@ -1,9 +1,13 @@
 package tester;
 
 import controller.Persistence;
+import model.HealingPotion;
 import model.Hero;
+import model.Item;
+import model.Pillar;
 import model.Priestess;
 import model.Thief;
+import model.VisionPotion;
 import model.Warrior;
 
 import java.util.Optional;
@@ -11,8 +15,7 @@ import java.util.Optional;
 /**
  * Manual test for the Data save/load system.
  *
- * Iteration 4 update:
- * This test checks repeated saves to make sure old save data gets updated.
+ * This tests basic hero save/load, repeated saves, and inventory saving.
  */
 public class PersistenceTest {
 
@@ -24,6 +27,7 @@ public class PersistenceTest {
         testHeroSaveLoad(persistence, new Priestess("Test Priestess"), 64);
 
         testRepeatedSaveOverwrite(persistence);
+        testInventorySaveLoad(persistence);
 
         System.out.println("--------------------------------");
         System.out.println("PersistenceTest finished.");
@@ -121,6 +125,42 @@ public class PersistenceTest {
         }
     }
 
+    /**
+     * Tests that hero inventory items are saved and loaded.
+     */
+    private static void testInventorySaveLoad(final Persistence persistence) {
+        System.out.println("--------------------------------");
+        System.out.println("Testing inventory save/load behavior.");
+
+        Hero hero = new Warrior("Inventory Test");
+        setTestStats(hero, 90, 11, 22, 6, 0.80, 0.30);
+
+        hero.addItem(new Item[] {
+                new HealingPotion(),
+                new VisionPotion(),
+                new Pillar("Pillar of Abstraction")
+        });
+
+        persistence.savePlayer(hero);
+
+        Optional<Hero> loadedHero = persistence.loadPlayer();
+
+        if (loadedHero.isPresent()) {
+            Hero loaded = loadedHero.get();
+
+            System.out.println("Loaded inventory:");
+            printInventory(loaded);
+
+            boolean passed = inventoryHasItem(loaded, "Healing Potion")
+                    && inventoryHasItem(loaded, "Vision Potion")
+                    && inventoryHasItem(loaded, "Pillar of Abstraction");
+
+            printResult("Inventory save/load test", passed);
+        } else {
+            System.out.println("Inventory save/load test failed. No saved hero was loaded.");
+        }
+    }
+
     private static void setTestStats(final Hero hero,
                                      final int hp,
                                      final int minDamage,
@@ -155,6 +195,16 @@ public class PersistenceTest {
                 && Double.compare(loaded.getMyChanceToBlock(), expectedChanceToBlock) == 0;
     }
 
+    private static boolean inventoryHasItem(final Hero hero, final String itemName) {
+        for (Item item : hero.getMyInventory()) {
+            if (item != null && item.getMyName().equalsIgnoreCase(itemName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void printLoadedHero(final Hero loaded) {
         System.out.println("Loaded hero name: " + loaded.getMyName());
         System.out.println("Loaded hero class: " + loaded.getClass().getSimpleName());
@@ -164,6 +214,21 @@ public class PersistenceTest {
         System.out.println("Loaded attack speed: " + loaded.getMyAttackSpeed());
         System.out.println("Loaded chance to hit: " + loaded.getMyChanceToHit());
         System.out.println("Loaded chance to block: " + loaded.getMyChanceToBlock());
+    }
+
+    private static void printInventory(final Hero loaded) {
+        Item[] inventory = loaded.getMyInventory();
+
+        if (inventory.length == 0) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        for (Item item : inventory) {
+            if (item != null) {
+                System.out.println("- " + item.getMyName());
+            }
+        }
     }
 
     private static void printResult(final String testName, final boolean passed) {
