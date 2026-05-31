@@ -5,6 +5,8 @@ import view.GameView;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Optional;
+
 /**
  * GameController is responsible for starting the first version of the game.
  *
@@ -45,6 +47,7 @@ public class GameController implements PropertyChangeListener {
      */
     private Dungeon myDungeon;
 
+    private Persistence myPersistence;
 
     private String myHeroName;
     private String myHeroType;
@@ -53,6 +56,7 @@ public class GameController implements PropertyChangeListener {
      * Constructs a GameController and immediately starts the game.
      */
     public GameController() {
+        myPersistence = new Persistence();
         startGame();
     }
 
@@ -64,17 +68,15 @@ public class GameController implements PropertyChangeListener {
     private void startGame() {
         myGameView = new GameView(this);
 
+        if (myHero == null) {
+            createHero();
+        }
+
         createStartingRoom();
 
         myHero.setCurrentRoom(myStartingRoom);
 
-        myDungeonController = new DungeonController(myHero);
-
-        myGameView.connectController(myDungeonController);
-
-        myDungeonController.propertyChange(
-                new PropertyChangeEvent(this, "startup", null, null)
-        );
+        createDungeonController();
     }
 
 
@@ -122,7 +124,7 @@ public class GameController implements PropertyChangeListener {
      * Connects the dungeon controller to the game view.
      */
     private void createDungeonController() {
-        myDungeonController = new DungeonController(myHero);
+        myDungeonController = new DungeonController(myHero, myDungeon);
 
         myGameView.connectController(myDungeonController);
 
@@ -150,6 +152,67 @@ public class GameController implements PropertyChangeListener {
     public DungeonController getDungeonController() {
         return myDungeonController;
     }
+
+    /**
+     * Loads the saved game if one exists.
+     */
+    private void loadGame() {
+        Optional<PlayerWrapper> saveData = myPersistence.loadPlayerData();
+
+        if (saveData.isEmpty()) {
+            System.out.println("No saved game found.");
+            return;
+        }
+
+        PlayerWrapper loadedData = saveData.get();
+
+        myHero = loadedData.toHero();
+
+        Optional<Dungeon> savedDungeon = myPersistence.loadDungeon();
+
+        if (savedDungeon.isEmpty()) {
+            System.out.println("No saved dungeon found.");
+            return;
+        }
+
+        myDungeon = savedDungeon.get();
+        Room loadedRoom = findRoomByCoordinates(
+                loadedData.getRoomX(),
+                loadedData.getRoomY()
+        );
+
+        myStartingRoom = loadedRoom;
+
+        myHero.setCurrentRoom(loadedRoom);
+        loadedRoom.enter(myHero);
+
+        createDungeonController();
+        System.out.println("Game loaded.");
+
+    }
+
+    /**
+     * Finds a room in the dungeon using its saved coordinates.
+     *
+     * @param theX saved x-coordinate
+     * @param theY saved y-coordinate
+     * @return matching room, or the entrance if the room cannot be found
+     */
+    private Room findRoomByCoordinates(final int theX, final int theY) {
+        Object roomsObject = myDungeon.getRooms();
+
+        if (roomsObject instanceof java.util.HashMap) {
+            java.util.HashMap<String, Room> rooms =
+                    (java.util.HashMap<String, Room>) roomsObject;
+
+            String roomKey = theX + "," + theY;
+
+            return rooms.get(roomKey);
+        }
+
+        return null;
+    }
+
     
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
@@ -160,6 +223,10 @@ public class GameController implements PropertyChangeListener {
             myHeroType = heroInfo[1];
 
             createHero();
+        }
+        if ("menu".equals(theEvent.getPropertyName())
+                && "LoadGame".equals(theEvent.getNewValue())) {
+            loadGame();
         }
     }
 }

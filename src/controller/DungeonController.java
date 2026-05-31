@@ -6,6 +6,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
+import javax.swing.Timer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import view.GameView;
 
@@ -39,6 +42,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private Room myRoom;
 
+    private Dungeon myDungeon;
+
     /**
      * Specific hero references used for special abilities.
      * Only one of these will usually be active depending on
@@ -59,8 +64,24 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private GameView myGameView;
 
+    private Persistence myPersistence;
 
     private final PropertyChangeSupport myChangeSupport;
+
+    /**
+     * Tracks whether the game has ended.
+     */
+    private boolean myGameOver;
+
+    /**
+     * Stores messages waiting to be shown to the player.
+     */
+    private Queue<String> myMessageQueue;
+
+    /**
+     * Displays one queued message at a time.
+     */
+    private Timer myMessageTimer;
 
     /**
      * Constructs the first version of the controller.
@@ -71,11 +92,26 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      *
      * @param theHero the hero controlled by the player
      */
-    public DungeonController(final Hero theHero) {
+    public DungeonController(final Hero theHero, final Dungeon theDungeon) {
         myHero = theHero;
         playerWrapper = new PlayerWrapperController(myHero);
+        myPersistence = new Persistence();
         myChangeSupport = new PropertyChangeSupport(this);
+        myGameOver = false;
+        myDungeon = theDungeon;
 
+        myMessageQueue = new LinkedList<>();
+
+        myMessageTimer = new Timer(1000, theEvent -> {
+            if (!myMessageQueue.isEmpty()) {
+                String nextMessage = myMessageQueue.poll();
+
+                myChangeSupport.firePropertyChange("message", null, nextMessage);
+            }
+        });
+
+        myMessageTimer.start();
+        
         //Store a reference to the specific hero type for special abilities
         if(myHero instanceof Warrior){
             myWarrior = (Warrior)myHero;
@@ -129,6 +165,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             useHealingPotion();
         } else if (keyCode == KeyEvent.VK_V) {
             useVisionPotion();
+        } else if (keyCode == KeyEvent.VK_P) {
+            saveGame();
         }
 
         updateView();
@@ -183,6 +221,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if(!myHero.isAlive()) {
             sendMessage(myHero.getMyName() + " has been defeated!");
+            updateView();
+            checkGameEnd();
         }
     }
 
@@ -218,18 +258,33 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         if (roomHasLivingMonsters()){
             sendMessage("There are monsters in the way!");
         } else {
+
+            Room oldRoom = myHero.getCurrentRoom();
+
             /*
              * Attempts to move through the door in the chosen direction.
              */
-            myRoom.tryDoor(myHero, theDirection);
+            oldRoom.tryDoor(myHero, theDirection);
+
+            Room newRoom = myHero.getCurrentRoom();
+
             /*
              * Updates the controller's room reference after movement.
              */
             updateCurrentRoom();
-            sendMessage(myHero.getMyName() + " moved " + theDirection + "!");
-            //updateView();
+            if (newRoom != oldRoom) {
+                sendMessage("You moved " + theDirection + ".");
+            } else {
+                sendMessage("You cannot move " + theDirection + ".");
+            }
+
+            if(roomHasLivingMonsters()) {
+                sendMessage("There is a " + activeLivingMonster().getMyName() + " in this room!");
+            }
         }
+        checkGameEnd();
     }
+
 
     /**
      * Picks up all items from the current room and adds them
@@ -303,6 +358,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
 
         updateView();
+        checkGameEnd();
     }
 
     private void handleAttack(final String theAttackType) {
@@ -432,7 +488,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     }
 
     private void sendMessage(final String theMessage) {
-        myChangeSupport.firePropertyChange("message", null, theMessage);
+        myMessageQueue.add(theMessage);
     }
 
     private int countHealingPotions() {
@@ -482,5 +538,40 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         return myHero.getMyHitPoints();
     }
+    
+    /**
+     * Checks whether the player has won or lost the game.
+     */
+    private void checkGameEnd() {
+        /*
+         * Lose condition:
+         * The hero dies.
+         */
+        if (!myHero.isAlive()) {
+            myGameOver = true;
+            sendMessage(myHero.getMyName() + " has been defeated!");
+            myChangeSupport.firePropertyChange("lost", false, true);
+            return;
+        }
 
+        /*
+         * Win condition:
+         * The hero is in the exit room and has all four pillars.
+         */
+        if (myRoom.getIsExit() && countPillars() == 4) {
+            myGameOver = true;
+            sendMessage(myHero.getMyName() + " escaped with all four pillars!");
+            myChangeSupport.firePropertyChange("won", false, true);
+        }
+    }
+    
+    /**
+     * Saves the current game.
+     */
+    private void saveGame() {
+        myPersistence.savePlayer(myHero);
+        myPersistence.saveDungeon(myDungeon);
+
+        sendMessage("Game saved.");
+    }
 }
