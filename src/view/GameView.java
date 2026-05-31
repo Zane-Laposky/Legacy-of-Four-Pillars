@@ -8,6 +8,7 @@ import controller.DungeonController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -347,12 +348,12 @@ public class GameView implements PropertyChangeListener {
         if (playerWon) {
             message = "Congratulations! You won!\n";
         } else {
-            message = "Good Game\n";
+            message = "Good Game.\n";
         }
         Object[] options = {"Yes", "No"};
         int choice = JOptionPane.showOptionDialog(myFrame,
-                message + "Play Again",
-                "Game Over", JOptionPane.YES_NO_OPTION,
+                message + "Play Again?",
+                "Game Over!", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
@@ -363,6 +364,14 @@ public class GameView implements PropertyChangeListener {
 
     }
 
+    /**
+     * Remove the game listener
+     */
+    public void deleteOldController() {
+        for (KeyListener each: myFrame.getKeyListeners()) {
+            myFrame.removeKeyListener(each);
+        }
+    }
 
     /**
      * Return the main game frame
