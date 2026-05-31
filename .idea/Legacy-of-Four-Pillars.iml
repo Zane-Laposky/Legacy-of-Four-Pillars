@@ -51,5 +51,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="sqlite-jdbc-3.53.1.0-natives-mac" level="project" />
+    <orderEntry type="library" name="sqlite-jdbc-3.53.1.0-without-natives" level="project" />
   </component>
 </module>

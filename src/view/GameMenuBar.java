@@ -41,6 +41,11 @@ class GameMenuBar {
     private JMenuItem myLoadGame;
 
     /**
+     * Save game menu item
+     */
+    private JMenuItem mySaveGame;
+
+    /**
      * Exit game menu item.
      */
     private JMenuItem myExitGame;
@@ -94,15 +99,18 @@ class GameMenuBar {
         //menu item in file
         myNewGame = new JMenuItem("New");
         myLoadGame = new JMenuItem("Open...");
+        mySaveGame = new JMenuItem("Save");
         myExitGame = new JMenuItem("Quit");
 
         //keyboard shortcut for each item in file
         myNewGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         myLoadGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         myExitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
+        mySaveGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 
         fileMenu.add(myNewGame);
         fileMenu.add(myLoadGame);
+        fileMenu.add(mySaveGame);
         fileMenu.add(myExitGame);
 
         return fileMenu;
@@ -133,11 +141,13 @@ class GameMenuBar {
      * Set up action listener
      */
     private void addListeners() {
-        myNewGame.addActionListener(e -> myChangeSupport.firePropertyChange(
+        myNewGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
                 "menu", "", "NewGame"));
-        myLoadGame.addActionListener(e -> myChangeSupport.firePropertyChange(
+        myLoadGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
                 "menu", "", "LoadGame"));
-        myExitGame.addActionListener(e -> System.exit(0));
+        mySaveGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+                "menu", "", "SaveGame"));
+        myExitGame.addActionListener(_ -> System.exit(0));
 
         myGuidelines.addActionListener(e -> JOptionPane.showMessageDialog(
                 null,

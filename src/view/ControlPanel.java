@@ -199,17 +199,11 @@ class ControlPanel implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent theEvent) {
         if (theEvent.getPropertyName().equals("room")) {
             myCurrentRoom = (Room) theEvent.getNewValue();
-            if (myCurrentRoom == null) {
-                myUpButton.setEnabled(false);
-                myDownButton.setEnabled(false);
-                myRightButton.setEnabled(false);
-                myLeftButton.setEnabled(false);
-            } else {
-                myUpButton.setEnabled(myCurrentRoom.getNorthRoom() != null);
-                myDownButton.setEnabled(myCurrentRoom.getSouthRoom() != null);
-                myRightButton.setEnabled(myCurrentRoom.getEastRoom() != null);
-                myLeftButton.setEnabled(myCurrentRoom.getWestRoom() != null);
-            }
+            myUpButton.setEnabled(myCurrentRoom.getNorthRoom() != null);
+            myDownButton.setEnabled(myCurrentRoom.getSouthRoom() != null);
+            myRightButton.setEnabled(myCurrentRoom.getEastRoom() != null);
+            myLeftButton.setEnabled(myCurrentRoom.getWestRoom() != null);
+
         }
 
         if (theEvent.getPropertyName().equals("grab")) {

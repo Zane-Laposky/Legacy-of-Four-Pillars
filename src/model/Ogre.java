@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Ogre is a strong Monster with high health and moderate damage.
  * It has a low chance to heal after taking damage.
@@ -7,7 +10,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class Ogre extends Monster {
+public class Ogre extends Monster implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final double CHANCE_TO_HEAL = 0.1;
     private static final int MIN_HEAL = 30;

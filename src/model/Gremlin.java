@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Gremlin is a Monster with moderate health, fast attack speed,
  * and a higher chance to heal compared to stronger monsters.
@@ -7,7 +10,14 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class Gremlin extends Monster {
+public class Gremlin extends Monster implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
     private static final double CHANCE_TO_HEAL = 0.4;
     private static final int MIN_HEAL = 20;

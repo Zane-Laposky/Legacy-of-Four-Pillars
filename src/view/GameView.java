@@ -72,12 +72,7 @@ public class GameView implements PropertyChangeListener {
         }
 
         initFrameLayout();
-        gameTypePrompt();
         initGuiComponent();
-
-        myFrame.setVisible(true);
-        myMainPanel.setDividerLocation(0.75);
-        myBottomPanel.setDividerLocation(0.4);
     }
 
     /**
@@ -90,6 +85,13 @@ public class GameView implements PropertyChangeListener {
         myFrame.setMinimumSize(new Dimension(550, 600));
         myFrame.setResizable(true);
         myFrame.setLocationRelativeTo(null);
+    }
+
+    public void startGamePrompt() {
+        gameTypePrompt();
+        myFrame.setVisible(true);
+        myMainPanel.setDividerLocation(0.75);
+        myBottomPanel.setDividerLocation(0.4);
     }
 
     /**
@@ -262,6 +264,13 @@ public class GameView implements PropertyChangeListener {
     }
 
     /**
+     * Connect the controller to the menu bar
+     */
+    public void connectMenuBar(final PropertyChangeListener theController) {
+        myGameMenuBar.addPropertyChangeListener(theController);
+    }
+
+    /**
      * Allow controller or other class to listen in on action changes
      */
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -330,7 +339,6 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("HealingPotion", null, 0);
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
-        myChangeSupport.firePropertyChange("room", null, null);
         characterTypePrompt();
     }
 

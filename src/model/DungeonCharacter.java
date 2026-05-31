@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * DungeonCharacter is the abstract base class for all combat entities
  * in the dungeon adventure game. It defines shared combat attributes
@@ -10,7 +13,13 @@ package model;
  * @author Zane laposky
  * @version 1.0
  */
-public abstract class DungeonCharacter {
+public abstract class DungeonCharacter implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String myName;
     private int myHitPoints;
