@@ -67,6 +67,8 @@ public class GameController implements PropertyChangeListener {
      */
     private void startGame() {
         myGameView = new GameView(this);
+        myGameView.connectMenuBar(this);
+        myGameView.startGamePrompt();
 
         if (myHero == null) {
             createHero();
@@ -223,10 +225,17 @@ public class GameController implements PropertyChangeListener {
             myHeroType = heroInfo[1];
 
             createHero();
+            createStartingRoom();
+            createDungeonController();
         }
         if ("menu".equals(theEvent.getPropertyName())
                 && "LoadGame".equals(theEvent.getNewValue())) {
             loadGame();
+        }
+        if ("menu".equals(theEvent.getPropertyName())
+                && "SaveGame".equals(theEvent.getNewValue())) {
+            myPersistence.savePlayer(myHero);
+            myPersistence.saveDungeon(myDungeon);
         }
     }
 }

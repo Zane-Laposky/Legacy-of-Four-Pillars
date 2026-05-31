@@ -1,5 +1,7 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -13,7 +15,13 @@ import java.util.Arrays;
  * @author Zane Laposky
  * @version 1.0
  */
-public abstract class Hero extends DungeonCharacter {
+public abstract class Hero extends DungeonCharacter implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private double myChanceToBlock;
     private SpecialAbility mySpecialAbility;

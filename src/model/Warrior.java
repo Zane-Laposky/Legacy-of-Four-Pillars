@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Warrior is a Hero class with high health and strong damage output.
  * It has a special ability called Crushing Blow that can deal
@@ -8,7 +11,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class Warrior extends Hero {
+public class Warrior extends Hero implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final double CRUSHING_BLOW_CHANCE = 0.4;
     private static final int MIN_CRUSHING_BLOW_DAMAGE = 75;

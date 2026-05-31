@@ -165,8 +165,6 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             useHealingPotion();
         } else if (keyCode == KeyEvent.VK_V) {
             useVisionPotion();
-        } else if (keyCode == KeyEvent.VK_P) {
-            saveGame();
         }
 
         updateView();
@@ -344,6 +342,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         String propertyName = theEvent.getPropertyName();
+        boolean needUpdate = true;
 
         if ("move".equals(propertyName)) {
             moveHero((String) theEvent.getNewValue());
@@ -355,10 +354,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             handlePotion((String) theEvent.getNewValue());
         } else if ("menu".equals(propertyName)) {
             handleMenu((String) theEvent.getNewValue());
+            needUpdate = false;
         }
 
-        updateView();
-        checkGameEnd();
+        if(needUpdate) {
+            updateView();
+            checkGameEnd();
+        }
     }
 
     private void handleAttack(final String theAttackType) {
@@ -469,6 +471,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             sendMessage("New game selected.");
         } else if ("LoadGame".equals(theMenuOption)) {
             sendMessage("Load game selected.");
+        } else if ("SaveGame".equals(theMenuOption)) {
+            sendMessage("Game saved.");
         }
     }
 

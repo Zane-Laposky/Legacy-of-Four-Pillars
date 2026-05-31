@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * HealingPotion represents an Item that restores a random amount of
  * health to a Hero when used.
@@ -7,7 +10,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class HealingPotion extends Item {
+public class HealingPotion extends Item implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final int MIN_HEAL_AMOUNT = 5;
     private static final int MAX_HEAL_BONUS = 10;
