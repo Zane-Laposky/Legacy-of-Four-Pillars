@@ -77,29 +77,53 @@ class DungeonPanel implements PropertyChangeListener {
 
         }
 
-        if  (theEvent.getPropertyName().equals("vision")) {
-            Room tempCurrentRoom = (Room) theEvent.getNewValue();
+        if (theEvent.getPropertyName().equals("vision")) {
+            Room currentRoom = (Room) theEvent.getNewValue();
 
-            myRooms[0][1].displayRoom(tempCurrentRoom.getNorthRoom());
-            myRooms[1][0].displayRoom(tempCurrentRoom.getWestRoom());
-            myRooms[1][2].displayRoom(tempCurrentRoom.getEastRoom());
-            myRooms[2][1].displayRoom(tempCurrentRoom.getSouthRoom());
+            /*
+             * Clear every room first so old vision displays do not stay on screen.
+             */
+            for (int row = 0; row < DIMENSION; row++) {
+                for (int col = 0; col < DIMENSION; col++) {
+                    myRooms[row][col].clearRoom();
+                }
+            }
 
-            if  (tempCurrentRoom.getNorthRoom() != null) {
-                myRooms[0][0].displayRoom(tempCurrentRoom.getNorthRoom().getWestRoom());
-                myRooms[0][2].displayRoom(tempCurrentRoom.getNorthRoom().getEastRoom());
-            } else {
-                myRooms[0][0].clearRoom();
-                myRooms[0][2].clearRoom();
+            /*
+             * Center room.
+             */
+            myRooms[1][1].displayRoom(currentRoom);
+
+            /*
+             * Direct neighboring rooms.
+             */
+            Room northRoom = currentRoom.getNorthRoom();
+            Room southRoom = currentRoom.getSouthRoom();
+            Room westRoom = currentRoom.getWestRoom();
+            Room eastRoom = currentRoom.getEastRoom();
+
+            myRooms[0][1].displayRoom(northRoom);
+            myRooms[2][1].displayRoom(southRoom);
+            myRooms[1][0].displayRoom(westRoom);
+            myRooms[1][2].displayRoom(eastRoom);
+
+            /*
+             * Diagonal rooms.
+             */
+            if (northRoom != null) {
+                myRooms[0][0].displayRoom(northRoom.getWestRoom());
+                myRooms[0][2].displayRoom(northRoom.getEastRoom());
             }
-            if  (tempCurrentRoom.getSouthRoom() != null) {
-                myRooms[2][0].displayRoom(tempCurrentRoom.getSouthRoom().getWestRoom());
-                myRooms[2][2].displayRoom(tempCurrentRoom.getSouthRoom().getEastRoom());
-            } else {
-                myRooms[2][0].clearRoom();
-                myRooms[2][2].clearRoom();
+
+            if (southRoom != null) {
+                myRooms[2][0].displayRoom(southRoom.getWestRoom());
+                myRooms[2][2].displayRoom(southRoom.getEastRoom());
             }
+
+            myPanel.revalidate();
+            myPanel.repaint();
         }
+    }
     }
 
     /**
