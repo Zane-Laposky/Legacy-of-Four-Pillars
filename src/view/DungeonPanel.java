@@ -124,6 +124,7 @@ class DungeonPanel implements PropertyChangeListener {
             myPanel.repaint();
         }
     }
+    }
 
 
     /**
