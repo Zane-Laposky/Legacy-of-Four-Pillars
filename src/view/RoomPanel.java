@@ -101,6 +101,9 @@ class RoomPanel {
      * @param theRoom the requested room to Display
      */
     public void displayRoom(final Room theRoom) {
+        //test purpose only
+        System.out.print("displayRoom called: " + (theRoom != null));
+
         if (theRoom != null) {
             drawRoom(theRoom);
         } else {
