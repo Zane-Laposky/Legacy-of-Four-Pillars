@@ -5,7 +5,7 @@ import model.Room;
 
 
 /**
- * PlayerWrapper is a helper class for the first version of the game.
+ * PlayerWrapperController is a helper class for the first version of the game.
  *
  * This class wraps around the Hero object so the controller can access
  * important hero information without directly handling every model detail.
