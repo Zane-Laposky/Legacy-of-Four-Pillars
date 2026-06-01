@@ -454,6 +454,12 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         for (Item item : inventory) {
             if (item instanceof VisionPotion) {
+                //testing only
+                System.out.println("North: " + myRoom.getNorthRoom());
+                System.out.println("South: " + myRoom.getSouthRoom());
+                System.out.println("East: " + myRoom.getEastRoom());
+                System.out.println("West: " + myRoom.getWestRoom());
+
                 myChangeSupport.firePropertyChange("vision", null, myRoom);
                 sendMessage("Used Vision Potion.");
 
@@ -547,25 +553,27 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * Checks whether the player has won or lost the game.
      */
     private void checkGameEnd() {
-        /*
-         * Lose condition:
-         * The hero dies.
-         */
-        if (!myHero.isAlive()) {
-            myGameOver = true;
-            sendMessage(myHero.getMyName() + " has been defeated!");
-            myChangeSupport.firePropertyChange("lost", false, true);
-            return;
-        }
+        if (!myGameOver) {
+            /*
+             * Lose condition:
+             * The hero dies.
+             */
+            if (!myHero.isAlive()) {
+                myGameOver = true;
+                sendMessage(myHero.getMyName() + " has been defeated!");
+                myChangeSupport.firePropertyChange("lost", false, true);
+                return;
+            }
 
-        /*
-         * Win condition:
-         * The hero is in the exit room and has all four pillars.
-         */
-        if (myRoom.getIsExit() && countPillars() == 4) {
-            myGameOver = true;
-            sendMessage(myHero.getMyName() + " escaped with all four pillars!");
-            myChangeSupport.firePropertyChange("won", false, true);
+            /*
+             * Win condition:
+             * The hero is in the exit room and has all four pillars.
+             */
+            if (myRoom.getIsExit() && countPillars() == 4) {
+                myGameOver = true;
+                sendMessage(myHero.getMyName() + " escaped with all four pillars!");
+                myChangeSupport.firePropertyChange("won", false, true);
+            }
         }
     }
 
@@ -585,5 +593,14 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     public void clearMessage() {
         myMessageTimer.stop();
         myMessageQueue.clear();
+    }
+
+    /**
+     * Remove a listener from the controller
+     *
+     * @param theListener the listener to remove
+     */
+    public void removePropertyChangeListener(PropertyChangeListener theListener) {
+        myChangeSupport.removePropertyChangeListener(theListener);
     }
 }

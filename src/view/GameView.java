@@ -55,6 +55,7 @@ public class GameView implements PropertyChangeListener {
     private InventoryPanel myInventoryPanel;
     private ControlPanel myControlPanel;
     private Boolean playerWon;
+    private DungeonController myCurrentController;
 
     private final PropertyChangeSupport myChangeSupport;
     /**
@@ -290,6 +291,17 @@ public class GameView implements PropertyChangeListener {
      * @param theController the dungeon controller for the game
      */
     public void connectController(final DungeonController theController) {
+        myMessageLabel.setText("");
+
+        if (myCurrentController != null) {
+            myCurrentController.removePropertyChangeListener(myStatsPanel);
+            myCurrentController.removePropertyChangeListener(myInventoryPanel);
+            myCurrentController.removePropertyChangeListener(myDungeonPanel);
+            myCurrentController.removePropertyChangeListener(this);
+            myCurrentController.removePropertyChangeListener(myControlPanel);
+            myControlPanel.removePropertyChangeListener(myCurrentController);
+        }
+        myCurrentController = theController;
         /*
          * Allows the controller to receive button actions from the control panel.
          *
