@@ -144,6 +144,9 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     @Override
     public void keyPressed(final KeyEvent theEvent) {
+        if(myGameOver) {
+            return;
+        }
         int keyCode = theEvent.getKeyCode();
 
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
@@ -340,6 +343,9 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        if(myGameOver) {
+            return;
+        }
         String propertyName = theEvent.getPropertyName();
         boolean needUpdate = true;
 
@@ -383,7 +389,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if (myHero instanceof Priestess) {
             ((Priestess) myHero).healSelf();
-            sendMessage(myHero.getMyName() + " used her special ability.");
+            sendMessage(myHero.getMyName() + " healed herself.");
+            return;
         }
 
         /*
@@ -575,16 +582,6 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 myChangeSupport.firePropertyChange("won", false, true);
             }
         }
-    }
-
-    /**
-     * Saves the current game.
-     */
-    private void saveGame() {
-        myPersistence.savePlayer(myHero);
-        myPersistence.saveDungeon(myDungeon);
-
-        sendMessage("Game saved.");
     }
 
     /**
