@@ -25,7 +25,7 @@ class RoomPanel {
                     Map.entry("o", "ogre.png"),
                     Map.entry("g", "gremlins.png"),
                     Map.entry("s", "skeleton.png"),
-                    Map.entry("♥", "health.png"),
+                    Map.entry("♥", "health-potion.png"),
                     Map.entry("⚇", "VisionPotion.png"),
                     Map.entry("X", "exit-door.png"),
                     Map.entry("I", "pillar.png"),
