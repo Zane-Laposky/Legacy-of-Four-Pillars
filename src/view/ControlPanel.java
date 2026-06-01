@@ -4,6 +4,7 @@
  */
 package view;
 
+import controller.DungeonController;
 import model.Room;
 
 import javax.swing.*;
@@ -251,5 +252,12 @@ class ControlPanel implements PropertyChangeListener {
      */
     public JPanel getPanel() {
         return myControlPanel;
+    }
+
+    /**
+     * remove old controller and class to removed
+     */
+    public void removePropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.removePropertyChangeListener(theListener);
     }
 }
