@@ -47,9 +47,19 @@ public class GameController implements PropertyChangeListener {
      */
     private Dungeon myDungeon;
 
+    /**
+     * Handles saving and loading player and dungeon data.
+     */
     private Persistence myPersistence;
 
+    /**
+     * The name entered by the player during hero creation.
+     */
     private String myHeroName;
+
+    /**
+     * The hero class chosen by the player during hero creation.
+     */
     private String myHeroType;
 
     /**
@@ -69,16 +79,6 @@ public class GameController implements PropertyChangeListener {
         myGameView = new GameView(this);
         myGameView.connectMenuBar(this);
         myGameView.startGamePrompt();
-
-//        if (myHero == null) {
-//            createHero();
-//        }
-//
-//        createStartingRoom();
-//
-//        myHero.setCurrentRoom(myStartingRoom);
-//
-//        createDungeonController();
     }
 
 
@@ -218,6 +218,12 @@ public class GameController implements PropertyChangeListener {
     }
 
 
+    /**
+     * Receives events from the view.
+     * This handles hero creation and menu actions such as save and load.
+     *
+     * @param theEvent the event sent from the view
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         if ("Hero".equals(theEvent.getPropertyName())) {

@@ -42,6 +42,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private Room myRoom;
 
+    /**
+     * The dungeon currently being explored by the player.
+     * This is used when saving the current dungeon state.
+     */
     private Dungeon myDungeon;
 
     /**
@@ -64,9 +68,18 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private GameView myGameView;
 
+    /**
+     * Handles saving and loading game data.
+     * In this controller, it is only used by controller save-related helper code.
+     */
     private Persistence myPersistence;
 
     private final PropertyChangeSupport myChangeSupport;
+
+    /**
+     * Tracks whether the next room update should show vision potion rooms.
+     */
+    private boolean myVisionActive;
 
     /**
      * Tracks whether the game has ended.
@@ -99,6 +112,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myChangeSupport = new PropertyChangeSupport(this);
         myGameOver = false;
         myDungeon = theDungeon;
+        myVisionActive = false;
 
         myMessageQueue = new LinkedList<>();
 
@@ -144,6 +158,9 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     @Override
     public void keyPressed(final KeyEvent theEvent) {
+        if(myGameOver) {
+            return;
+        }
         int keyCode = theEvent.getKeyCode();
 
         if (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) {
@@ -340,6 +357,9 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        if(myGameOver) {
+            return;
+        }
         String propertyName = theEvent.getPropertyName();
         boolean needUpdate = true;
 
@@ -351,7 +371,6 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             pickUpItems();
         } else if ("potion".equals(propertyName)) {
             handlePotion((String) theEvent.getNewValue());
-            needUpdate = false;
         } else if ("menu".equals(propertyName)) {
             handleMenu((String) theEvent.getNewValue());
             needUpdate = false;
@@ -363,6 +382,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
     }
 
+    /**
+     * Handles attack button events from the view.
+     * The view sends either "Basic" or "Special", and the controller
+     * calls the correct attack method.
+     *
+     * @param theAttackType the type of attack chosen by the player
+     */
     private void handleAttack(final String theAttackType) {
         if ("Basic".equals(theAttackType)) {
             useBasicAttack();
@@ -384,7 +410,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          */
         if (myHero instanceof Priestess) {
             ((Priestess) myHero).healSelf();
-            sendMessage(myHero.getMyName() + " used her special ability.");
+            sendMessage(myHero.getMyName() + " healed herself.");
+            return;
         }
 
         /*
@@ -408,6 +435,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         afterHeroAttacks(monster);
     }
 
+    /**
+     * Performs a normal hero attack against the first living monster
+     * in the current room.
+     */
     private void useBasicAttack() {
         Monster monster = activeLivingMonster();
 
@@ -422,6 +453,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         afterHeroAttacks(monster);
     }
 
+    /**
+     * Handles potion button events from the view.
+     * The view sends the potion type, and the controller chooses
+     * which potion method to call.
+     *
+     * @param thePotionType the type of potion the player wants to use
+     */
     private void handlePotion(final String thePotionType) {
         if ("Heal".equals(thePotionType)) {
             useHealingPotion();
@@ -430,6 +468,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
     }
 
+    /**
+     * Uses one Healing Potion from the hero's inventory.
+     * If a potion is found, the hero gains health and the potion is removed.
+     */
     private void useHealingPotion() {
         Item[] inventory = myHero.getMyInventory();
 
@@ -450,15 +492,28 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         sendMessage("You do not have a Healing Potion.");
     }
 
+    /**
+     * Uses one Vision Potion from the hero's inventory.
+     * If a potion is found, the controller sends the current room
+     * to the view so nearby room information can be displayed.
+     */
     private void useVisionPotion() {
         Item[] inventory = myHero.getMyInventory();
 
         for (Item item : inventory) {
             if (item instanceof VisionPotion) {
+
                 myHero.removeItem(item);
-                updateView();
-                myChangeSupport.firePropertyChange("vision", null, myRoom);
+
+                /*
+                 * Tells updateView to show the surrounding rooms instead
+                 * of only showing the current room.
+                 */
+                myVisionActive = true;
+
                 sendMessage("Used Vision Potion.");
+
+
 
                 return;
             }
@@ -466,6 +521,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         sendMessage("You do not have a Vision Potion.");
     }
 
+    /**
+     * Handles menu messages received by the dungeon controller.
+     * The actual save and load work is handled by GameController.
+     * This method only sends feedback messages to the player.
+     *
+     * @param theMenuOption the menu option selected by the player
+     */
     private void handleMenu(final String theMenuOption) {
         if ("NewGame".equals(theMenuOption)) {
             sendMessage("New game selected.");
@@ -476,12 +538,27 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         }
     }
 
+    /**
+     * Updates the controller's current room reference to match
+     * the hero's current room.
+     */
     private void updateCurrentRoom() {
         myRoom = myHero.getCurrentRoom();
     }
 
+    /**
+     * Sends the current game state to the view.
+     * This updates the room display, hero stats, inventory counts,
+     * item pickup button, monster status, and hero name.
+     */
     void updateView() {
-        myChangeSupport.firePropertyChange("room", null, myRoom);
+        if (myVisionActive) {
+            myChangeSupport.firePropertyChange("vision", null, myRoom);
+            myVisionActive = false;
+        } else {
+            myChangeSupport.firePropertyChange("room", null, myRoom);
+        }
+
         myChangeSupport.firePropertyChange("HP", null, myHero.getMyHitPoints());
         myChangeSupport.firePropertyChange("MaxHP", null, getHeroMaxHP());
         myChangeSupport.firePropertyChange("HealingPotion", null, countHealingPotions());
@@ -492,10 +569,21 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myChangeSupport.firePropertyChange("name", null, myHero.getMyName());
     }
 
+    /**
+     * Adds a message to the message queue.
+     * The timer displays queued messages one at a time.
+     *
+     * @param theMessage the message to show to the player
+     */
     private void sendMessage(final String theMessage) {
         myMessageQueue.add(theMessage);
     }
 
+    /**
+     * Counts the number of Healing Potions in the hero's inventory.
+     *
+     * @return the number of Healing Potions
+     */
     private int countHealingPotions() {
         int count = 0;
 
@@ -508,6 +596,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         return count;
     }
 
+    /**
+     * Counts the number of Vision Potions in the hero's inventory.
+     *
+     * @return the number of Vision Potions
+     */
     private int countVisionPotions() {
         int count = 0;
 
@@ -520,6 +613,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         return count;
     }
 
+    /**
+     * Counts how many Pillars the hero has collected.
+     *
+     * @return the number of Pillars in the hero's inventory
+     */
     private int countPillars() {
         int count = 0;
 
@@ -532,6 +630,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         return count;
     }
 
+    /**
+     * Gets the maximum hit points for the current hero type.
+     *
+     * @return the hero's maximum hit points
+     */
     private int getHeroMaxHP() {
         if (myHero instanceof Warrior) {
             return 125;
@@ -570,16 +673,6 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 myChangeSupport.firePropertyChange("won", false, true);
             }
         }
-    }
-
-    /**
-     * Saves the current game.
-     */
-    private void saveGame() {
-        myPersistence.savePlayer(myHero);
-        myPersistence.saveDungeon(myDungeon);
-
-        sendMessage("Game saved.");
     }
 
     /**
