@@ -351,6 +351,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             pickUpItems();
         } else if ("potion".equals(propertyName)) {
             handlePotion((String) theEvent.getNewValue());
+            needUpdate = false;
         } else if ("menu".equals(propertyName)) {
             handleMenu((String) theEvent.getNewValue());
             needUpdate = false;
@@ -454,16 +455,10 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         for (Item item : inventory) {
             if (item instanceof VisionPotion) {
-                //testing only
-                System.out.println("North: " + myRoom.getNorthRoom());
-                System.out.println("South: " + myRoom.getSouthRoom());
-                System.out.println("East: " + myRoom.getEastRoom());
-                System.out.println("West: " + myRoom.getWestRoom());
-
+                myHero.removeItem(item);
+                updateView();
                 myChangeSupport.firePropertyChange("vision", null, myRoom);
                 sendMessage("Used Vision Potion.");
-
-                myHero.removeItem(item);
 
                 return;
             }

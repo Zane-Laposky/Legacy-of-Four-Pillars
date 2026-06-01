@@ -101,9 +101,6 @@ class RoomPanel {
      * @param theRoom the requested room to Display
      */
     public void displayRoom(final Room theRoom) {
-        //test purpose only
-        System.out.print("displayRoom called: " + (theRoom != null));
-
         if (theRoom != null) {
             drawRoom(theRoom);
         } else {
@@ -112,9 +109,11 @@ class RoomPanel {
     }
 
     public void clearRoom() {
+        myOneRoomPanel.setBackground(Color.BLACK);
         for (int row =  0; row < DIMENSION; row++) {
             for (int col =  0; col < DIMENSION; col++) {
                 myRoomStructure[row][col].setText("");
+                myRoomStructure[row][col].setBackground(Color.BLACK);
             }
         }
     }

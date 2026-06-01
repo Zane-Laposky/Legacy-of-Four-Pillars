@@ -32,11 +32,6 @@ public class GameView implements PropertyChangeListener {
      */
     private String myHeroName;
 
-     /**
-     * Hero type selected by the player.
-     */
-    private String myHeroType = "Warrior";
-
     /**
      * Main view of the Game window
      */
@@ -279,11 +274,8 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(listener);
     }
 
-
-    
-        /**
+    /**
      * Connects the main dungeon controller to the view.
-     *
      * This method allows the controller to listen to button events
      * from the control panel and allows all view panels to listen
      * to updates from the controller.
@@ -356,7 +348,7 @@ public class GameView implements PropertyChangeListener {
     }
 
     private void endGame() {
-        String message = "";
+        String message;
         if (playerWon) {
             message = "Congratulations! You won!\n";
         } else {
@@ -397,5 +389,12 @@ public class GameView implements PropertyChangeListener {
     //TESTING PURPOSE ONLY
     public void testFireEvent(String eventName, Object oldValue, Object newValue) {
         myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
+    }
+
+    //testing only
+    public void showFrame() {
+        myFrame.setVisible(true);
+        myMainPanel.setDividerLocation(0.75);
+        myBottomPanel.setDividerLocation(0.4);
     }
 }

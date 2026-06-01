@@ -99,6 +99,9 @@ class DungeonPanel implements PropertyChangeListener {
                 myRooms[2][0].clearRoom();
                 myRooms[2][2].clearRoom();
             }
+
+            myPanel.revalidate();
+            myPanel.repaint();
         }
     }
 
