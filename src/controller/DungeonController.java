@@ -77,6 +77,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     private final PropertyChangeSupport myChangeSupport;
 
     /**
+     * Tracks whether the next room update should show vision potion rooms.
+     */
+    private boolean myVisionActive;
+    
+    /**
      * Tracks whether the game has ended.
      */
     private boolean myGameOver;
@@ -107,6 +112,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myChangeSupport = new PropertyChangeSupport(this);
         myGameOver = false;
         myDungeon = theDungeon;
+        myVisionActive = false;
 
         myMessageQueue = new LinkedList<>();
 
@@ -496,16 +502,16 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
         for (Item item : inventory) {
             if (item instanceof VisionPotion) {
-                //testing only
-                System.out.println("North: " + myRoom.getNorthRoom());
-                System.out.println("South: " + myRoom.getSouthRoom());
-                System.out.println("East: " + myRoom.getEastRoom());
-                System.out.println("West: " + myRoom.getWestRoom());
-
-                myChangeSupport.firePropertyChange("vision", null, myRoom);
-                sendMessage("Used Vision Potion.");
 
                 myHero.removeItem(item);
+
+                /*
+                 * Tells updateView to show the surrounding rooms instead
+                 * of only showing the current room.
+                 */
+                myVisionActive = true;
+
+                sendMessage("Used Vision Potion.");
 
                 return;
             }
@@ -544,7 +550,13 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * item pickup button, monster status, and hero name.
      */
     void updateView() {
-        myChangeSupport.firePropertyChange("room", null, myRoom);
+        if (myVisionActive) {
+            myChangeSupport.firePropertyChange("vision", null, myRoom);
+            myVisionActive = false;
+        } else {
+            myChangeSupport.firePropertyChange("room", null, myRoom);
+        }
+
         myChangeSupport.firePropertyChange("HP", null, myHero.getMyHitPoints());
         myChangeSupport.firePropertyChange("MaxHP", null, getHeroMaxHP());
         myChangeSupport.firePropertyChange("HealingPotion", null, countHealingPotions());
