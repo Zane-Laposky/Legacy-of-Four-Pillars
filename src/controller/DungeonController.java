@@ -513,6 +513,16 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
 
                 sendMessage("Used Vision Potion.");
 
+
+
+                /*
+                 * Tells updateView to show the surrounding rooms instead
+                 * of only showing the current room.
+                 */
+                myVisionActive = true;
+
+                sendMessage("Used Vision Potion.");
+
                 return;
             }
         }

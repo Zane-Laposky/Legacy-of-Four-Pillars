@@ -4,7 +4,6 @@
  */
 package view;
 
-import controller.DungeonController;
 import model.Room;
 
 import javax.swing.*;

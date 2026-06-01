@@ -126,6 +126,7 @@ class DungeonPanel implements PropertyChangeListener {
     }
     }
 
+
     /**
      * Return the Dungeon panel
      *
