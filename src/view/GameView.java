@@ -42,24 +42,66 @@ public class GameView implements PropertyChangeListener {
      */
     private JSplitPane myBottomPanel;
 
+    /**
+     * Message Panel of the game
+     */
     private JPanel myMessagePanel;
+
+    /**
+     * Label in Message Panel
+     */
     private JLabel myMessageLabel;
+
+    /**
+     * Game menu bar
+     */
     private GameMenuBar myGameMenuBar;
+
+    /**
+     * Dungeon Panel of the game
+     */
     private DungeonPanel myDungeonPanel;
+
+    /**
+     * Stats Panel of the game
+     */
     private StatsPanel myStatsPanel;
+
+    /**
+     * Inventory Panel of the game
+     */
     private InventoryPanel myInventoryPanel;
+
+    /**
+     * Control Panel of the game
+     */
     private ControlPanel myControlPanel;
+
+    /**
+     * Player winning status
+     */
     private Boolean playerWon;
+
+    /**
+     * Dungeon Controller
+     */
     private DungeonController myCurrentController;
 
-    private final PropertyChangeSupport myChangeSupport;
     /**
-     * Constructs the game window and initialize GUI components
+     * Property Change Support
+     */
+    private final PropertyChangeSupport myChangeSupport;
+
+    /**
+     * Constructs the game window without parameter
      */
     public GameView() {
         this(null);
     }
 
+    /**
+     * Constructs the game window and initialize GUI components
+     */
     public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
         playerWon = false;
@@ -84,6 +126,9 @@ public class GameView implements PropertyChangeListener {
         myFrame.setLocationRelativeTo(null);
     }
 
+    /**
+     * Starts the game prompt after the view is set up.
+     */
     public void startGamePrompt() {
         gameTypePrompt();
         myFrame.setVisible(true);
@@ -347,6 +392,10 @@ public class GameView implements PropertyChangeListener {
         characterTypePrompt();
     }
 
+    /**
+     * Show the end game pop up and ask if the player want to play again.
+     * If yes, returns to the game type prompt or else exist the game.
+     */
     private void endGame() {
         String message;
         if (playerWon) {

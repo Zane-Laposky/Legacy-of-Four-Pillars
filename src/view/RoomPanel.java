@@ -108,6 +108,10 @@ class RoomPanel {
         }
     }
 
+    /**
+     * Clears the room panel by setting all labels to empty and
+     * resetting the background to black.
+     */
     public void clearRoom() {
         myOneRoomPanel.setBackground(Color.BLACK);
         for (int row =  0; row < DIMENSION; row++) {
