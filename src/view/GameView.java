@@ -145,6 +145,7 @@ public class GameView implements PropertyChangeListener {
         myInventoryPanel = new InventoryPanel();
         myControlPanel = new ControlPanel();
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        myMessagePanel.setMinimumSize(new Dimension(myMessagePanel.getWidth(), 40));
         myMessageLabel = new JLabel("");
         myMessagePanel.add(myMessageLabel);
 

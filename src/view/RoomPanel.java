@@ -8,6 +8,8 @@ import model.Room;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represent a single room panel in the game. It is a 3 by 3 grid layout where
@@ -18,6 +20,22 @@ import java.awt.*;
  */
 class RoomPanel {
 
+    private static final Map<String, String> IMAGE_SYMBOLS =
+            Map.ofEntries(
+                    Map.entry("o", "ogre.png"),
+                    Map.entry("g", "gremlins.png"),
+                    Map.entry("s", "skeleton.png"),
+                    Map.entry("♥", "health.png"),
+                    Map.entry("⚇", "VisionPotion.png"),
+                    Map.entry("X", "exit-door.png"),
+                    Map.entry("I", "pillar.png"),
+                    Map.entry("A", "pillar.png"),
+                    Map.entry("E", "pillar.png"),
+                    Map.entry("P", "pillar.png"),
+                    Map.entry("#", "entrance.png")
+            );
+
+    private ImageIcon BACKGROUND;
     /**
      * Dimension of the room layout
      */
@@ -33,27 +51,26 @@ class RoomPanel {
      */
     private final JLabel[][] myRoomStructure;
 
-
     /**
      * Construct a RoomPanel object with requirement
      */
     public RoomPanel() {
         myOneRoomPanel = new JPanel();
-        myRoomStructure =  new JLabel[DIMENSION][DIMENSION];
+        myRoomStructure = new JLabel[DIMENSION][DIMENSION];
         initPanel();
     }
 
 
     /**
-     * Sets up a 3x3 grid of labels to display a room's characters. 
+     * Sets up a 3x3 grid of labels to display a room's characters.
      */
     private void initPanel() {
         myOneRoomPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
         myOneRoomPanel.setBackground(Color.BLACK);
 
         //each room has 3x3 grid . one character for each
-        for (int row =  0; row < DIMENSION; row++) {
-            for (int col =  0; col < DIMENSION; col++) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int col = 0; col < DIMENSION; col++) {
                 myRoomStructure[row][col] = new JLabel();
                 myRoomStructure[row][col].setBackground(Color.BLACK);
                 myRoomStructure[row][col].setHorizontalAlignment(JLabel.CENTER);
@@ -74,6 +91,26 @@ class RoomPanel {
         return myOneRoomPanel;
     }
 
+    private ImageIcon getBackground(final int theSize) {
+        try {
+            ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/wall.png")));
+            Image size = image.getImage().getScaledInstance(theSize, theSize, Image.SCALE_SMOOTH);
+            return new ImageIcon(size);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private ImageIcon getIcon(final String theFileName) {
+        try {
+            ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/" + theFileName)));
+            int cellSize = myRoomStructure[1][1].getWidth();
+            Image size = image.getImage().getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
+            return new ImageIcon(size);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     /**
      * Draw a single room by converting the room's string representation into a 3x3
@@ -85,10 +122,19 @@ class RoomPanel {
         myOneRoomPanel.setBackground(Color.DARK_GRAY);
         String[] tempRoom = theRoom.toString().split("%%");
         for (int row = 0; row < DIMENSION; row++) {
-            for(int col = 0; col < DIMENSION; col++) {
-                myRoomStructure[row][col].setBackground(Color.DARK_GRAY);
+            for (int col = 0; col < DIMENSION; col++) {
+                myRoomStructure[row][col].setBackground(Color.BLACK);
                 myRoomStructure[row][col].setForeground(Color.WHITE);
-                myRoomStructure[row][col].setText( String.valueOf(tempRoom[row].charAt(col)));
+
+                String icon = String.valueOf(tempRoom[row].charAt(col));
+
+                if (row == 1 && col == 1 && IMAGE_SYMBOLS.containsKey(icon)) {
+                    myRoomStructure[row][col].setText("");
+                    myRoomStructure[row][col].setIcon(getIcon(IMAGE_SYMBOLS.get(icon)));
+                } else {
+                    myRoomStructure[row][col].setIcon(null);
+                    myRoomStructure[row][col].setText(icon);
+                }
             }
         }
         myOneRoomPanel.revalidate();
@@ -114,9 +160,11 @@ class RoomPanel {
      */
     public void clearRoom() {
         myOneRoomPanel.setBackground(Color.BLACK);
-        for (int row =  0; row < DIMENSION; row++) {
-            for (int col =  0; col < DIMENSION; col++) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int col = 0; col < DIMENSION; col++) {
                 myRoomStructure[row][col].setText("");
+                int size = myRoomStructure[row][col].getWidth();
+                myRoomStructure[row][col].setIcon(getBackground(size));
                 myRoomStructure[row][col].setBackground(Color.BLACK);
             }
         }
