@@ -88,10 +88,16 @@ class DungeonPanel implements PropertyChangeListener {
             if  (tempCurrentRoom.getNorthRoom() != null) {
                 myRooms[0][0].displayRoom(tempCurrentRoom.getNorthRoom().getWestRoom());
                 myRooms[0][2].displayRoom(tempCurrentRoom.getNorthRoom().getEastRoom());
+            } else {
+                myRooms[0][0].clearRoom();
+                myRooms[0][2].clearRoom();
             }
             if  (tempCurrentRoom.getSouthRoom() != null) {
                 myRooms[2][0].displayRoom(tempCurrentRoom.getSouthRoom().getWestRoom());
                 myRooms[2][2].displayRoom(tempCurrentRoom.getSouthRoom().getEastRoom());
+            } else {
+                myRooms[2][0].clearRoom();
+                myRooms[2][2].clearRoom();
             }
         }
     }

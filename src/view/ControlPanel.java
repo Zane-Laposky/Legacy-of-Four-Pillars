@@ -236,6 +236,17 @@ class ControlPanel implements PropertyChangeListener {
                 myLeftButton.setEnabled(myCurrentRoom.getWestRoom() != null);
             }
         }
+        if  (theEvent.getPropertyName().equals("lost")) {
+            myUpButton.setEnabled(false);
+            myDownButton.setEnabled(false);
+            myRightButton.setEnabled(false);
+            myLeftButton.setEnabled(false);
+            mySpecialAttack.setEnabled(false);
+            myRegularAttack.setEnabled(false);
+            myHealingPotion.setEnabled(false);
+            myVisionPotion.setEnabled(false);
+            myItem.setEnabled(false);
+        }
     }
 
     /**
