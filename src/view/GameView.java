@@ -8,6 +8,7 @@ import controller.DungeonController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -54,6 +55,7 @@ public class GameView implements PropertyChangeListener {
     private InventoryPanel myInventoryPanel;
     private ControlPanel myControlPanel;
     private Boolean playerWon;
+    private DungeonController myCurrentController;
 
     private final PropertyChangeSupport myChangeSupport;
     /**
@@ -72,12 +74,7 @@ public class GameView implements PropertyChangeListener {
         }
 
         initFrameLayout();
-        gameTypePrompt();
         initGuiComponent();
-
-        myFrame.setVisible(true);
-        myMainPanel.setDividerLocation(0.75);
-        myBottomPanel.setDividerLocation(0.4);
     }
 
     /**
@@ -90,6 +87,13 @@ public class GameView implements PropertyChangeListener {
         myFrame.setMinimumSize(new Dimension(550, 600));
         myFrame.setResizable(true);
         myFrame.setLocationRelativeTo(null);
+    }
+
+    public void startGamePrompt() {
+        gameTypePrompt();
+        myFrame.setVisible(true);
+        myMainPanel.setDividerLocation(0.75);
+        myBottomPanel.setDividerLocation(0.4);
     }
 
     /**
@@ -262,6 +266,13 @@ public class GameView implements PropertyChangeListener {
     }
 
     /**
+     * Connect the controller to the menu bar
+     */
+    public void connectMenuBar(final PropertyChangeListener theController) {
+        myGameMenuBar.addPropertyChangeListener(theController);
+    }
+
+    /**
      * Allow controller or other class to listen in on action changes
      */
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -280,6 +291,17 @@ public class GameView implements PropertyChangeListener {
      * @param theController the dungeon controller for the game
      */
     public void connectController(final DungeonController theController) {
+        myMessageLabel.setText("");
+
+        if (myCurrentController != null) {
+            myCurrentController.removePropertyChangeListener(myStatsPanel);
+            myCurrentController.removePropertyChangeListener(myInventoryPanel);
+            myCurrentController.removePropertyChangeListener(myDungeonPanel);
+            myCurrentController.removePropertyChangeListener(this);
+            myCurrentController.removePropertyChangeListener(myControlPanel);
+            myControlPanel.removePropertyChangeListener(myCurrentController);
+        }
+        myCurrentController = theController;
         /*
          * Allows the controller to receive button actions from the control panel.
          *
@@ -330,7 +352,6 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("HealingPotion", null, 0);
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
-        myChangeSupport.firePropertyChange("room", null, null);
         characterTypePrompt();
     }
 
@@ -339,12 +360,12 @@ public class GameView implements PropertyChangeListener {
         if (playerWon) {
             message = "Congratulations! You won!\n";
         } else {
-            message = "Good Game\n";
+            message = "Good Game.\n";
         }
         Object[] options = {"Yes", "No"};
         int choice = JOptionPane.showOptionDialog(myFrame,
-                message + "Play Again",
-                "Game Over", JOptionPane.YES_NO_OPTION,
+                message + "Play Again?",
+                "Game Over!", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
@@ -355,6 +376,14 @@ public class GameView implements PropertyChangeListener {
 
     }
 
+    /**
+     * Remove the game listener
+     */
+    public void deleteOldController() {
+        for (KeyListener each: myFrame.getKeyListeners()) {
+            myFrame.removeKeyListener(each);
+        }
+    }
 
     /**
      * Return the main game frame

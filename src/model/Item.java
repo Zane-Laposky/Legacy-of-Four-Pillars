@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Item is an abstract base class representing objects that can be found
  * and used within the dungeon such as potions or special objects.
@@ -7,7 +10,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public abstract class Item {
+public abstract class Item implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final String myName;
 

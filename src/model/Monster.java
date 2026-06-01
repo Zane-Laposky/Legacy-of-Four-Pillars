@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Monster is an abstract subclass of DungeonCharacter that represents
  * enemy characters in the dungeon adventure game.
@@ -11,7 +14,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public abstract class Monster extends DungeonCharacter {
+public abstract class Monster extends DungeonCharacter implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private double myChanceToHeal;
     private int myMaxHitPoints;

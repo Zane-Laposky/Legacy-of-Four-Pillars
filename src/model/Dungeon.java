@@ -6,6 +6,8 @@ package model;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serial;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,8 +41,13 @@ import java.util.Random;
  * @author Zane Laposky
  * @version 1.3 - 5/15/2026
  */
-public class Dungeon
+public class Dungeon implements Serializable
 {
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
     /**
      * Pillar representing encapsulation.
      */

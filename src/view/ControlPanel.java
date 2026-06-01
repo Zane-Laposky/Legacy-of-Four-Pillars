@@ -4,6 +4,7 @@
  */
 package view;
 
+import controller.DungeonController;
 import model.Room;
 
 import javax.swing.*;
@@ -75,6 +76,11 @@ class ControlPanel implements PropertyChangeListener {
      * Button to activate vision potion
      */
     private JButton myVisionPotion;
+
+    /**
+     * Current Room player is in
+     */
+    private Room myCurrentRoom;
 
     /**
      * Constructs a ControlPanel
@@ -163,24 +169,24 @@ class ControlPanel implements PropertyChangeListener {
      * Set up action listener
      */
     private void addListeners() {
-        myUpButton.addActionListener(e ->
+        myUpButton.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("move", "", "North"));
-        myDownButton.addActionListener(e ->
+        myDownButton.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("move", "", "South"));
-        myRightButton.addActionListener(e ->
+        myRightButton.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("move", "", "East"));
-        myLeftButton.addActionListener(e ->
+        myLeftButton.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("move", "", "West"));
 
-        myRegularAttack.addActionListener(e ->
+        myRegularAttack.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("attack", "", "Basic"));
-        mySpecialAttack.addActionListener(e ->
+        mySpecialAttack.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("attack", "", "Special"));
-        myItem.addActionListener(e ->
+        myItem.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("grab", "", "Item"));
-        myHealingPotion.addActionListener(e ->
+        myHealingPotion.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("potion", "", "Heal"));
-        myVisionPotion.addActionListener(e ->
+        myVisionPotion.addActionListener(_ ->
                 myChangeSupport.firePropertyChange("potion", "", "Vision"));
 
     }
@@ -193,11 +199,12 @@ class ControlPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         if (theEvent.getPropertyName().equals("room")) {
-            Room theNewRoom = (Room) theEvent.getNewValue();
-            myUpButton.setEnabled(theNewRoom.getNorthRoom() != null);
-            myDownButton.setEnabled(theNewRoom.getSouthRoom() != null);
-            myRightButton.setEnabled(theNewRoom.getEastRoom() != null);
-            myLeftButton.setEnabled(theNewRoom.getWestRoom() != null);
+            myCurrentRoom = (Room) theEvent.getNewValue();
+            myUpButton.setEnabled(myCurrentRoom.getNorthRoom() != null);
+            myDownButton.setEnabled(myCurrentRoom.getSouthRoom() != null);
+            myRightButton.setEnabled(myCurrentRoom.getEastRoom() != null);
+            myLeftButton.setEnabled(myCurrentRoom.getWestRoom() != null);
+
         }
 
         if (theEvent.getPropertyName().equals("grab")) {
@@ -213,8 +220,32 @@ class ControlPanel implements PropertyChangeListener {
         }
 
         if (theEvent.getPropertyName().equals("Monster")) {
-            myRegularAttack.setEnabled((boolean) theEvent.getNewValue());
-            mySpecialAttack.setEnabled((boolean) theEvent.getNewValue());
+            boolean hasMonster = (boolean) theEvent.getNewValue();
+            myRegularAttack.setEnabled(hasMonster);
+            mySpecialAttack.setEnabled(hasMonster);
+
+            if (hasMonster) {
+                myUpButton.setEnabled(false);
+                myDownButton.setEnabled(false);
+                myRightButton.setEnabled(false);
+                myLeftButton.setEnabled(false);
+            } else if (myCurrentRoom != null) {
+                myUpButton.setEnabled(myCurrentRoom.getNorthRoom() != null);
+                myDownButton.setEnabled(myCurrentRoom.getSouthRoom() != null);
+                myRightButton.setEnabled(myCurrentRoom.getEastRoom() != null);
+                myLeftButton.setEnabled(myCurrentRoom.getWestRoom() != null);
+            }
+        }
+        if  (theEvent.getPropertyName().equals("lost")) {
+            myUpButton.setEnabled(false);
+            myDownButton.setEnabled(false);
+            myRightButton.setEnabled(false);
+            myLeftButton.setEnabled(false);
+            mySpecialAttack.setEnabled(false);
+            myRegularAttack.setEnabled(false);
+            myHealingPotion.setEnabled(false);
+            myVisionPotion.setEnabled(false);
+            myItem.setEnabled(false);
         }
     }
 
@@ -232,5 +263,12 @@ class ControlPanel implements PropertyChangeListener {
      */
     public JPanel getPanel() {
         return myControlPanel;
+    }
+
+    /**
+     * remove old controller and class to removed
+     */
+    public void removePropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.removePropertyChangeListener(theListener);
     }
 }

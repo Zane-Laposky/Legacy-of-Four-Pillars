@@ -1,15 +1,21 @@
 package controller;
 
+import model.HealingPotion;
 import model.Hero;
+import model.Item;
+import model.Pillar;
 import model.Priestess;
 import model.Thief;
+import model.VisionPotion;
 import model.Warrior;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple data object used for saving and loading a player's hero.
  *
- * I used this instead of saving the whole Hero object directly because
- * the database only needs simple values like name, class, HP, and room position.
+ * This wrapper stores basic hero data, room position, and inventory item names.
  */
 public class PlayerWrapper {
 
@@ -23,6 +29,7 @@ public class PlayerWrapper {
     private final double myChanceToBlock;
     private final int myRoomX;
     private final int myRoomY;
+    private final String myInventoryItems;
 
     public PlayerWrapper(final String thePlayerName,
                          final String theHeroType,
@@ -33,7 +40,8 @@ public class PlayerWrapper {
                          final double theChanceToHit,
                          final double theChanceToBlock,
                          final int theRoomX,
-                         final int theRoomY) {
+                         final int theRoomY,
+                         final String theInventoryItems) {
 
         myPlayerName = thePlayerName;
         myHeroType = theHeroType;
@@ -45,6 +53,7 @@ public class PlayerWrapper {
         myChanceToBlock = theChanceToBlock;
         myRoomX = theRoomX;
         myRoomY = theRoomY;
+        myInventoryItems = theInventoryItems == null ? "" : theInventoryItems;
     }
 
     /**
@@ -72,7 +81,8 @@ public class PlayerWrapper {
                 theHero.getMyChanceToHit(),
                 theHero.getMyChanceToBlock(),
                 roomX,
-                roomY
+                roomY,
+                inventoryToString(theHero.getMyInventory())
         );
     }
 
@@ -102,7 +112,68 @@ public class PlayerWrapper {
         hero.setMyChanceToHit(myChanceToHit);
         hero.setMyChanceToBlock(myChanceToBlock);
 
+        hero.addItem(inventoryFromString(myInventoryItems));
+
         return hero;
+    }
+
+    private static String inventoryToString(final Item[] theItems) {
+        if (theItems == null || theItems.length == 0) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (Item item : theItems) {
+            if (item != null) {
+                if (!result.isEmpty()) {
+                    result.append("|");
+                }
+
+                result.append(item.getMyName());
+            }
+        }
+
+        return result.toString();
+    }
+
+    private static Item[] inventoryFromString(final String theSavedItems) {
+        if (theSavedItems == null || theSavedItems.isBlank()) {
+            return new Item[0];
+        }
+
+        String[] itemNames = theSavedItems.split("\\|");
+        List<Item> items = new ArrayList<>();
+
+        for (String itemName : itemNames) {
+            Item item = createItemFromName(itemName);
+
+            if (item != null) {
+                items.add(item);
+            }
+        }
+
+        return items.toArray(new Item[0]);
+    }
+
+    private static Item createItemFromName(final String theName) {
+        if (theName == null || theName.isBlank()) {
+            return null;
+        }
+
+        if ("Healing Potion".equalsIgnoreCase(theName)) {
+            return new HealingPotion();
+        }
+
+        if ("Vision Potion".equalsIgnoreCase(theName)) {
+            return new VisionPotion();
+        }
+
+        if (theName.toLowerCase().contains("pillar")) {
+            return new Pillar(theName);
+        }
+
+        return null;
     }
 
     public String getPlayerName() {
@@ -145,6 +216,10 @@ public class PlayerWrapper {
         return myRoomY;
     }
 
+    public String getInventoryItems() {
+        return myInventoryItems;
+    }
+
     @Override
     public String toString() {
         return "PlayerWrapper{" +
@@ -153,7 +228,7 @@ public class PlayerWrapper {
                 ", hp=" + myHitPoints +
                 ", roomX=" + myRoomX +
                 ", roomY=" + myRoomY +
+                ", inventoryItems='" + myInventoryItems + '\'' +
                 '}';
     }
 }
-
