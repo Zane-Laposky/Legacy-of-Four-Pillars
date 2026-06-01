@@ -20,6 +20,9 @@ import java.util.Objects;
  */
 class RoomPanel {
 
+    /**
+     * Map each room symbol characters to image filename using map of entries
+     */
     private static final Map<String, String> IMAGE_SYMBOLS =
             Map.ofEntries(
                     Map.entry("o", "ogre.png"),
@@ -35,7 +38,6 @@ class RoomPanel {
                     Map.entry("#", "entrance.png")
             );
 
-    private ImageIcon BACKGROUND;
     /**
      * Dimension of the room layout
      */
@@ -59,7 +61,6 @@ class RoomPanel {
         myRoomStructure = new JLabel[DIMENSION][DIMENSION];
         initPanel();
     }
-
 
     /**
      * Sets up a 3x3 grid of labels to display a room's characters.
@@ -91,6 +92,12 @@ class RoomPanel {
         return myOneRoomPanel;
     }
 
+    /**
+     * Return the background image for wall scaling to the given size
+     *
+     * @param theSize dimension of the image
+     * @return background image if file is found or else, it returns null
+     */
     private ImageIcon getBackground(final int theSize) {
         try {
             ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/wall.png")));
@@ -101,6 +108,12 @@ class RoomPanel {
         }
     }
 
+    /**
+     * Return a scaled image from the given file name to use as symbol
+     *
+     * @param theFileName image file name
+     * @return scaled image or null if the file is not found
+     */
     private ImageIcon getIcon(final String theFileName) {
         try {
             ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/" + theFileName)));
