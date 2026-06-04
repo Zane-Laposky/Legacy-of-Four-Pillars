@@ -168,26 +168,26 @@ public class GameView implements PropertyChangeListener {
      * Arrange the game window into section by putting game map on top, with stats,
      * inventory, and controls split across the bottom.
      *
-     * @param statsPanel     player status
-     * @param inventoryPanel player's inventory
-     * @param myGamePanel    the game main area
-     * @param controlPanel   game controls
+     * @param theStatsPanel     player status
+     * @param theInventoryPanel player's inventory
+     * @param theGamePanel    the game main area
+     * @param theControlPanel   game controls
      */
-    private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
-                             final JPanel myGamePanel, final JPanel controlPanel) {
+    private void splitLayout(final JPanel theStatsPanel, final JPanel theInventoryPanel,
+                             final JPanel theGamePanel, final JPanel theControlPanel) {
         JSplitPane myLeftBottomPanel = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT, statsPanel, inventoryPanel);
+                JSplitPane.VERTICAL_SPLIT, theStatsPanel, theInventoryPanel);
         myLeftBottomPanel.setDividerSize(1);
         myLeftBottomPanel.setResizeWeight(0.3);
         myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
         myLeftBottomPanel.setEnabled(false);
 
-        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, myGamePanel, myMessagePanel);
+        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, theGamePanel, myMessagePanel);
         myTopMainPanel.setDividerSize(1);
         myTopMainPanel.setResizeWeight(0.9);
         myTopMainPanel.setEnabled(false);
 
-        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, controlPanel);
+        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, theControlPanel);
         myBottomPanel.setDividerSize(1);
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
@@ -316,8 +316,8 @@ public class GameView implements PropertyChangeListener {
     /**
      * Allow controller or other class to listen in on action changes
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 
     /**
