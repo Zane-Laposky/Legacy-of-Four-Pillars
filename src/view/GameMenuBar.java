@@ -212,7 +212,7 @@ class GameMenuBar {
     /**
      * Allow controller or other class to listen in on action changes
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 }
