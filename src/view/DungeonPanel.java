@@ -1,5 +1,5 @@
 /*
- * DungeonPanel.java
+ * Dungeon Panel
  * Spring 2026
  */
 package view;
@@ -13,45 +13,42 @@ import java.beans.PropertyChangeListener;
 
 /**
  * DungeonPanel displays the dungeon grid and visible rooms for the player.
- * It listens for "room" and "vision" property change events from the controller
- * and updates the 3x3 grid of RoomPanels accordingly.
  *
- * @author Emily Hernandez updated by Zane Laposky
- * @version 1.2 Spring 2026
+ * @author Emily Hernandez
+ * @version Spring 2026
  */
 class DungeonPanel implements PropertyChangeListener {
 
-    /** Number of rows and columns in the dungeon view grid. */
+    /**
+     * Dimension of the player's view for the game
+     */
     private static final int DIMENSION = 3;
 
-    /** Row index of the centre cell (hero's current room). */
-    private static final int CENTRE = 1;
-
-    /** Background colour of the dungeon panel. */
-    private static final Color COL_BG = new Color(18, 18, 24);
-
-    /** The outer panel containing the room grid. */
+    /**
+     * Dungeon Panel
+     */
     private final JPanel myPanel;
 
-    /** 2D array of room panels making up the dungeon view. */
+    /**
+     * 2D array grid of room panel for dungeon display
+     */
     private final RoomPanel[][] myRooms;
 
     /**
-     * Constructs a DungeonPanel and initialises the room grid.
+     * Constructs and initializes panels
      */
-    DungeonPanel() {
+    public DungeonPanel() {
         myPanel = new JPanel();
         myRooms = new RoomPanel[DIMENSION][DIMENSION];
         initPanel();
     }
 
     /**
-     * Builds the dungeon grid by creating a 2D array of RoomPanels.
+     * Builds the dungeon grid by creating a 2D array of room panels.
      */
     private void initPanel() {
         myPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
-        myPanel.setBackground(COL_BG);
-
+        myPanel.setBackground(Color.BLACK);
         for (int row = 0; row < DIMENSION; row++) {
             for (int col = 0; col < DIMENSION; col++) {
                 myRooms[row][col] = new RoomPanel();
@@ -61,73 +58,79 @@ class DungeonPanel implements PropertyChangeListener {
     }
 
     /**
-     * Responds to "room" and "vision" property change events.
+     * Set up the buttons between update according to receive events from others
      *
-     * "room"   — clears all cells and redraws only the hero's current room
-     *            in the centre, highlighted in gold.
-     * "vision" — fills the surrounding eight cells with adjacent rooms.
-     *
-     * @param theEvent the property change event
+     * @param theEvent Property Change Event
      */
     @Override
-    public void propertyChange(final PropertyChangeEvent theEvent) {
-        final String property = theEvent.getPropertyName();
+    public void propertyChange(PropertyChangeEvent theEvent) {
+        if (theEvent.getPropertyName().equals("room")) {
+            for (int row = 0; row < DIMENSION; row++) {
+                for (int col = 0; col < DIMENSION; col++) {
+                    if (row == 1 && col == 1) {
+                        myRooms[1][1].displayRoom((Room) theEvent.getNewValue());
+                    } else {
+                        myRooms[row][col].clearRoom();
+                    }
+                }
+            }
 
-        if ("room".equals(property)) {
-            handleRoomUpdate((Room) theEvent.getNewValue());
-        } else if ("vision".equals(property)) {
-            handleVisionUpdate((Room) theEvent.getNewValue());
         }
-    }
 
-    /**
-     * Clears all panels and draws only the hero's current room in the centre.
-     *
-     * @param theCurrentRoom the room the hero is currently in
-     */
-    private void handleRoomUpdate(final Room theCurrentRoom) {
-        for (int row = 0; row < DIMENSION; row++) {
-            for (int col = 0; col < DIMENSION; col++) {
-                if (row == CENTRE && col == CENTRE) {
-                    myRooms[CENTRE][CENTRE].displayRoom(theCurrentRoom, true);
-                } else {
+        if (theEvent.getPropertyName().equals("vision")) {
+            Room currentRoom = (Room) theEvent.getNewValue();
+
+            /*
+             * Clear every room first so old vision displays do not stay on screen.
+             */
+            for (int row = 0; row < DIMENSION; row++) {
+                for (int col = 0; col < DIMENSION; col++) {
                     myRooms[row][col].clearRoom();
                 }
             }
+
+            /*
+             * Center room.
+             */
+            myRooms[1][1].displayRoom(currentRoom);
+
+            /*
+             * Direct neighboring rooms.
+             */
+            Room northRoom = currentRoom.getNorthRoom();
+            Room southRoom = currentRoom.getSouthRoom();
+            Room westRoom = currentRoom.getWestRoom();
+            Room eastRoom = currentRoom.getEastRoom();
+
+            myRooms[0][1].displayRoom(northRoom);
+            myRooms[2][1].displayRoom(southRoom);
+            myRooms[1][0].displayRoom(westRoom);
+            myRooms[1][2].displayRoom(eastRoom);
+
+            /*
+             * Diagonal rooms.
+             */
+            if (northRoom != null) {
+                myRooms[0][0].displayRoom(northRoom.getWestRoom());
+                myRooms[0][2].displayRoom(northRoom.getEastRoom());
+            }
+
+            if (southRoom != null) {
+                myRooms[2][0].displayRoom(southRoom.getWestRoom());
+                myRooms[2][2].displayRoom(southRoom.getEastRoom());
+            }
+
+            myPanel.revalidate();
+            myPanel.repaint();
         }
     }
 
     /**
-     * Fills the eight surrounding panels with adjacent rooms when a vision
-     * potion is used.
-     *
-     * @param theCurrentRoom the room the hero is currently in
-     */
-    private void handleVisionUpdate(final Room theCurrentRoom) {
-        myRooms[0][CENTRE].displayRoom(theCurrentRoom.getNorthRoom(), false);
-        myRooms[CENTRE][0].displayRoom(theCurrentRoom.getWestRoom(),  false);
-        myRooms[CENTRE][2].displayRoom(theCurrentRoom.getEastRoom(),  false);
-        myRooms[2][CENTRE].displayRoom(theCurrentRoom.getSouthRoom(), false);
-
-        final Room northRoom = theCurrentRoom.getNorthRoom();
-        if (northRoom != null) {
-            myRooms[0][0].displayRoom(northRoom.getWestRoom(), false);
-            myRooms[0][2].displayRoom(northRoom.getEastRoom(), false);
-        }
-
-        final Room southRoom = theCurrentRoom.getSouthRoom();
-        if (southRoom != null) {
-            myRooms[2][0].displayRoom(southRoom.getWestRoom(), false);
-            myRooms[2][2].displayRoom(southRoom.getEastRoom(), false);
-        }
-    }
-
-    /**
-     * Returns the dungeon panel.
+     * Return the Dungeon panel
      *
      * @return the dungeon panel
      */
-    JPanel getPanel() {
+    public JPanel getPanel() {
         return myPanel;
     }
 }

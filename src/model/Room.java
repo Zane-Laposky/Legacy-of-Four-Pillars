@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -20,8 +22,14 @@ import java.util.Arrays;
  * @author Zane Laposky
  * @version 1.2 - 5/15/2026
  */
-public class Room
+public class Room implements Serializable
 {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Symbol used to separate room render rows.

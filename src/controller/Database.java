@@ -34,6 +34,12 @@ public class Database {
             throw new SQLException("Could not create save folder.", e);
         }
 
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("SQLite JDBC driver is missing. Add sqlite-jdbc.jar to the project libraries.", e);
+        }
+
         return DriverManager.getConnection(DB_URL);
     }
 
@@ -54,6 +60,7 @@ public class Database {
                     chance_to_block REAL NOT NULL,
                     room_x INTEGER,
                     room_y INTEGER,
+                    inventory_items TEXT DEFAULT '',
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
                 );
                 """;
@@ -62,6 +69,12 @@ public class Database {
              Statement stmt = conn.createStatement()) {
 
             stmt.execute(sql);
+
+            try {
+                stmt.execute("ALTER TABLE player_save ADD COLUMN inventory_items TEXT DEFAULT '';");
+            } catch (SQLException ignored) {
+            
+            }
 
         } catch (SQLException e) {
             System.out.println("Database setup failed: " + e.getMessage());

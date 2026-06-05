@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Thief is a Hero class that can perform a special surprise attack
  * with varying outcomes including failure, normal attack, or double attack.
@@ -7,7 +10,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class Thief extends Hero {
+public class Thief extends Hero implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final double CHANCE_CAUGHT = 0.2;
     private static final double CHANCE_SURPRISE_ATTACK = 0.4;

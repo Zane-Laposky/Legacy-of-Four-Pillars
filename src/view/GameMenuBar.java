@@ -7,7 +7,6 @@ package view;
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -39,6 +38,11 @@ class GameMenuBar {
      * Load game menu item
      */
     private JMenuItem myLoadGame;
+
+    /**
+     * Save game menu item
+     */
+    private JMenuItem mySaveGame;
 
     /**
      * Exit game menu item.
@@ -94,15 +98,18 @@ class GameMenuBar {
         //menu item in file
         myNewGame = new JMenuItem("New");
         myLoadGame = new JMenuItem("Open...");
+        mySaveGame = new JMenuItem("Save");
         myExitGame = new JMenuItem("Quit");
 
         //keyboard shortcut for each item in file
         myNewGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         myLoadGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         myExitGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
+        mySaveGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 
         fileMenu.add(myNewGame);
         fileMenu.add(myLoadGame);
+        fileMenu.add(mySaveGame);
         fileMenu.add(myExitGame);
 
         return fileMenu;
@@ -133,13 +140,15 @@ class GameMenuBar {
      * Set up action listener
      */
     private void addListeners() {
-        myNewGame.addActionListener(e -> myChangeSupport.firePropertyChange(
+        myNewGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
                 "menu", "", "NewGame"));
-        myLoadGame.addActionListener(e -> myChangeSupport.firePropertyChange(
+        myLoadGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
                 "menu", "", "LoadGame"));
-        myExitGame.addActionListener(e -> System.exit(0));
+        mySaveGame.addActionListener(_ -> myChangeSupport.firePropertyChange(
+                "menu", "", "SaveGame"));
+        myExitGame.addActionListener(_ -> System.exit(0));
 
-        myGuidelines.addActionListener(e -> JOptionPane.showMessageDialog(
+        myGuidelines.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -168,7 +177,7 @@ class GameMenuBar {
                         """
         ));
 
-        myAboutGame.addActionListener(e -> JOptionPane.showMessageDialog(
+        myAboutGame.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -179,7 +188,7 @@ class GameMenuBar {
                         """
         ));
 
-        myKeyboardSC.addActionListener(e -> JOptionPane.showMessageDialog(
+        myKeyboardSC.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Keyboard Shortcuts
@@ -194,7 +203,7 @@ class GameMenuBar {
                           E   = Pick up items
                           H   = Healing Potion
                           V   = Vision Potion
-                          
+                        
                         
                         """
         ));
@@ -203,7 +212,7 @@ class GameMenuBar {
     /**
      * Allow controller or other class to listen in on action changes
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 }

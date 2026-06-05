@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Priestess is a Hero class with healing abilities and moderate combat stats.
  * Her special ability allows her to heal herself during battle.
@@ -7,7 +10,13 @@ package model;
  * @author Zane Laposky
  * @version 1.0
  */
-public class Priestess extends Hero {
+public class Priestess extends Hero implements Serializable {
+
+    /**
+     * serialVersionUID for load and save game
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final int MIN_HEAL = 10;
     private static final int MAX_HEAL_BONUS = 20;

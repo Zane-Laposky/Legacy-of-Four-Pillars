@@ -8,6 +8,7 @@ import model.VisionPotion;
 public class GUITestEnvironment {
     public static void main(String[] args) throws InterruptedException {
         GameView testEnvironment = new GameView();
+        testEnvironment.showFrame();
 
         //temp Room to test
         Room testRoom = new Room(null);
@@ -42,7 +43,6 @@ public class GUITestEnvironment {
         testEnvironment.testFireEvent("room", testERoom, testRoom);
         testEnvironment.testFireEvent("vision", null, testRoom);
         Thread.sleep(3000);
-
 
     }
 

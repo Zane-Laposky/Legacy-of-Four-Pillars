@@ -33,6 +33,8 @@ class StatsPanel implements PropertyChangeListener {
      */
     private final JLabel myHitPt;
 
+    private JLabel myTitle;
+
     /**
      * Constructs a StatsPanel object and initializes all components.
      *
@@ -54,7 +56,7 @@ class StatsPanel implements PropertyChangeListener {
     private void initialPanel(final String theCharacterName) {
         myPanel.setBackground(Color.WHITE);
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
-        JLabel myTitle = new JLabel(theCharacterName);
+        myTitle = new JLabel(theCharacterName);
         myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
         myPanel.add(myTitle);
 
@@ -79,6 +81,10 @@ class StatsPanel implements PropertyChangeListener {
         }
         if (theEvent.getPropertyName().equals("HP")) {
             myHitPt.setText(String.valueOf(theEvent.getNewValue()));
+        }
+
+        if  (theEvent.getPropertyName().equals("name")) {
+            myTitle.setText((String) theEvent.getNewValue());
         }
     }
 
