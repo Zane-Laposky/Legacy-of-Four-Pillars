@@ -290,6 +290,62 @@ public class Room implements Serializable
                 .toArray(Item[]::new);
     }
 
+    private char getTopLeftCorner() {
+
+        if (myNorthRoom != null && myWestRoom != null) {
+            return '╬';
+        }
+        if (myNorthRoom != null) {
+            return '╠';
+        }
+        if (myWestRoom != null) {
+            return '╦';
+        }
+        return '╔';
+    }
+
+    private char getTopRightCorner() {
+
+        if (myNorthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (myNorthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╦';
+        }
+        return '╗';
+    }
+
+    private char getBottomLeftCorner() {
+
+        if (mySouthRoom != null && myWestRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╠';
+        }
+        if (myWestRoom != null) {
+            return '╩';
+        }
+        return '╚';
+    }
+
+    private char getBottomRightCorner() {
+
+        if (mySouthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╩';
+        }
+        return '╝';
+    }
+
     /**
      * Returns a formatted visual representation of this room.
      *
@@ -312,27 +368,18 @@ public class Room implements Serializable
 
         // Top row.
 
-        sb.append(northExists ? "╠" : "╔");
+        // Top row
+        sb.append(getTopLeftCorner());
 
-        if (northExists)
-        {
-
-            if (myNorthRoom.getEntranceRequirements()
-                    != null)
-            {
-                sb.append(LOCKED_DOOR_SYMBOL);
-            }
-            else
-            {
-                sb.append(" ");
-            }
-        }
-        else
-        {
+        if (northExists) {
+            sb.append(myNorthRoom.getEntranceRequirements() != null
+                    ? LOCKED_DOOR_SYMBOL
+                    : "-");
+        } else {
             sb.append("═");
         }
 
-        sb.append(eastExists ? "╣" : "╗");
+        sb.append(getTopRightCorner());
 
         sb.append(ROOM_ROW_SEPARATOR);
 
@@ -348,27 +395,18 @@ public class Room implements Serializable
 
         // Bottom row.
 
-        sb.append(southExists ? "╠" : "╚");
+        // Bottom row
+        sb.append(getBottomLeftCorner());
 
-        if (southExists)
-        {
-
-            if (mySouthRoom.getEntranceRequirements()
-                    != null)
-            {
-                sb.append(LOCKED_DOOR_SYMBOL);
-            }
-            else
-            {
-                sb.append(" ");
-            }
-        }
-        else
-        {
+        if (southExists) {
+            sb.append(mySouthRoom.getEntranceRequirements() != null
+                    ? LOCKED_DOOR_SYMBOL
+                    : " ");
+        } else {
             sb.append("═");
         }
 
-        sb.append(eastExists ? "╣" : "╝");
+        sb.append(getBottomRightCorner());
 
         return sb.toString();
     }

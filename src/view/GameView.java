@@ -83,6 +83,11 @@ public class GameView implements PropertyChangeListener {
     private Boolean playerWon;
 
     /**
+     * Map Panel of the game
+     */
+    private MapPanel myMapPanel;
+
+    /**
      * Dungeon Controller
      */
     private DungeonController myCurrentController;
@@ -147,6 +152,7 @@ public class GameView implements PropertyChangeListener {
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         myMessagePanel.setMinimumSize(new Dimension(myMessagePanel.getWidth(), 40));
         myMessageLabel = new JLabel("");
+        myMapPanel = new MapPanel();
         myMessagePanel.add(myMessageLabel);
 
         myChangeSupport.addPropertyChangeListener(myControlPanel);
@@ -154,9 +160,15 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(myInventoryPanel);
         myChangeSupport.addPropertyChangeListener(myDungeonPanel);
         myChangeSupport.addPropertyChangeListener(this);
+        myChangeSupport.addPropertyChangeListener(myMapPanel);
 
-        splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
-                myControlPanel.getPanel());
+        splitLayout(
+                myStatsPanel.getPanel(),
+                myInventoryPanel.getPanel(),
+                myDungeonPanel.getPanel(),
+                myControlPanel.getPanel(),
+                myMapPanel.getPanel()
+        );
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
         myGameMenuBar = new GameMenuBar();
@@ -173,30 +185,65 @@ public class GameView implements PropertyChangeListener {
      * @param theGamePanel    the game main area
      * @param theControlPanel   game controls
      */
-    private void splitLayout(final JPanel theStatsPanel, final JPanel theInventoryPanel,
-                             final JPanel theGamePanel, final JPanel theControlPanel) {
-        JSplitPane myLeftBottomPanel = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT, theStatsPanel, theInventoryPanel);
-        myLeftBottomPanel.setDividerSize(1);
-        myLeftBottomPanel.setResizeWeight(0.3);
-        myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
-        myLeftBottomPanel.setEnabled(false);
+    private void splitLayout(final JPanel theStatsPanel,
+                             final JPanel theInventoryPanel,
+                             final JPanel theGamePanel,
+                             final JPanel theControlPanel,
+                             final JPanel theMapPanel) {
 
-        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, theGamePanel, myMessagePanel);
-        myTopMainPanel.setDividerSize(1);
-        myTopMainPanel.setResizeWeight(0.9);
-        myTopMainPanel.setEnabled(false);
+        myBottomPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                theStatsPanel,
+                theControlPanel);
 
-        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, theControlPanel);
         myBottomPanel.setDividerSize(1);
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
 
-        myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        myMainPanel.setTopComponent(myTopMainPanel);
-        myMainPanel.setBottomComponent(myBottomPanel);
+        JSplitPane leftBottomPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                theStatsPanel,
+                theInventoryPanel);
+
+        leftBottomPanel.setDividerSize(1);
+        leftBottomPanel.setResizeWeight(0.3);
+        leftBottomPanel.setMinimumSize(new Dimension(200, 0));
+        leftBottomPanel.setEnabled(false);
+
+        myBottomPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                leftBottomPanel,
+                theControlPanel);
+
+        myBottomPanel.setDividerSize(1);
+        myBottomPanel.setResizeWeight(0.5);
+        myBottomPanel.setEnabled(false);
+
+        JSplitPane topMainPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                theGamePanel,
+                myMessagePanel);
+
+        topMainPanel.setDividerSize(1);
+        topMainPanel.setResizeWeight(0.9);
+        topMainPanel.setEnabled(false);
+
+        JSplitPane originalLayout = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT);
+
+        originalLayout.setTopComponent(topMainPanel);
+        originalLayout.setBottomComponent(myBottomPanel);
+        originalLayout.setDividerSize(1);
+        originalLayout.setResizeWeight(0.95);
+        originalLayout.setEnabled(false);
+
+        myMainPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                originalLayout,
+                theMapPanel);
+
         myMainPanel.setDividerSize(1);
-        myMainPanel.setResizeWeight(0.95);
+        myMainPanel.setResizeWeight(0.75);
         myMainPanel.setEnabled(false);
     }
 
@@ -338,6 +385,7 @@ public class GameView implements PropertyChangeListener {
             myCurrentController.removePropertyChangeListener(this);
             myCurrentController.removePropertyChangeListener(myControlPanel);
             myControlPanel.removePropertyChangeListener(myCurrentController);
+            myCurrentController.removePropertyChangeListener(myMapPanel);
         }
         myCurrentController = theController;
         /*
@@ -371,6 +419,7 @@ public class GameView implements PropertyChangeListener {
         theController.addPropertyChangeListener(myDungeonPanel);
         theController.addPropertyChangeListener(myControlPanel);
         theController.addPropertyChangeListener(this);
+        theController.addPropertyChangeListener(myMapPanel);
 
         /*
          * Allows keyboard controls to work.
