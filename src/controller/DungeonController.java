@@ -769,7 +769,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private void updateMessageTimerDelay() {
         if (roomHasLivingMonsters()) {
-            myMessageTimer.setDelay(1400);
+            myMessageTimer.setDelay(1200);
         } else {
             myMessageTimer.setDelay(600);
         }
