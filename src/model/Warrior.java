@@ -50,12 +50,6 @@ public class Warrior extends Hero implements Serializable {
                             (int)(Math.random() * (MAX_CRUSHING_BLOW_DAMAGE - MIN_CRUSHING_BLOW_DAMAGE + 1));
 
             theMonster.takeDamage(theDamage);
-
-            System.out.println("Crushing Blow hits for " + theDamage);
-
-        } else {
-
-            System.out.println("Crushing Blow failed.");
         }
     }
 }
