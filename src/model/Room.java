@@ -291,88 +291,100 @@ public class Room implements Serializable
     }
 
     /**
-     * Returns a formatted visual representation of this room.
+     * Returns the top-left corner character used when rendering
+     * this room.
      *
-     * The returned string contains three rows separated by
-     * a delimiter so the dungeon renderer can reconstruct
-     * the full dungeon map.
+     * The corner symbol is determined by whether adjacent rooms
+     * exist to the north and west, allowing hallway junctions
+     * to be displayed correctly.
      *
-     * @return the formatted room display string
+     * @return the top-left corner character
      */
-    @Override
-    public String toString()
-    {
+    private char getTopLeftCorner() {
 
-        final StringBuilder sb = new StringBuilder();
-
-        final boolean northExists = myNorthRoom != null;
-        final boolean southExists = mySouthRoom != null;
-        final boolean westExists = myWestRoom != null;
-        final boolean eastExists = myEastRoom != null;
-
-        // Top row.
-
-        sb.append(northExists ? "╠" : "╔");
-
-        if (northExists)
-        {
-
-            if (myNorthRoom.getEntranceRequirements()
-                    != null)
-            {
-                sb.append(LOCKED_DOOR_SYMBOL);
-            }
-            else
-            {
-                sb.append(" ");
-            }
+        if (myNorthRoom != null && myWestRoom != null) {
+            return '╬';
         }
-        else
-        {
-            sb.append("═");
+        if (myNorthRoom != null) {
+            return '╠';
         }
-
-        sb.append(eastExists ? "╣" : "╗");
-
-        sb.append(ROOM_ROW_SEPARATOR);
-
-        // Middle row.
-
-        sb.append(westExists ? "|" : "║");
-
-        sb.append(getRoomSymbol());
-
-        sb.append(eastExists ? "|" : "║");
-
-        sb.append(ROOM_ROW_SEPARATOR);
-
-        // Bottom row.
-
-        sb.append(southExists ? "╠" : "╚");
-
-        if (southExists)
-        {
-
-            if (mySouthRoom.getEntranceRequirements()
-                    != null)
-            {
-                sb.append(LOCKED_DOOR_SYMBOL);
-            }
-            else
-            {
-                sb.append(" ");
-            }
+        if (myWestRoom != null) {
+            return '╦';
         }
-        else
-        {
-            sb.append("═");
-        }
-
-        sb.append(eastExists ? "╣" : "╝");
-
-        return sb.toString();
+        return '╔';
     }
 
+    /**
+     * Returns the top-right corner character used when rendering
+     * this room.
+     *
+     * The corner symbol is determined by whether adjacent rooms
+     * exist to the north and east, allowing hallway junctions
+     * to be displayed correctly.
+     *
+     * @return the top-right corner character
+     */
+    private char getTopRightCorner() {
+
+        if (myNorthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (myNorthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╦';
+        }
+        return '╗';
+    }
+
+    /**
+     * Returns the bottom-left corner character used when rendering
+     * this room.
+     *
+     * The corner symbol is determined by whether adjacent rooms
+     * exist to the south and west, allowing hallway junctions
+     * to be displayed correctly.
+     *
+     * @return the bottom-left corner character
+     */
+    private char getBottomLeftCorner() {
+
+        if (mySouthRoom != null && myWestRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╠';
+        }
+        if (myWestRoom != null) {
+            return '╩';
+        }
+        return '╚';
+    }
+
+    /**
+     * Returns the bottom-right corner character used when rendering
+     * this room.
+     *
+     * The corner symbol is determined by whether adjacent rooms
+     * exist to the south and east, allowing hallway junctions
+     * to be displayed correctly.
+     *
+     * @return the bottom-right corner character
+     */
+    private char getBottomRightCorner() {
+
+        if (mySouthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╩';
+        }
+        return '╝';
+    }
     /**
      * Returns the display symbol used for this room.
      *
