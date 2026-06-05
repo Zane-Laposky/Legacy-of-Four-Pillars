@@ -17,8 +17,8 @@ import java.beans.PropertyChangeSupport;
  * GameView is the class which represents main GUI of the game.
  * It creates and organizes panels, menus, dialogs and  window layout for the game.
  *
- * @author Emily Hernandez
- * @version 1.0 Spring 2026
+ * @author Emily Hernandez updated by Zane Laposky
+ * @version 1.1 Spring 2026
  */
 public class GameView implements PropertyChangeListener {
 
@@ -32,11 +32,6 @@ public class GameView implements PropertyChangeListener {
      */
     private String myHeroName;
 
-     /**
-     * Hero type selected by the player.
-     */
-    private String myHeroType = "Warrior";
-
     /**
      * Main view of the Game window
      */
@@ -47,24 +42,71 @@ public class GameView implements PropertyChangeListener {
      */
     private JSplitPane myBottomPanel;
 
+    /**
+     * Message Panel of the game
+     */
     private JPanel myMessagePanel;
+
+    /**
+     * Label in Message Panel
+     */
     private JLabel myMessageLabel;
+
+    /**
+     * Game menu bar
+     */
     private GameMenuBar myGameMenuBar;
+
+    /**
+     * Dungeon Panel of the game
+     */
     private DungeonPanel myDungeonPanel;
+
+    /**
+     * Stats Panel of the game
+     */
     private StatsPanel myStatsPanel;
+
+    /**
+     * Inventory Panel of the game
+     */
     private InventoryPanel myInventoryPanel;
+
+    /**
+     * Control Panel of the game
+     */
     private ControlPanel myControlPanel;
+
+    /**
+     * Player winning status
+     */
     private Boolean playerWon;
+
+    /**
+     * Map Panel of the game
+     */
+    private MapPanel myMapPanel;
+
+    /**
+     * Dungeon Controller
+     */
     private DungeonController myCurrentController;
 
-    private final PropertyChangeSupport myChangeSupport;
     /**
-     * Constructs the game window and initialize GUI components
+     * Property Change Support
+     */
+    private final PropertyChangeSupport myChangeSupport;
+
+    /**
+     * Constructs the game window without parameter
      */
     public GameView() {
         this(null);
     }
 
+    /**
+     * Constructs the game window and initialize GUI components
+     */
     public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
         playerWon = false;
@@ -89,6 +131,9 @@ public class GameView implements PropertyChangeListener {
         myFrame.setLocationRelativeTo(null);
     }
 
+    /**
+     * Starts the game prompt after the view is set up.
+     */
     public void startGamePrompt() {
         gameTypePrompt();
         myFrame.setVisible(true);
@@ -105,7 +150,9 @@ public class GameView implements PropertyChangeListener {
         myInventoryPanel = new InventoryPanel();
         myControlPanel = new ControlPanel();
         myMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        myMessagePanel.setMinimumSize(new Dimension(myMessagePanel.getWidth(), 40));
         myMessageLabel = new JLabel("");
+        myMapPanel = new MapPanel();
         myMessagePanel.add(myMessageLabel);
 
         myChangeSupport.addPropertyChangeListener(myControlPanel);
@@ -113,9 +160,15 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.addPropertyChangeListener(myInventoryPanel);
         myChangeSupport.addPropertyChangeListener(myDungeonPanel);
         myChangeSupport.addPropertyChangeListener(this);
+        myChangeSupport.addPropertyChangeListener(myMapPanel);
 
-        splitLayout(myStatsPanel.getPanel(), myInventoryPanel.getPanel(), myDungeonPanel.getPanel(),
-                myControlPanel.getPanel());
+        splitLayout(
+                myStatsPanel.getPanel(),
+                myInventoryPanel.getPanel(),
+                myDungeonPanel.getPanel(),
+                myControlPanel.getPanel(),
+                myMapPanel.getPanel()
+        );
 
         myFrame.add(myMainPanel, BorderLayout.CENTER);
         myGameMenuBar = new GameMenuBar();
@@ -127,35 +180,70 @@ public class GameView implements PropertyChangeListener {
      * Arrange the game window into section by putting game map on top, with stats,
      * inventory, and controls split across the bottom.
      *
-     * @param statsPanel     player status
-     * @param inventoryPanel player's inventory
-     * @param myGamePanel    the game main area
-     * @param controlPanel   game controls
+     * @param theStatsPanel     player status
+     * @param theInventoryPanel player's inventory
+     * @param theGamePanel    the game main area
+     * @param theControlPanel   game controls
      */
-    private void splitLayout(final JPanel statsPanel, final JPanel inventoryPanel,
-                             final JPanel myGamePanel, final JPanel controlPanel) {
-        JSplitPane myLeftBottomPanel = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT, statsPanel, inventoryPanel);
-        myLeftBottomPanel.setDividerSize(1);
-        myLeftBottomPanel.setResizeWeight(0.3);
-        myLeftBottomPanel.setMinimumSize(new Dimension(200, 0));
-        myLeftBottomPanel.setEnabled(false);
+    private void splitLayout(final JPanel theStatsPanel,
+                             final JPanel theInventoryPanel,
+                             final JPanel theGamePanel,
+                             final JPanel theControlPanel,
+                             final JPanel theMapPanel) {
 
-        JSplitPane myTopMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, myGamePanel, myMessagePanel);
-        myTopMainPanel.setDividerSize(1);
-        myTopMainPanel.setResizeWeight(0.9);
-        myTopMainPanel.setEnabled(false);
+        myBottomPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                theStatsPanel,
+                theControlPanel);
 
-        myBottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myLeftBottomPanel, controlPanel);
         myBottomPanel.setDividerSize(1);
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
 
-        myMainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        myMainPanel.setTopComponent(myTopMainPanel);
-        myMainPanel.setBottomComponent(myBottomPanel);
+        JSplitPane leftBottomPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                theStatsPanel,
+                theInventoryPanel);
+
+        leftBottomPanel.setDividerSize(1);
+        leftBottomPanel.setResizeWeight(0.3);
+        leftBottomPanel.setMinimumSize(new Dimension(200, 0));
+        leftBottomPanel.setEnabled(false);
+
+        myBottomPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                leftBottomPanel,
+                theControlPanel);
+
+        myBottomPanel.setDividerSize(1);
+        myBottomPanel.setResizeWeight(0.5);
+        myBottomPanel.setEnabled(false);
+
+        JSplitPane topMainPanel = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                theGamePanel,
+                myMessagePanel);
+
+        topMainPanel.setDividerSize(1);
+        topMainPanel.setResizeWeight(0.9);
+        topMainPanel.setEnabled(false);
+
+        JSplitPane originalLayout = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT);
+
+        originalLayout.setTopComponent(topMainPanel);
+        originalLayout.setBottomComponent(myBottomPanel);
+        originalLayout.setDividerSize(1);
+        originalLayout.setResizeWeight(0.95);
+        originalLayout.setEnabled(false);
+
+        myMainPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                originalLayout,
+                theMapPanel);
+
         myMainPanel.setDividerSize(1);
-        myMainPanel.setResizeWeight(0.95);
+        myMainPanel.setResizeWeight(0.75);
         myMainPanel.setEnabled(false);
     }
 
@@ -275,15 +363,12 @@ public class GameView implements PropertyChangeListener {
     /**
      * Allow controller or other class to listen in on action changes
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 
-
-    
-        /**
+    /**
      * Connects the main dungeon controller to the view.
-     *
      * This method allows the controller to listen to button events
      * from the control panel and allows all view panels to listen
      * to updates from the controller.
@@ -300,6 +385,7 @@ public class GameView implements PropertyChangeListener {
             myCurrentController.removePropertyChangeListener(this);
             myCurrentController.removePropertyChangeListener(myControlPanel);
             myControlPanel.removePropertyChangeListener(myCurrentController);
+            myCurrentController.removePropertyChangeListener(myMapPanel);
         }
         myCurrentController = theController;
         /*
@@ -333,6 +419,7 @@ public class GameView implements PropertyChangeListener {
         theController.addPropertyChangeListener(myDungeonPanel);
         theController.addPropertyChangeListener(myControlPanel);
         theController.addPropertyChangeListener(this);
+        theController.addPropertyChangeListener(myMapPanel);
 
         /*
          * Allows keyboard controls to work.
@@ -355,8 +442,12 @@ public class GameView implements PropertyChangeListener {
         characterTypePrompt();
     }
 
+    /**
+     * Show the end game pop up and ask if the player want to play again.
+     * If yes, returns to the game type prompt or else exist the game.
+     */
     private void endGame() {
-        String message = "";
+        String message;
         if (playerWon) {
             message = "Congratulations! You won!\n";
         } else {
@@ -397,5 +488,12 @@ public class GameView implements PropertyChangeListener {
     //TESTING PURPOSE ONLY
     public void testFireEvent(String eventName, Object oldValue, Object newValue) {
         myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
+    }
+
+    //testing only
+    public void showFrame() {
+        myFrame.setVisible(true);
+        myMainPanel.setDividerLocation(0.75);
+        myBottomPanel.setDividerLocation(0.4);
     }
 }

@@ -7,7 +7,6 @@ package view;
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -149,7 +148,7 @@ class GameMenuBar {
                 "menu", "", "SaveGame"));
         myExitGame.addActionListener(_ -> System.exit(0));
 
-        myGuidelines.addActionListener(e -> JOptionPane.showMessageDialog(
+        myGuidelines.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -178,7 +177,7 @@ class GameMenuBar {
                         """
         ));
 
-        myAboutGame.addActionListener(e -> JOptionPane.showMessageDialog(
+        myAboutGame.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Legacy of Four Pillars
@@ -189,7 +188,7 @@ class GameMenuBar {
                         """
         ));
 
-        myKeyboardSC.addActionListener(e -> JOptionPane.showMessageDialog(
+        myKeyboardSC.addActionListener(_ -> JOptionPane.showMessageDialog(
                 null,
                 """
                         Keyboard Shortcuts
@@ -204,7 +203,7 @@ class GameMenuBar {
                           E   = Pick up items
                           H   = Healing Potion
                           V   = Vision Potion
-                          
+                        
                         
                         """
         ));
@@ -213,7 +212,7 @@ class GameMenuBar {
     /**
      * Allow controller or other class to listen in on action changes
      */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        myChangeSupport.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myChangeSupport.addPropertyChangeListener(theListener);
     }
 }
