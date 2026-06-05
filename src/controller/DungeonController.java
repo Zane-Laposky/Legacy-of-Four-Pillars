@@ -239,6 +239,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         int monsterHealed = monsterCurrentHealth - monsterPreviousHealth;
         if (monsterHealed > 0) {
             sendMessage(theMonster.getMyName() + " healed " + monsterHealed + " health!");
+            sendMessage(theMonster.getMyName() + " now has " + theMonster.getMyHitPoints() + " health!");
         }
         /*
          * Monster attacks the hero.
@@ -469,7 +470,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 return;
             }
             sendMessage(myHero.getMyName() + " used Crushing Blow and did " + monsterDamageTaken + " damage!");
-            
+            sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
+
         } else if (myHero instanceof Thief) {
             int monsterPreviousHealth = monster.getMyHitPoints();
             ((Thief) myHero).surpriseAttack(monster);
@@ -481,6 +483,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
                 return;
             }
             sendMessage(myHero.getMyName() + " used Sneak Attack and did " + monsterDamageTaken + " damage!");
+            sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
+
         }
         afterHeroAttacks(monster);
     }
@@ -506,6 +510,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             return;
         }
         sendMessage(myHero.getMyName() + " attacks " + monster.getMyName() + " for " + monsterDamageTaken + " damage!");
+        sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
 
         afterHeroAttacks(monster);
     }
