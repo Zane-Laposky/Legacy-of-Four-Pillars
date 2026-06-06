@@ -40,7 +40,5 @@ public class Priestess extends Hero implements Serializable {
         final int theHeal = MIN_HEAL + (int)(Math.random() * (MAX_HEAL_BONUS + 1));
 
         setMyHitPoints(getMyHitPoints() + theHeal);
-
-        System.out.println("Priestess heals for " + theHeal);
     }
 }

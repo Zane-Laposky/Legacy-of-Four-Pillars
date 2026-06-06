@@ -80,7 +80,7 @@ public class GameView implements PropertyChangeListener {
     /**
      * Player winning status
      */
-    private Boolean playerWon;
+    private Boolean myPlayerWon;
 
     /**
      * Map Panel of the game
@@ -109,7 +109,7 @@ public class GameView implements PropertyChangeListener {
      */
     public GameView(final PropertyChangeListener theController) {
         myChangeSupport = new PropertyChangeSupport(this);
-        playerWon = false;
+        myPlayerWon = false;
 
         if (theController != null) {
             myChangeSupport.addPropertyChangeListener(theController);
@@ -125,8 +125,7 @@ public class GameView implements PropertyChangeListener {
     private void initFrameLayout() {
         myFrame = new JFrame("Legacy of Four Pillars");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(600, 700);
-        myFrame.setMinimumSize(new Dimension(550, 600));
+        myFrame.setMinimumSize(new Dimension(775, 750));
         myFrame.setResizable(true);
         myFrame.setLocationRelativeTo(null);
     }
@@ -138,7 +137,7 @@ public class GameView implements PropertyChangeListener {
         gameTypePrompt();
         myFrame.setVisible(true);
         myMainPanel.setDividerLocation(0.75);
-        myBottomPanel.setDividerLocation(0.4);
+        myBottomPanel.setDividerLocation(180);
     }
 
     /**
@@ -191,15 +190,6 @@ public class GameView implements PropertyChangeListener {
                              final JPanel theControlPanel,
                              final JPanel theMapPanel) {
 
-        myBottomPanel = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                theStatsPanel,
-                theControlPanel);
-
-        myBottomPanel.setDividerSize(1);
-        myBottomPanel.setResizeWeight(0.5);
-        myBottomPanel.setEnabled(false);
-
         JSplitPane leftBottomPanel = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 theStatsPanel,
@@ -207,7 +197,6 @@ public class GameView implements PropertyChangeListener {
 
         leftBottomPanel.setDividerSize(1);
         leftBottomPanel.setResizeWeight(0.3);
-        leftBottomPanel.setMinimumSize(new Dimension(200, 0));
         leftBottomPanel.setEnabled(false);
 
         myBottomPanel = new JSplitPane(
@@ -219,6 +208,19 @@ public class GameView implements PropertyChangeListener {
         myBottomPanel.setResizeWeight(0.5);
         myBottomPanel.setEnabled(false);
 
+        JSplitPane originalLayout = getOriginalLayout(theGamePanel);
+
+        myMainPanel = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                originalLayout,
+                theMapPanel);
+
+        myMainPanel.setDividerSize(1);
+        myMainPanel.setResizeWeight(0.75);
+        myMainPanel.setEnabled(false);
+    }
+
+    private JSplitPane getOriginalLayout(JPanel theGamePanel) {
         JSplitPane topMainPanel = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 theGamePanel,
@@ -236,15 +238,7 @@ public class GameView implements PropertyChangeListener {
         originalLayout.setDividerSize(1);
         originalLayout.setResizeWeight(0.95);
         originalLayout.setEnabled(false);
-
-        myMainPanel = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                originalLayout,
-                theMapPanel);
-
-        myMainPanel.setDividerSize(1);
-        myMainPanel.setResizeWeight(0.75);
-        myMainPanel.setEnabled(false);
+        return originalLayout;
     }
 
     /**
@@ -277,9 +271,9 @@ public class GameView implements PropertyChangeListener {
         //User type in name
         JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         namePanel.add(new JLabel("Hero Name:"));
-        JTextField myHeroField = new JTextField(15);
-        namePanel.add(myHeroField);
-        myHeroField.requestFocusInWindow(); //ready to type
+        JTextField heroNameInputField = new JTextField(15);
+        namePanel.add(heroNameInputField);
+        heroNameInputField.requestFocusInWindow(); //ready to type
 
         //select hero type
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -305,21 +299,21 @@ public class GameView implements PropertyChangeListener {
         int result = JOptionPane.showConfirmDialog(
                 myFrame, chTypePanel, "New Hero", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            myHeroName = myHeroField.getText().trim();
+            myHeroName = heroNameInputField.getText().trim();
             if (myHeroName.isEmpty()) {
                 characterTypePrompt();
             } else {
-                String myHeroType;
+                String heroType;
                 if (warrior.isSelected()) {
-                    myHeroType = "Warrior";
+                    heroType = "Warrior";
                 } else if (priestess.isSelected()) {
-                    myHeroType = "Priestess";
+                    heroType = "Priestess";
                 } else {
-                    myHeroType = "Thief";
+                    heroType = "Thief";
                 }
 
                 myChangeSupport.firePropertyChange("Hero", null,
-                        new String[]{myHeroName, myHeroType});
+                        new String[]{myHeroName, heroType});
             }
         } else if (result == JOptionPane.CANCEL_OPTION) {
             gameTypePrompt();
@@ -344,11 +338,11 @@ public class GameView implements PropertyChangeListener {
             resetGame();
         }
         if (theEvent.getPropertyName().equals("won")) {
-            playerWon = true;
+            myPlayerWon = true;
             endGame();
         }
         if (theEvent.getPropertyName().equals("lost")) {
-            playerWon = false;
+            myPlayerWon = false;
             endGame();
         }
     }
@@ -358,13 +352,6 @@ public class GameView implements PropertyChangeListener {
      */
     public void connectMenuBar(final PropertyChangeListener theController) {
         myGameMenuBar.addPropertyChangeListener(theController);
-    }
-
-    /**
-     * Allow controller or other class to listen in on action changes
-     */
-    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
-        myChangeSupport.addPropertyChangeListener(theListener);
     }
 
     /**
@@ -449,7 +436,7 @@ public class GameView implements PropertyChangeListener {
      */
     private void endGame() {
         String message;
-        if (playerWon) {
+        if (myPlayerWon) {
             message = "Congratulations! You won!\n";
         } else {
             message = "Good Game.\n";
@@ -478,20 +465,15 @@ public class GameView implements PropertyChangeListener {
     }
 
     /**
-     * Return the main game frame
-     *
-     * @return the game frame
+     * Fires a property change event for testing purpose only
      */
-    public JFrame getFrame() {
-        return myFrame;
-    }
-
-    //TESTING PURPOSE ONLY
     public void testFireEvent(String eventName, Object oldValue, Object newValue) {
         myChangeSupport.firePropertyChange(eventName, oldValue, newValue);
     }
 
-    //testing only
+    /**
+     * Make a game frame visible for testing purpose only
+     */
     public void showFrame() {
         myFrame.setVisible(true);
         myMainPanel.setDividerLocation(0.75);
