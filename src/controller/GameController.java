@@ -186,6 +186,13 @@ public class GameController implements PropertyChangeListener {
                 loadedData.getRoomY()
         );
 
+        if (loadedRoom == null) {
+            myGameView.propertyChange(new PropertyChangeEvent(
+                    this, "noSaveFile", null, null
+            ));
+            return;
+        }
+
         myStartingRoom = loadedRoom;
 
         myHero.setCurrentRoom(loadedRoom);
