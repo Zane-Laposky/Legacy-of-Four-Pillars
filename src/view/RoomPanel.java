@@ -100,8 +100,10 @@ class RoomPanel {
      */
     private ImageIcon getBackground(final int theSize) {
         try {
-            ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/wall.png")));
-            Image size = image.getImage().getScaledInstance(theSize, theSize, Image.SCALE_SMOOTH);
+            ImageIcon image = new ImageIcon(Objects.requireNonNull(
+                    getClass().getResource("/images/wall.png")));
+            Image size = image.getImage().getScaledInstance(
+                    theSize, theSize, Image.SCALE_SMOOTH);
             return new ImageIcon(size);
         } catch (Exception e) {
             return null;
@@ -117,9 +119,10 @@ class RoomPanel {
     private ImageIcon getIcon(final String theFileName) {
         try {
             ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/" + theFileName)));
-            int cellSize = myRoomStructure[1][1].getWidth();
-            Image size = image.getImage().getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
-            return new ImageIcon(size);
+            int cellWidthSize = myRoomStructure[1][1].getWidth();
+            int cellHeightSize = myRoomStructure[1][1].getHeight();
+            Image sizedImage = image.getImage().getScaledInstance(cellWidthSize, cellHeightSize, Image.SCALE_SMOOTH);
+            return new ImageIcon(sizedImage);
         } catch (Exception e) {
             return null;
         }
@@ -176,7 +179,7 @@ class RoomPanel {
         for (int row = 0; row < DIMENSION; row++) {
             for (int col = 0; col < DIMENSION; col++) {
                 myRoomStructure[row][col].setText("");
-                int size = myRoomStructure[row][col].getWidth();
+                int size = myOneRoomPanel.getHeight();
                 myRoomStructure[row][col].setIcon(getBackground(size));
                 myRoomStructure[row][col].setBackground(Color.BLACK);
             }
