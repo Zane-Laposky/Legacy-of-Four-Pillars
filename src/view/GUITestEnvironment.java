@@ -44,6 +44,8 @@ class GUITestEnvironment {
         testEnvironment.testFireEvent("vision", null, testRoom);
         Thread.sleep(3000);
 
+        testEnvironment.testFireEvent("noSaveFile", null, null);
+
     }
 
 }

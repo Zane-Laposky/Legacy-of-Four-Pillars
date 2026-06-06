@@ -255,7 +255,6 @@ public class GameView implements PropertyChangeListener {
         if (choice == JOptionPane.YES_OPTION) {
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
-            //NEED FIXING
             myChangeSupport.firePropertyChange("menu", "", "LoadGame");
         }
     }
@@ -344,6 +343,16 @@ public class GameView implements PropertyChangeListener {
         if (theEvent.getPropertyName().equals("lost")) {
             myPlayerWon = false;
             endGame();
+        }
+        if (theEvent.getPropertyName().equals("noSaveFile")) {
+            JOptionPane.showMessageDialog(
+                    myFrame, """
+                            No saved game found.
+                            Please start a new game by creating new character.
+                            """, "Load Failed",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            characterTypePrompt();
         }
     }
 
