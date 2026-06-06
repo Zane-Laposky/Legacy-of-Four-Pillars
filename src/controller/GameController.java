@@ -164,7 +164,8 @@ public class GameController implements PropertyChangeListener {
         Optional<PlayerWrapper> saveData = myPersistence.loadPlayerData();
 
         if (saveData.isEmpty()) {
-            System.out.println("No saved game found.");
+            myGameView.propertyChange(new PropertyChangeEvent(
+                    this, "noSaveFile", null, null));
             return;
         }
 
