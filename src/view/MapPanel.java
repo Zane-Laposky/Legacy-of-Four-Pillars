@@ -217,10 +217,20 @@ public class MapPanel implements PropertyChangeListener {
     /**
      * Clears the current map state.
      */
+    /**
+     * Clears all map data and restores the map to its
+     * initial state for a new game.
+     */
     private void clearMap() {
+
         myVisitedRooms.clear();
         myHintedCoords.clear();
         myCurrentRoom = null;
+        myZoom = INITIAL_ZOOM;
+        myOffsetX = 0;
+        myOffsetY = 0;
+        myCanvas.revalidate();
+        myCanvas.repaint();
     }
 
     /**
