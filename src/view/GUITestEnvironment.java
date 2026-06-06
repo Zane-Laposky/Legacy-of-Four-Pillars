@@ -5,8 +5,8 @@ import model.Room;
 import model.Skeleton;
 import model.VisionPotion;
 
-public class GUITestEnvironment {
-    public static void main(String[] args) throws InterruptedException {
+class GUITestEnvironment {
+     static void main(String[] args) throws InterruptedException {
         GameView testEnvironment = new GameView();
         testEnvironment.showFrame();
 
