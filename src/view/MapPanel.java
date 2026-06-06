@@ -212,6 +212,9 @@ public class MapPanel implements PropertyChangeListener {
 
             myCanvas.repaint();
         }
+        if (theEvent.getPropertyName().equals("resetMap")) {
+            clearMap();
+        }
     }
 
     /**
