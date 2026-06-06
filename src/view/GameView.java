@@ -435,6 +435,7 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("HealingPotion", null, 0);
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
+        myMapPanel.propertyChange(null);
         characterTypePrompt();
     }
 

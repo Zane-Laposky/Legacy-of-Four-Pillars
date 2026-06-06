@@ -20,7 +20,7 @@ import java.util.Arrays;
  * dungeon as well as its distance from the entrance.
  *
  * @author Zane Laposky
- * @version 1.2 - 5/15/2026
+ * @version 1.3 - 6/5/2026
  */
 public class Room implements Serializable
 {
@@ -312,19 +312,18 @@ public class Room implements Serializable
 
         // Top row.
 
-        sb.append(northExists ? "╠" : "╔");
+        sb.append(getTopLeftCorner());
 
         if (northExists)
         {
 
-            if (myNorthRoom.getEntranceRequirements()
-                    != null)
+            if (myNorthRoom.getEntranceRequirements() != null)
             {
                 sb.append(LOCKED_DOOR_SYMBOL);
             }
             else
             {
-                sb.append(" ");
+                sb.append("-");
             }
         }
         else
@@ -332,7 +331,7 @@ public class Room implements Serializable
             sb.append("═");
         }
 
-        sb.append(eastExists ? "╣" : "╗");
+        sb.append(getTopRightCorner());
 
         sb.append(ROOM_ROW_SEPARATOR);
 
@@ -348,19 +347,18 @@ public class Room implements Serializable
 
         // Bottom row.
 
-        sb.append(southExists ? "╠" : "╚");
+        sb.append(getBottomLeftCorner());
 
         if (southExists)
         {
 
-            if (mySouthRoom.getEntranceRequirements()
-                    != null)
+            if (mySouthRoom.getEntranceRequirements() != null)
             {
                 sb.append(LOCKED_DOOR_SYMBOL);
             }
             else
             {
-                sb.append(" ");
+                sb.append("-");
             }
         }
         else
@@ -368,11 +366,110 @@ public class Room implements Serializable
             sb.append("═");
         }
 
-        sb.append(eastExists ? "╣" : "╝");
+        sb.append(getBottomRightCorner());
 
         return sb.toString();
     }
 
+    /**
+     * Returns the top-left corner character used when rendering
+     * this room.
+     *
+     * The returned character is based on the existence of
+     * adjacent rooms to the north and west. This allows the
+     * room border to connect correctly with neighboring rooms
+     * when displayed as part of the dungeon map.
+     *
+     * @return the top-left corner character for the room
+     */
+    private char getTopLeftCorner() {
+
+        if (myNorthRoom != null && myWestRoom != null) {
+            return '╬';
+        }
+        if (myNorthRoom != null) {
+            return '╠';
+        }
+        if (myWestRoom != null) {
+            return '╦';
+        }
+        return '╔';
+    }
+
+    /**
+     * Returns the top-right corner character used when rendering
+     * this room.
+     *
+     * The returned character is based on the existence of
+     * adjacent rooms to the north and east. This allows the
+     * room border to connect correctly with neighboring rooms
+     * when displayed as part of the dungeon map.
+     *
+     * @return the top-right corner character for the room
+     */
+    private char getTopRightCorner() {
+
+        if (myNorthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (myNorthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╦';
+        }
+        return '╗';
+    }
+
+    /**
+     * Returns the bottom-left corner character used when rendering
+     * this room.
+     *
+     * The returned character is based on the existence of
+     * adjacent rooms to the south and west. This allows the
+     * room border to connect correctly with neighboring rooms
+     * when displayed as part of the dungeon map.
+     *
+     * @return the bottom-left corner character for the room
+     */
+    private char getBottomLeftCorner() {
+
+        if (mySouthRoom != null && myWestRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╠';
+        }
+        if (myWestRoom != null) {
+            return '╩';
+        }
+        return '╚';
+    }
+
+    /**
+     * Returns the bottom-right corner character used when rendering
+     * this room.
+     *
+     * The returned character is based on the existence of
+     * adjacent rooms to the south and east. This allows the
+     * room border to connect correctly with neighboring rooms
+     * when displayed as part of the dungeon map.
+     *
+     * @return the bottom-right corner character for the room
+     */
+    private char getBottomRightCorner() {
+
+        if (mySouthRoom != null && myEastRoom != null) {
+            return '╬';
+        }
+        if (mySouthRoom != null) {
+            return '╣';
+        }
+        if (myEastRoom != null) {
+            return '╩';
+        }
+        return '╝';
+    }
     /**
      * Returns the display symbol used for this room.
      *
