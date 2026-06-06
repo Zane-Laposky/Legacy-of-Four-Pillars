@@ -36,8 +36,6 @@ public class Thief extends Hero implements Serializable {
         final double theChance = Math.random();
 
         if (theChance <= CHANCE_CAUGHT) {
-
-            System.out.println("Thief was caught! No attack.");
             return;
 
         } else if (theChance <= CHANCE_SURPRISE_ATTACK) {
@@ -47,14 +45,10 @@ public class Thief extends Hero implements Serializable {
 
             theMonster.takeDamage(theDamage);
 
-            System.out.println("Surprise Attack hits for " + theDamage);
-
         } else {
 
             attack(theMonster);
             attack(theMonster);
-
-            System.out.println("Thief gets an extra attack!");
         }
     }
 }

@@ -49,6 +49,7 @@ class DungeonPanel implements PropertyChangeListener {
     private void initPanel() {
         myPanel.setLayout(new GridLayout(DIMENSION, DIMENSION));
         myPanel.setBackground(Color.BLACK);
+        myPanel.setPreferredSize(new Dimension(500, 450));
         for (int row = 0; row < DIMENSION; row++) {
             for (int col = 0; col < DIMENSION; col++) {
                 myRooms[row][col] = new RoomPanel();

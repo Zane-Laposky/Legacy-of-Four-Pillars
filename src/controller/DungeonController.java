@@ -87,6 +87,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
     private boolean myGameOver;
 
     /**
+     * Tracks whether the Priestess has already healed this turn.
+     */
+    private boolean myPriestessHealedThisTurn;
+
+    /**
      * Stores messages waiting to be shown to the player.
      */
     private Queue<String> myMessageQueue;
@@ -113,10 +118,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         myGameOver = false;
         myDungeon = theDungeon;
         myVisionActive = false;
+        myPriestessHealedThisTurn = false;
 
         myMessageQueue = new LinkedList<>();
 
-        myMessageTimer = new Timer(1000, theEvent -> {
+        myMessageTimer = new Timer(600, theEvent -> {
             if (!myMessageQueue.isEmpty()) {
                 String nextMessage = myMessageQueue.poll();
 
@@ -211,6 +217,11 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     private void afterHeroAttacks(final Monster theMonster) {
         /*
+         * Reset Priestesses heal ability.
+         */
+        myPriestessHealedThisTurn = false;
+        
+        /*
          * If the monster died, end combat for this turn.
          */
         if (!theMonster.isAlive()) {
@@ -222,13 +233,27 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * Monster heals before attacking.
          */
+        int monsterPreviousHealth = theMonster.getMyHitPoints();
         theMonster.heal();
-
+        int monsterCurrentHealth = theMonster.getMyHitPoints();
+        int monsterHealed = monsterCurrentHealth - monsterPreviousHealth;
+        if (monsterHealed > 0) {
+            sendMessage(theMonster.getMyName() + " healed " + monsterHealed + " health!");
+            sendMessage(theMonster.getMyName() + " now has " + theMonster.getMyHitPoints() + " health!");
+        }
         /*
          * Monster attacks the hero.
          */
+        int playerPreviousHealth = myHero.getMyHitPoints();
         theMonster.attack(myHero);
-        sendMessage(theMonster.getMyName() + " attacked " + myHero.getMyName() + "!");
+        int playerNewHealth = myHero.getMyHitPoints();
+        int playerDamageTaken = playerPreviousHealth - playerNewHealth;
+        if(playerDamageTaken == 0) {
+            sendMessage(myHero.getMyName() + " dodged the attack!");
+            return;
+        }
+        sendMessage(theMonster.getMyName() + " attacked " + myHero.getMyName()
+                + " and did " + playerDamageTaken + " damage!");
 
         /*
          * Checks if the hero has been defeated.
@@ -409,8 +434,17 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * Priestess special ability heals herself.
          */
         if (myHero instanceof Priestess) {
+            if(myPriestessHealedThisTurn){
+                sendMessage(myHero.getMyName() + " has already healed!");
+                return;
+            }
+            int heroPreviousHealth = myHero.getMyHitPoints();
             ((Priestess) myHero).healSelf();
-            sendMessage(myHero.getMyName() + " healed herself.");
+            int heroNewHealth = myHero.getMyHitPoints();
+            myHero.setMyHitPoints(Math.min(heroNewHealth, getHeroMaxHP()));
+            int heroHealed = heroNewHealth - heroPreviousHealth;
+            sendMessage(myHero.getMyName() + " healed " + heroHealed + " health!");
+            myPriestessHealedThisTurn = true;
             return;
         }
 
@@ -426,11 +460,31 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
          * Uses the correct special ability depending on hero type.
          */
         if (myHero instanceof Warrior) {
+            int monsterPreviousHealth = monster.getMyHitPoints();
             ((Warrior) myHero).crushingBlow(monster);
-            sendMessage(myHero.getMyName() + " used Crushing Blow.");
+            int monsterNewHealth = monster.getMyHitPoints();
+            int monsterDamageTaken = monsterPreviousHealth - monsterNewHealth;
+            if(monsterDamageTaken == 0) {
+                sendMessage(monster.getMyName() + " dodged the attack!");
+                afterHeroAttacks(monster);
+                return;
+            }
+            sendMessage(myHero.getMyName() + " used Crushing Blow and did " + monsterDamageTaken + " damage!");
+            sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
+
         } else if (myHero instanceof Thief) {
+            int monsterPreviousHealth = monster.getMyHitPoints();
             ((Thief) myHero).surpriseAttack(monster);
-            sendMessage(myHero.getMyName() + " used Surprise Attack.");
+            int monsterNewHealth = monster.getMyHitPoints();
+            int monsterDamageTaken = monsterPreviousHealth - monsterNewHealth;
+            if(monsterDamageTaken == 0) {
+                sendMessage(monster.getMyName() + " dodged the attack!");
+                afterHeroAttacks(monster);
+                return;
+            }
+            sendMessage(myHero.getMyName() + " used Sneak Attack and did " + monsterDamageTaken + " damage!");
+            sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
+
         }
         afterHeroAttacks(monster);
     }
@@ -446,9 +500,17 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
             sendMessage("There is no living monster.");
             return;
         }
-
+        int monsterPreviousHealth = monster.getMyHitPoints();
         myHero.attack(monster);
-        sendMessage(myHero.getMyName() + " attacks " + monster.getMyName() + ".");
+        int monsterNewHealth = monster.getMyHitPoints();
+        int monsterDamageTaken = monsterPreviousHealth - monsterNewHealth;
+        if(monsterDamageTaken == 0) {
+            sendMessage(monster.getMyName() + " has dodged the attack!");
+            afterHeroAttacks(monster);
+            return;
+        }
+        sendMessage(myHero.getMyName() + " attacks " + monster.getMyName() + " for " + monsterDamageTaken + " damage!");
+        sendMessage(monster.getMyName() + " has " + monster.getMyHitPoints() + " health!");
 
         afterHeroAttacks(monster);
     }
@@ -560,6 +622,8 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * item pickup button, monster status, and hero name.
      */
     void updateView() {
+        updateMessageTimerDelay();
+
         if (myVisionActive) {
             myChangeSupport.firePropertyChange("vision", null, myRoom);
             myVisionActive = false;
@@ -698,5 +762,16 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     public void removePropertyChangeListener(PropertyChangeListener theListener) {
         myChangeSupport.removePropertyChangeListener(theListener);
+    }
+
+    /**
+     * Changes the message timer delay depending on whether the hero is in combat.
+     */
+    private void updateMessageTimerDelay() {
+        if (roomHasLivingMonsters()) {
+            myMessageTimer.setDelay(800);
+        } else {
+            myMessageTimer.setDelay(600);
+        }
     }
 }

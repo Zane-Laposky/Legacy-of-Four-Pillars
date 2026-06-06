@@ -81,7 +81,7 @@ public class Dungeon implements Serializable
      * Probability used when generating monsters.
      */
     private static final double CHANCE_TO_GENERATE_MONSTER =
-            0.30;
+            0.15;
 
     /**
      * Dungeon entrance room.
