@@ -8,7 +8,7 @@ import model.VisionPotion;
 class GUITestEnvironment {
      static void main() throws InterruptedException {
         GameView testEnvironment = new GameView();
-        testEnvironment.showFrame();
+        testEnvironment.testShowFrame();
 
         //temp Room to test
         Room testRoom = new Room(null);

@@ -5,7 +5,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
 import javax.swing.Timer;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -61,7 +60,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      * Wrapper object used to help interact with the hero,
      * especially for inventory-related actions
      */
-    private PlayerWrapperController playerWrapper;
+    private PlayerWrapperController myPlayerWrapper;
     /**
      * The Stats panel from the view.
      * This allows the controller to update the displayed hit points.
@@ -112,7 +111,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
      */
     public DungeonController(final Hero theHero, final Dungeon theDungeon) {
         myHero = theHero;
-        playerWrapper = new PlayerWrapperController(myHero);
+        myPlayerWrapper = new PlayerWrapperController(myHero);
         myPersistence = new Persistence();
         myChangeSupport = new PropertyChangeSupport(this);
         myGameOver = false;
@@ -342,7 +341,7 @@ public class DungeonController implements KeyListener, PropertyChangeListener {
         /*
          * Adds the room's items to the player's inventory.
          */
-        playerWrapper.addItemtoInventory(myRoom.getItems());
+        myPlayerWrapper.addItemtoInventory(myRoom.getItems());
 
         sendMessage(myHero.getMyName() + " picked up " + roomItems[0].getMyName() + "!");
 

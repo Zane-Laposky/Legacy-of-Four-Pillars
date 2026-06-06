@@ -483,7 +483,7 @@ public class GameView implements PropertyChangeListener {
     /**
      * Make a game frame visible for testing purpose only
      */
-    public void showFrame() {
+    public void testShowFrame() {
         myFrame.setVisible(true);
         myMainPanel.setDividerLocation(0.75);
         myBottomPanel.setDividerLocation(0.4);
