@@ -123,7 +123,7 @@ public class GameView implements PropertyChangeListener {
      * Set up the game window's properties such as title, size and close behavior.
      */
     private void initFrameLayout() {
-        myFrame = new JFrame("Legacy of Four Pillars");
+        myFrame = new JFrame("Legacy of the Four Pillars");
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.setMinimumSize(new Dimension(775, 750));
         myFrame.setResizable(true);
@@ -249,7 +249,7 @@ public class GameView implements PropertyChangeListener {
         Object[] options = {"New Game", "Load Game"};
         int choice = JOptionPane.showOptionDialog(myFrame,
                 "Would you like to start a new game or load a game?",
-                "Welcome to Legacy of Four Pillars!", JOptionPane.YES_NO_OPTION,
+                "Welcome to Legacy of the Four Pillars!", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
