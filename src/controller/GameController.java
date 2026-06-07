@@ -130,6 +130,7 @@ public class GameController implements PropertyChangeListener {
         myDungeonController = new DungeonController(myHero, myDungeon);
 
         myGameView.connectController(myDungeonController);
+        myDungeonController.updateView();
 
         /*
          * Sends the first update so the view displays the starting room,

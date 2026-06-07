@@ -465,7 +465,10 @@ public class GameView implements PropertyChangeListener {
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
+            myChangeSupport.removePropertyChangeListener(myMapPanel);
             myMapPanel = new MapPanel();
+            myChangeSupport.addPropertyChangeListener(myMapPanel);
+            myMainPanel.setRightComponent(myMapPanel.getPanel());
             gameTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
             System.exit(0);
