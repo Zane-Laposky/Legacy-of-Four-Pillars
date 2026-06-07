@@ -61,6 +61,7 @@ class StatsPanel implements PropertyChangeListener {
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
         myTitle = new JLabel(theCharacterName);
         myTitle.setFont(myTitle.getFont().deriveFont(Font.BOLD));
+        myTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         myPanel.add(myTitle);
 
         JPanel myHitPtPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
