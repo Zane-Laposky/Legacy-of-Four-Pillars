@@ -436,6 +436,13 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
         myChangeSupport.firePropertyChange("resetMap", null, null);
+
+        // Reset the map panel
+        myChangeSupport.removePropertyChangeListener(myMapPanel);
+        myMapPanel = new MapPanel();
+        myChangeSupport.addPropertyChangeListener(myMapPanel);
+        myMainPanel.setRightComponent(myMapPanel.getPanel());
+
         characterTypePrompt();
     }
 
