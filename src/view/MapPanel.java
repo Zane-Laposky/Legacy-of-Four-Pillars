@@ -36,7 +36,7 @@ import model.Room;
  * see where doors lead without revealing room contents.
  *
  * @author Zane Laposky
- * @version 1.0
+ * @version 1.1 6/7/26
  */
 public class MapPanel implements PropertyChangeListener {
 
@@ -59,6 +59,26 @@ public class MapPanel implements PropertyChangeListener {
      * Minimum allowed zoom level.
      */
     private static final double ZOOM_MIN = 0.5;
+
+    /**
+     * Max room x coordinate
+     */
+    private int myMaxX;
+
+    /**
+     * Max room y coordinate
+     */
+    private int myMaxY;
+
+    /**
+     * Min room x coordinate
+     */
+    private int myMinX;
+
+    /**
+     * Min room y coordinate
+     */
+    private int myMinY;
 
     /**
      * Maximum allowed zoom level.
@@ -155,6 +175,10 @@ public class MapPanel implements PropertyChangeListener {
      */
     public MapPanel() {
         myCanvas = new MapCanvas();
+        myMinX = 0;
+        myMaxX = 0;
+        myMinY = 0;
+        myMaxY = 0;
 
         myOuterPanel = new JPanel(new BorderLayout());
         myOuterPanel.setBackground(COL_BACKGROUND);
@@ -360,6 +384,106 @@ public class MapPanel implements PropertyChangeListener {
         });
     }
 
+    /**
+     * Reveals the entire dungeon map.
+     *
+     * <p>This method is intended to be called when the game has been
+     * completed. Starting from the current room, it traverses all
+     * connected rooms in the dungeon and adds them to the collection
+     * of displayed rooms. Any fog-of-war hints are removed since every
+     * room is now visible.</p>
+     *
+     * <p>If there is no current room, no action is performed.</p>
+     */
+    public void displayAll() {
+
+        if (myCurrentRoom == null) {
+            return;
+        }
+
+        myVisitedRooms.clear();
+        myHintedCoords.clear();
+
+        myMinX = Integer.MAX_VALUE;
+        myMaxX = Integer.MIN_VALUE;
+        myMinY = Integer.MAX_VALUE;
+        myMaxY = Integer.MIN_VALUE;
+
+        final Set<String> visited = new HashSet<>();
+        revealRoom(myCurrentRoom, visited);
+
+        fitDungeonToScreen();
+
+        myCanvas.repaint();
+    }
+
+    /**
+     * Centers the map on the middle of the discovered dungeon.
+     */
+    private void fitDungeonToScreen() {
+
+        final int canvasWidth = myCanvas.getWidth() > 0
+                ? myCanvas.getWidth() : DEFAULT_CANVAS_SIZE;
+        final int canvasHeight = myCanvas.getHeight() > 0
+                ? myCanvas.getHeight() : DEFAULT_CANVAS_SIZE;
+
+        final int dungeonWidth = myMaxX - myMinX + 1;
+        final int dungeonHeight = myMaxY - myMinY + 1;
+
+        final double baseRoomSize =
+                ROOM_CHARACTER_COUNT * charWidth();
+
+        final double zoomX =
+                canvasWidth / (dungeonWidth * baseRoomSize);
+
+        final double zoomY =
+                canvasHeight / (dungeonHeight * baseRoomSize);
+
+        myZoom = Math.max(ZOOM_MIN,
+                Math.min(ZOOM_MAX,
+                        Math.min(zoomX, zoomY) * 0.8));
+    }
+
+    /**
+     * Recursively traverses the dungeon and adds every reachable room
+     * to the displayed room collection.
+     *
+     * @param theRoom the room currently being processed
+     * @param theVisited coordinate keys of rooms already processed
+     */
+    private void revealRoom(final Room theRoom,
+                            final Set<String> theVisited) {
+
+        if (theRoom == null) {
+            return;
+        }
+
+        final String roomKey = key(theRoom.getX(), theRoom.getY());
+
+        if (theVisited.contains(roomKey)) {
+            return;
+        }
+
+        theVisited.add(roomKey);
+        myVisitedRooms.put(roomKey, theRoom);
+        if (theRoom.getX() > myMaxX){
+            myMaxX = theRoom.getX();
+        }
+        if (theRoom.getY() > myMaxY){
+            myMaxY = theRoom.getY();
+        }
+        if (theRoom.getX() < myMinX){
+            myMinX = theRoom.getX();
+        }
+        if (theRoom.getY() < myMinY){
+            myMinY = theRoom.getY();
+        }
+
+        revealRoom(theRoom.getNorthRoom(), theVisited);
+        revealRoom(theRoom.getSouthRoom(), theVisited);
+        revealRoom(theRoom.getEastRoom(), theVisited);
+        revealRoom(theRoom.getWestRoom(), theVisited);
+    }
     /**
      * Inner canvas responsible for drawing the map contents.
      */

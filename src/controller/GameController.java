@@ -108,8 +108,7 @@ public class GameController implements PropertyChangeListener {
          * Creates a random dungeon.
          * The number controls the size/difficulty of the dungeon.
          */
-        myDungeon = new Dungeon(5);
-
+        myDungeon = new Dungeon(4);
         /*
          * The hero starts at the dungeon entrance.
          */

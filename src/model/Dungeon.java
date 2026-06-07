@@ -75,13 +75,13 @@ public class Dungeon implements Serializable
     /**
      * Probability used when generating items.
      */
-    private static final double CHANCE_TO_GENERATE_ITEM = 0.05;
+    private static final double CHANCE_TO_GENERATE_ITEM = 0.1;
 
     /**
      * Probability used when generating monsters.
      */
     private static final double CHANCE_TO_GENERATE_MONSTER =
-            0.15;
+            0.1;
 
     /**
      * Dungeon entrance room.
@@ -200,7 +200,7 @@ public class Dungeon implements Serializable
     public static void main(final String[] theArgs)
             throws IOException
     {
-        final Dungeon dungeon = new Dungeon(400);
+        final Dungeon dungeon = new Dungeon(3);
 
         final Writer writer =
                 new PrintWriter("Dungeon.txt");
@@ -238,7 +238,7 @@ public class Dungeon implements Serializable
                             theRandom.nextInt(
                                     myPillarsToPlace.length)];
 
-            if (room.isEmpty())
+            if (room.isEmpty() && room.getDepth() < myExit.getDepth())
             {
                 room.addItem(pillar);
 

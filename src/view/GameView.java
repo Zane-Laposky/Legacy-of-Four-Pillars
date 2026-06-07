@@ -447,6 +447,7 @@ public class GameView implements PropertyChangeListener {
         String message;
         if (myPlayerWon) {
             message = "Congratulations! You won!\n";
+            myMapPanel.displayAll();
         } else {
             message = "Good Game.\n";
         }
@@ -457,6 +458,7 @@ public class GameView implements PropertyChangeListener {
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
         if (choice == JOptionPane.YES_OPTION) {
+            myMapPanel = new MapPanel();
             gameTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
             System.exit(0);
