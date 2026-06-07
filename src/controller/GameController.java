@@ -251,6 +251,8 @@ public class GameController implements PropertyChangeListener {
                 && "SaveGame".equals(theEvent.getNewValue())) {
             myPersistence.savePlayer(myHero);
             myPersistence.saveDungeon(myDungeon);
+            myGameView.propertyChange(new PropertyChangeEvent(
+                    this, "message", "", "Game saved."));
         }
     }
 }
