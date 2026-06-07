@@ -33,6 +33,9 @@ class StatsPanel implements PropertyChangeListener {
      */
     private final JLabel myHitPt;
 
+    /**
+     * Title with character name
+     */
     private JLabel myTitle;
 
     /**

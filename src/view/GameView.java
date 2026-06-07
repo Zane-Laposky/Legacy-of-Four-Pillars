@@ -255,7 +255,6 @@ public class GameView implements PropertyChangeListener {
         if (choice == JOptionPane.YES_OPTION) {
             characterTypePrompt();
         } else if (choice == JOptionPane.NO_OPTION) {
-            //NEED FIXING
             myChangeSupport.firePropertyChange("menu", "", "LoadGame");
         }
     }
@@ -345,6 +344,16 @@ public class GameView implements PropertyChangeListener {
             myPlayerWon = false;
             endGame();
         }
+        if (theEvent.getPropertyName().equals("noSaveFile")) {
+            JOptionPane.showMessageDialog(
+                    myFrame, """
+                            No saved game found.
+                            Please start a new game by creating new character.
+                            """, "Load Failed",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            characterTypePrompt();
+        }
     }
 
     /**
@@ -426,7 +435,7 @@ public class GameView implements PropertyChangeListener {
         myChangeSupport.firePropertyChange("HealingPotion", null, 0);
         myChangeSupport.firePropertyChange("VisionPotion", null, 0);
         myChangeSupport.firePropertyChange("Pillar", null, 0);
-        myMapPanel.propertyChange(null);
+        myChangeSupport.firePropertyChange("resetMap", null, null);
         characterTypePrompt();
     }
 
@@ -474,7 +483,7 @@ public class GameView implements PropertyChangeListener {
     /**
      * Make a game frame visible for testing purpose only
      */
-    public void showFrame() {
+    public void testShowFrame() {
         myFrame.setVisible(true);
         myMainPanel.setDividerLocation(0.75);
         myBottomPanel.setDividerLocation(0.4);
