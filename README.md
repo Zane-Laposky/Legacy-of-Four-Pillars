@@ -10,3 +10,5 @@ A Java-based dungeon adventure game built with the MVC design pattern. Features 
 Issues from Iteration 6:
 
 1. My biggest challenges this week were scaling and displaying custom icons correctly within the room panel cells, ensuring the full image was visible, and configuring the surrounding room panels to show the wall background only when the vision potion is inactive. - Emily Hernandez
+
+2. No particular difficulty, simply just ensuring the map and other  items are buttoned up for final submission -Zane Laposky
