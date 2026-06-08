@@ -14,3 +14,5 @@ Issues from Iteration 6:
 2. No particular difficulty, simply just ensuring the map and other  items are buttoned up for final submission -Zane Laposky
 
 3. The only issue I really had this week was trying to get the timing correct with the timer. The messages would always feel like they are either going to fast or too slow and I could never really get it to be perfect. - Devin Riel 
+
+My issue during this iteration was making sure the save/load feature was ready for the final submission. I checked the SQLite driver setup and reviewed the persistence files so the save/load system could run correctly. - Ryan Nguyen
