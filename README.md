@@ -12,3 +12,5 @@ Issues from Iteration 6:
 1. My biggest challenges this week were scaling and displaying custom icons correctly within the room panel cells, ensuring the full image was visible, and configuring the surrounding room panels to show the wall background only when the vision potion is inactive. - Emily Hernandez
 
 2. No particular difficulty, simply just ensuring the map and other  items are buttoned up for final submission -Zane Laposky
+
+3. The only issue I really had this week was trying to get the timing correct with the timer. The messages would always feel like they are either going to fast or too slow and I could never really get it to be perfect. - Devin Riel 
