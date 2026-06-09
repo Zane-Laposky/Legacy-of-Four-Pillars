@@ -13,11 +13,11 @@ import model.Warrior;
 import java.util.Optional;
 
 /**
- * Manual test for the Data save/load system.
+ * Tests the persistence system for saving and loading player data.
  *
- * This tests basic hero save/load, repeated saves, and inventory saving.
+ * @author Ryan Nguyen
  */
-public class PersistenceTest {
+public final class PersistenceTest {
 
     public static void main(String[] args) {
         Persistence persistence = new Persistence();
