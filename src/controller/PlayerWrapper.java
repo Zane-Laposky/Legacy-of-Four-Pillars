@@ -88,7 +88,7 @@ public class PlayerWrapper {
 
     /**
      * Rebuilds a Hero object from the saved data.
-     *
+     * <p>
      * Room objects are not rebuilt here yet. For now, only the saved
      * room coordinates are stored so the controller can use them later.
      *

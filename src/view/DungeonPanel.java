@@ -15,7 +15,7 @@ import java.beans.PropertyChangeListener;
  * DungeonPanel displays the dungeon grid and visible rooms for the player.
  *
  * @author Emily Hernandez
- * @version Spring 2026
+ * @version 1.0 Spring 2026
  */
 class DungeonPanel implements PropertyChangeListener {
 

@@ -1,10 +1,21 @@
-//TESTING PURPOSE ONLY
+/*
+ * GUITestEnvironment
+ * Spring 2026
+ */
 package view;
 
 import model.Room;
 import model.Skeleton;
 import model.VisionPotion;
 
+/**
+ * A manul testing class for the view package. Simulates property change
+ * events to verify GUI components respond correctly without a running game instance.
+ * This class is for testing purpose only.
+ *
+ * @author Emily Hernandez
+ * @version 1.0 Spring 2026
+ */
 class GUITestEnvironment {
      static void main() throws InterruptedException {
         GameView testEnvironment = new GameView();

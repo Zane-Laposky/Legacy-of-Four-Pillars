@@ -7,7 +7,7 @@ import java.util.Arrays;
 /**
  * Hero is an abstract subclass of DungeonCharacter that represents
  * the player-controlled character in the dungeon adventure game.
- *
+ * <p>
  * Heroes have additional abilities such as blocking attacks,
  * maintaining an inventory, tracking their current room,
  * and potentially using special abilities.
