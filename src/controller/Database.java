@@ -11,13 +11,10 @@ import java.sql.Statement;
  * Handles the SQLite database connection and table setup for saved game data.
  *
  * This is part of the Data section of the project.
+ *
+ * @author Ryan Nguyen
  */
 public class Database {
-
-    private static final String SAVE_FOLDER = "saves";
-    private static final String DB_URL = "jdbc:sqlite:" + SAVE_FOLDER + "/legacy_save.db";
-
-    private Database() {
         // Utility class, so no objects need to be made.
     }
 
