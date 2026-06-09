@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple data object used for saving and loading a player's hero.
+ * Stores hero data in a format that can be saved to and loaded from the database.
  *
- * This wrapper stores basic hero data, room position, and inventory item names.
+ * @author Ryan Nguyen
  */
 public class PlayerWrapper {
 
