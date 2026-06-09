@@ -15,12 +15,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 /**
- * Saves and loads player and dungeon data.
+ * Handles saving and loading player and dungeon data for the game.
  *
- * This class is meant to be called by the controller or GUI.
+ * @author Ryan Nguyen
  */
 public class Persistence {
-
+    
     private static final int MAIN_SAVE_ID = 1;
 
     private static final String SAVE_FOLDER = "saves";
