@@ -16,6 +16,7 @@ import java.util.List;
  * Stores hero data in a format that can be saved to and loaded from the database.
  *
  * @author Ryan Nguyen
+ *@version 1.0 Spring 2026
  */
 public class PlayerWrapper {
 
@@ -31,6 +32,21 @@ public class PlayerWrapper {
     private final int myRoomY;
     private final String myInventoryItems;
 
+    /**
+     * Constructs a PlayerWrapper with the given hero data.
+     *
+     * @param thePlayerName the hero's name
+     * @param theHeroType the hero class type
+     * @param theHitPoints current hit points
+     * @param theMinDamage minimum damage
+     * @param theMaxDamage maximum damage
+     * @param theAttackSpeed attack speed
+     * @param theChanceToHit chance to hit
+     * @param theChanceToBlock chance to block
+     * @param theRoomX saved room x coordinate
+     * @param theRoomY saved room y coordinate
+     * @param theInventoryItems inventory item names
+     */
     public PlayerWrapper(final String thePlayerName,
                          final String theHeroType,
                          final int theHitPoints,
@@ -117,6 +133,12 @@ public class PlayerWrapper {
         return hero;
     }
 
+    /**
+     * Converts an item array to a pipe-separated string.
+     *
+     * @param theItems  the items to convert
+     * @return pipe-separated string of item names
+     */
     private static String inventoryToString(final Item[] theItems) {
         if (theItems == null || theItems.length == 0) {
             return "";
@@ -137,6 +159,12 @@ public class PlayerWrapper {
         return result.toString();
     }
 
+    /**
+     * Convert a pipe-separated string back into an item array.
+     *
+     * @param theSavedItems  the saved item string
+     * @return array of reconstructed items
+     **/
     private static Item[] inventoryFromString(final String theSavedItems) {
         if (theSavedItems == null || theSavedItems.isBlank()) {
             return new Item[0];
@@ -156,6 +184,12 @@ public class PlayerWrapper {
         return items.toArray(new Item[0]);
     }
 
+    /**
+     * Create an item from its saved name.
+     *
+     * @param theName the name of the item
+     * @return the matching item, or null if unrecognized
+     */
     private static Item createItemFromName(final String theName) {
         if (theName == null || theName.isBlank()) {
             return null;
@@ -176,50 +210,111 @@ public class PlayerWrapper {
         return null;
     }
 
+    /**
+     * Return the player name.
+     *
+     * @return the player name
+     */
     public String getPlayerName() {
         return myPlayerName;
     }
 
+    /**
+     * Return the hero type.
+     *
+     * @return the hero type
+     */
     public String getHeroType() {
         return myHeroType;
     }
 
+    /**
+     * Return the hit point.
+     *
+     * @return the hit point
+     */
     public int getHitPoints() {
         return myHitPoints;
     }
 
+    /**
+     * Return the minimum damage.
+     *
+     * @return the minimum damage
+     */
     public int getMinDamage() {
         return myMinDamage;
     }
 
+    /**
+     * Return the maximum damage.
+     *
+     * @return the maximum damage
+     */
     public int getMaxDamage() {
         return myMaxDamage;
     }
 
+    /**
+     * Return the attack speed.
+     *
+     * @return the attack speed
+     */
     public int getAttackSpeed() {
         return myAttackSpeed;
     }
 
+    /**
+     * Return the chance to hit.
+     *
+     * @return the chance to hit
+     */
     public double getChanceToHit() {
         return myChanceToHit;
     }
 
+    /**
+     * Return the chance to block.
+     *
+     * @return the chance to block
+     */
     public double getChanceToBlock() {
         return myChanceToBlock;
     }
 
+    /**
+     * Return the x-axis of the room.
+     *
+     * @return the x-axis of the room
+     */
     public int getRoomX() {
         return myRoomX;
     }
 
+    /**
+     * Return the y-axis of the room.
+     *
+     * @return the y-axis of the room.
+     */
     public int getRoomY() {
         return myRoomY;
     }
 
+    /**
+     * Return the inventory items.
+     *
+     * @return the inventory items
+     */
     public String getInventoryItems() {
         return myInventoryItems;
     }
 
+
+    /**
+     * Return string of the player information .
+     *
+     * @return string of the player information
+     */
     @Override
     public String toString() {
         return "PlayerWrapper{" +

@@ -13,6 +13,7 @@ import java.sql.Statement;
  * This is part of the Data section of the project.
  *
  * @author Ryan Nguyen
+ * @version 1.0 Spring 2026
  */
 public class Database {
     // Utility class, so no objects need to be made.
