@@ -9,14 +9,16 @@ import java.sql.Statement;
 
 /**
  * Handles the SQLite database connection and table setup for saved game data.
- *
+ * <p>
  * This is part of the Data section of the project.
  *
  * @author Ryan Nguyen
  */
 public class Database {
-        // Utility class, so no objects need to be made.
-    }
+    // Utility class, so no objects need to be made.
+    private static final String SAVE_FOLDER = "saves";
+    private static final String DB_URL = "jdbc:sqlite:" + SAVE_FOLDER + "/legacy_save.db";
+
 
     /**
      * Opens a connection to the SQLite save database.
@@ -70,7 +72,7 @@ public class Database {
             try {
                 stmt.execute("ALTER TABLE player_save ADD COLUMN inventory_items TEXT DEFAULT '';");
             } catch (SQLException ignored) {
-            
+
             }
 
         } catch (SQLException e) {
